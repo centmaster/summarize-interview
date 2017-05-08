@@ -169,7 +169,14 @@ CMD 是 SeaJS 在推广过程中对模块定义的规范化产出。
 1. 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。
 2. CMD 推崇依赖就近，AMD 推崇依赖前置
 
-(27)
+(27)new操作符具体干了什么呢?
+1. 创建一个空对象，并且 this 变量引用该对象，同时还继承了该函数的原型
+2. 属性和方法被加入到 this 引用的对象中
+3. 新创建的对象由 this 所引用，并且最后隐式的返回 this
+var obj  = {};
+obj.__proto__ = Base.prototype;
+Base.call(obj); 
+
 
 
 (28).函数声明和函数表达式之间的区别
@@ -183,6 +190,7 @@ alert('博主的名字是：myvin 。');
 })()
 
 (29)减少页面加载时间的方法
+
 
 (30)实现水平垂直居中
    position: absolute;
@@ -223,7 +231,8 @@ alert('博主的名字是：myvin 。');
 
 
 
-(32).cookie和session
+(32).cookie和session. Local storage
+
 
 (33)同源策略与跨域(https://earthsplitter.github.io/2017/03/21/%E5%90%8C%E6%BA%90%E6%94%BF%E7%AD%96%E4%B8%8E%E8%B7%A8%E5%9F%9F%E8%AF%A6%E8%A7%A3/)
 
@@ -231,13 +240,13 @@ alert('博主的名字是：myvin 。');
 
 非ajax请求:
 1.document.domain
-对于只有前缀(二级、三级等域名)不同的网页，可以设置 document.domian 来规避同源策略.j具有相同domain的可以互相读取Cookie.
+对于只有前缀(二级、三级等域名)不同的网页，可以设置 document.domian 来规避同源策略.具有相同domain的可以互相读取Cookie.
 
 2.fragment identifer
 改变url #后边的data 。父窗口可以操作dom改变子窗口src，反之亦然
 
 3.window.name
-name是window一个属性，wulunwindow的内容如何变化，他不变
+name是window一个属性，无论window的内容如何变化，他不变
 利用iframe，在iframe中指向跨域网站，检测到onload后取回
 
 4.window.postMessage
@@ -398,6 +407,7 @@ cookie有secure属性要求HTTPS传输
 ([])//true
 []==false//true
 {}==false//false
+null==undefined//true
 
 (45).数组去重
 var a=[1,1,3,3,3,5];
@@ -457,4 +467,130 @@ prototype与_proto_的关系
 
 
 (52)js基本数据类型(没有Array)
-string number boolean null undefined
+string number boolean null undefined Symbol
+
+
+
+(53)css3伪类和伪元素
+
+
+
+(54)XSS CSRF
+Cross SiteScript
+http://blog.csdn.net/ghsau/article/details/17027893
+http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html
+
+(55)哪些操作会造成内存泄漏
+内存泄漏指任何对象在您不再拥有或需要它之后仍然存在。
+垃圾回收器定期扫描对象，并计算引用了每个对象的其他对象的数量。如果一个对象的引用数量为 0（没有其他对象引用过该对象），或对该对象的惟一引用是循环的，那么该对象的内存即可回收。
+
+1. setTimeout 的第一个参数使用字符串而非函数的话，会引发内存泄漏。
+2. 闭包
+3. 控制台日志
+4. 循环（在两个对象彼此引用且彼此保留时，就会产生一个循环）
+
+(56)如何判断当前脚本运行在浏览器还是node环境中？
+看全局变量。node的全局变量时global，而浏览器时window
+
+(57)js的同源策略
+概念：
+同源策略是客户端脚本（尤其是Javascript）的重要的安全度量标准。它最早出自Netscape Navigator2.0，其目的是防止某个文档或脚本从多个不同源装载。
+这里的同源策略指的是：协议，域名，端口相同，同源策略是一种安全协议，指一段脚本只能读取来自同一来源的窗口和文档的属性。
+
+为什么要有同源限制：
+我们举例说明：比如一个黑客程序，他利用Iframe把真正的银行登录页面嵌到他的页面上，当你使用真实的用户名，密码登录时，他的页面就可以通过Javascript读取到你的表单中input中的内容，这样用户名，密码就轻松到手了。
+
+（58）eval是做什么的
+1. 它的功能是把对应的字符串解析成JS代码并运行
+2. 应该避免使用eval，不安全，非常耗性能（2次，一次解析成js语句，一次执行）
+
+(59)用promise手写ajax
+ function get(){
+    $.ajax({
+    url:'test.php'
+    }).then(function(){
+    return $.ajax({url:'test1.php'});
+    })
+ }
+
+(60)手写一个类的继承，并解释一下
+function Student(name){
+    this.name=name;
+}
+
+Student.prototype.hello=function(){
+    console.log('say hello');
+}
+
+var xiaoming = new Studeng('xiaoming');
+
+
+ES6:
+class Student{
+    constructor(name){
+    this.name = name;
+    }
+
+    hello(){
+     alert('Hello' + this.name)
+    }
+}
+
+var xiaoming = new Studeng('xiaoming');
+
+class PriStudent extends Student{
+    constructor(name,grade){
+    super(name);
+    this.grade = grade;
+    }
+
+    myGrade(){
+    alert(this.grade);
+    }
+}
+
+
+
+
+(61)对闭包的理解，实现一个暴露内部变量，而且外部可以访问修改的函数（get和set，闭包实现）
+function f1(){
+    var n=1;
+    nAdd = function(){n+=1;}
+    function f2(){
+    alert(n);
+    }
+    return f2;
+}
+
+var result =f1();
+result();
+nAdd();
+result();
+
+
+(62)transition animation 的区别
+
+transition是两针的，设置开头结尾。animation是很多帧的
+不同点：
+
+1.  触发条件不同。transition通常和hover等事件配合使用，由事件触发。animation则和gif动态图差不多，立即播放。
+
+2. 循环。 animation可以设定循环次数。
+
+3. 精确性。 animation可以设定每一帧的样式和时间。tranistion 只能设定头尾。 animation中可以设置每一帧需要单独变化的样式属性， transition中所有样式属性都要一起变化。
+
+4. 与JavaScript的交互。animation与js的交互不是很紧密。tranistion和js的结合更强大。js设定要变化的样式，transition负责动画效果，天作之合，比之前只能用js时爽太多。
+
+结论：
+
+1. 如果要灵活定制多个帧以及循环，用animation.
+
+2. 如果要简单的from to 效果，用 transition.
+
+3. 如果要使用js灵活设定动画属性，用transition.
+
+
+(63)AMD和CMD
+
+
+(64)检验json变化
