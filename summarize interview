@@ -443,7 +443,7 @@ if(a.indexOf(a[i])==i){
 (47)javascript有哪些方法定义对象
 1对象字面量： var obj = {};
 2构造函数：Object(){}
- var obj = new Object();
+ var obj = new Object();//== var obj =new Object()  obj=Object
 3Object.create(): 
 var obj = Object.create(Object.prototype);
 
@@ -513,7 +513,7 @@ http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html
     })
  }
 
-(60)手写一个类的继承，并解释一下
+(60)手写一个类的继承，并解释一下。new对象的过程发生了什么
 function Student(name){
     this.name=name;
 }
@@ -522,7 +522,7 @@ Student.prototype.hello=function(){
     console.log('say hello');
 }
 
-var xiaoming = new Studeng('xiaoming');
+var xiaoming = new Student('xiaoming');
 
 
 ES6:
@@ -550,6 +550,14 @@ class PriStudent extends Student{
 }
 
 
+在 JavaScript 中，使用 new 关键字后，意味着做了如下四件事情：
+创建一个新的对象，这个对象的类型是 object；
+设置这个新的对象的内部、可访问性和[[prototype]]属性为构造函数（指prototype.construtor所指向的构造函数）中设置的；
+执行构造函数，当this关键字被提及的时候，使用新创建的对象的属性； 返回新创建的对象（除非构造方法中返回的是‘无原型’）。
+在创建新对象成功之后，如果调用一个新对象没有的属性的时候，JavaScript 会延原型链向止逐层查找对应的内容。这类似于传统的‘类继承’。
+var obj  = {};
+obj.__proto__ = Base.prototype;
+Base.call(obj);
 
 
 (61)对闭包的理解，实现一个暴露内部变量，而且外部可以访问修改的函数（get和set，闭包实现）
@@ -594,3 +602,74 @@ transition是两针的，设置开头结尾。animation是很多帧的
 
 
 (64)检验json变化
+
+(65)队列、堆、栈、堆栈的区别？
+队列是先进先出：就像一条路，有一个入口和一个出口，先进去的就可以先出去。
+而栈就像一个箱子，后放的在上边，所以后进先出。
+栈(Stack)是操作系统在建立某个进程时或者线程
+堆（Heap)是应用程序在运行的时候请求操作系统分配给自己内存
+
+(66)SEO
+
+
+(67)低版本浏览器不支持HTML5标签怎么解决？
+引入js，js中有解析的代码
+<!--[if IE]><script src="style/js/html5.js"></script><![endif]-->
+
+在html中直接插入
+for(var i=0; i<tags.length; i++)document.createElement(tags[i]);})(["article","aside","details","figcaption","figure","footer","header","hgroup","nav","section","menu","video"]);</script>
+通过插入dom节点相应的标签让他认识
+
+(68)圣杯布局  http://www.jianshu.com/p/f9bcddb0e8b4
+写结构的时候要注意，父元素的的三栏务必先写中间盒子。因为中间盒子是要被优先渲染嘛~并且设置其自适应，也就是width:100%。写结构的时候要注意，父元素的的三栏务必先写中间盒子。因为中间盒子是要被优先渲染嘛~并且设置其自适应，也就是width:100%。
+具体结果见test
+
+(69)内置的方法
+Array
+indexOf slice push pop shift unshift splice sort reverse concat join
+
+String
+substring(start,end) indexOf charAt substr(start,length) search(reExp) concat split toLowerCase
+
+Object
+constructor hasOwnProperty  toString([Object Object])  valueOf(return Object)
+
+(70)浏览器内置对象
+Window      Window 对象表示浏览器中打开的窗口
+Navigator   Navigator 对象包含有关浏览器的信息  版本 语言 系统 运行平台
+Screen      Screen 对象包含有关客户端显示屏幕的信息。  屏幕高度 亮度 分辨率
+History     History 对象包含用户（在浏览器窗口中）访问过的 URL。
+Location    Location 对象包含有关当前 URL 的信息。 域名 端口 主机
+
+
+(71)
+
+
+(72)
+
+
+(73)
+
+
+(74)
+
+
+(75)
+
+
+(76)
+
+
+(77)
+
+
+
+(78)
+
+
+(79)
+
+(80)
+
+
+
