@@ -21,6 +21,14 @@ nodeName:找到元素的标签名
 		target.style.background = "red";
 		}
 	}
+	jq怎么进行时间委托
+	$("父元素").on("click","子元素",function(){ //执行代码 })
+	以click事件为例：
+
+    普通绑定事件：$('.btn1').click(function(){}绑定
+
+    on绑定事件：$(document).on('click','.btn2',function(){}绑定
+
 
 (2)css 伪类元素使用顺序 //love hate
 link visit hover active
@@ -642,34 +650,277 @@ History     History 对象包含用户（在浏览器窗口中）访问过的 UR
 Location    Location 对象包含有关当前 URL 的信息。 域名 端口 主机
 
 
-(71)
+(71)原生js读取cookie
+document.cookie  读 写就是等号后边写
+document.cookie.split(';') 把cookie分开
 
 
-(72)
+(72)Ajax Request
+原生和superagent
+function getSignIn(authsecret) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', Url + 'auth/' + authsecret, false);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    code here
+                }
+            }
+            xhr.setRequestHeader("Content-Type", "application/json ;charset=utf-8");
+            xhr.setRequestHeader("Accept", "application/json");
+            xhr.send();
+        }
+
+superagent.get(cnodeUrl)
+        .set("Cookie",'nforum[UTMPUSERID]=centmaster; nforum[PASSWORD]=3BiOD9Oa3bii6juOdrIr4A%3D%3D; nforum[UTMPKEY]=31287208; nforum[UTMPNUM]=915; Hm_lvt_a2cb7064fdf52fd51306dd6ef855264a=1492694821; Hm_lpvt_a2cb7064fdf52fd51306dd6ef855264a=1492912244')
+        .end(function(err, res) {
+        code here
+        }
+
+(73)http Response header里边都有啥（Request)
+Response
+Connection:keep-alive
+Content-Length:21
+Content-Type:text/html;charset=UTF-8
+Date:Tue, 09 May 2017 09:26:47 GMT
+Set-Cookie:SERVERID=aff739a092fc0d444b
+
+Request
+Accept:text/plain, */*; q=0.01
+Accept-Encoding:gzip, deflate, sdch, br
+Accept-Language:zh-CN,zh;q=0.8,en;q=0.6
+Connection:keep-alive
+Cookie:
+Host:www.nowcoder.com
+Referer:https://www.nowcoder.com/discuss/7600?type=0&order=3&pos=4600&page=2
+User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
+X-Requested-With:XMLHttpRequest
+
+(74)为什么一定是三次握手？不是两次？
+“已失效的连接请求报文段”的产生在这样一种情况下：client发出的第一个连接请求报文段并没有丢失，而是在某个网络结点长时间的滞留了，以致延误到连接释放以后的某个时间才到达server。
+本来这是一个早已失效的报文段。但server收到此失效的连接请求报文段后，就误认为是client再次发出的一个新的连接请求。于是就向client发出确认报文段，同意建立连接。假设不采用“三次握手”，那么只要server发出确认，新的连接就建立了。
 
 
-(73)
+(75)http2
 
 
-(74)
+(76)浏览器中输入url后发生了什么（http://www.jianshu.com/p/c1dfc6caa520）
+在修改hosts文件后，所有OS中DNS缓存会被清空，而浏览器缓存则不发生变化。safari只要10s缓存，所以一般用safari检查
+1. DNS域名解析
+在浏览器DNS缓存中搜索
+在操作系统DNS缓存中搜索
+读取系统hosts文件，查找其中是否有对应的ip
+向本地配置的首选DNS服务器发起域名解析请求
+
+2. 建立TCP连接
+三次握手
+
+3. 发起HTTP请求
+请求方法：
+GET:获取资源
+POST:传输实体主体
+HEAD:获取报文首部
+PUT:传输文件
+DELETE:删除文件
+OPTIONS:询问支持的方法
+TRACE:追踪路径
+
+4. 接受响应结果
+
+状态码：
+
+1**：信息性状态码
+2**：成功状态码
+200：OK 请求正常处理
+204：No Content请求处理成功，但没有资源可返回
+206：Partial Content对资源的某一部分的请求
+3**：重定向状态码
+301：Moved Permanently 永久重定向
+302：Found 临时性重定向
+304：Not Modified 缓存中读取
+4**：客户端错误状态码
+400：Bad Request 请求报文中存在语法错误
+401：Unauthorized需要有通过Http认证的认证信息
+403：Forbidden访问被拒绝
+404：Not Found无法找到请求资源
+5**：服务器错误状态码
+500：Internal Server Error 服务器端在执行时发生错误
+503：Service Unavailable 服务器处于超负载或者正在进行停机维护
+
+//401 403之间的区别
+
+5. 浏览器解析html
+
+6. 浏览器布局渲染
+
+(77)常见的原生javascript DOM操作(https://segmentfault.com/a/1190000004076145)
+1创建节点
+document.createElement('div')
+document.createTextNode('chen')
+2节点关系
+parentNode chlidNodes nextSibling previousSibling
+firstChild lastChild
+3节点元素关系（只算元素，不算节点）
+childern nextElementSibling previousELementSibling
+4节点操作
+appendChild insertBefore replaceChild removeChild cloneNode(true)
+5元素选择
+querySelector(返回匹配的第一个元素） querySelectorAll
+getElementById getElementByTageName getElementByName getELmentByClassName
+6属性操作
+setAttribute removeAttribute getAttribute hasAttribute
+7事件
+addEventListener("click",function,true)第三个参数true表示捕获false表示冒泡
+removeEventListener 无法解绑匿名函数
+attachEvent detachEvent 支持IE8一下
+8获取元素相关计算后的值
+getComputedStyle  currentStyle
+
+(78)常见的浏览器兼容问题
+1不同浏览器的标签默认的外补丁和内补丁不同
+解决方案：CSS里    *{margin:0;padding:0;}
+2块属性标签float后，又有横行的margin情况下，在IE6显示margin比设置的大
+解决方案：在float的标签样式控制中加入 display:inline;将其转化为行内属性
+3图片默认有间距
+解决方案：使用float属性为img布局
 
 
-(75)
+(79)lazyload实现原理
+先吧图片的src设个随便的，然后自定义属性data-src里放真实地址。当检测到视窗滚动到
+img[i].src = img[i].getAttribute("data-src");
+var seeHeight = document.documentElement.clientHeight; //可见区域高度
+var scrollTop = document.documentElement.scrollTop || document.body.scrollTop; //滚动条距离顶部高度
+if (img[i].offsetTop < seeHeight + scrollTop)
+
+限制触发频率
+到一秒了刷新，没到一秒再delay半秒
+
+(80)移动端性能优化 （优化体验 优化速度
+1加载优化
+合并js css
+使用雪碧图
+尽量缓存资源
+使用长cache
+压缩html css js
+首屏加载 按需加载 滚屏加载
+增加loading进度条
+减少cookie cookie会影响加载速度
+避免重定向
+异步加载第三方资源
+预加载（提前加载下一页）
+2css优化
+css写在头部，js写在尾部或异步
+避免图片和iFrame等空src
+避免重设图片大小
+display 重绘 回流
+值为0时不需要任何单位
+不要使用过多fontsize
+避免在html中写style
+3图片优化
+图片不宽于640 大小也要合适
+图片尽量避免使用DataURL DataURL图片没有使用图片的压缩算法文件会变大，并且要解码后再渲染，加载慢耗时长
+4脚本优化
+减少重绘和回流
+使用事件代理，避免批量绑定
+5渲染优化
+HTML使用viewport
+<meta name="viewport" content="width=device-width, initial-scale=1">
+减少dom节点
+尽量使用css3动画
+所有影响首屏加载和渲染的代码应在处理逻辑中后置
+float在渲染中计算量比较大
+
+(81)回流和重回    回流必将引起重绘，而重绘不一定会引起回流。
+Dom树       呈现树  绘制页面
+css样式
+1. 当render tree中的一部分(或全部)因为元素的规模尺寸，布局，隐藏等改变而需要重新构建。
+这就称为回流(reflow)。每个页面至少需要一次回流，就是在页面第一次加载的时候。在回流的时候，
+浏览器会使渲染树中受到影响的部分失效，并重新构造这部分渲染树，完成回流后，浏览器会重新绘制受影响的部分到屏幕中，该过程成为重绘。
+2. 当render tree中的一些元素需要更新属性，而这些属性只是影响元素的外观，风格，而不会影响布局的，比如background-color。则就叫称为重绘。
+回流是结构在改变，重绘是样式在改变
 
 
-(76)
+(82)如何解决requirejs的循环依赖问题
+a依赖b，b依赖a
+二次这依赖的时候，b依赖注入reqrire，用require('a')来引用a。
+
+(83)AMD和CMD的区别有哪些
+1.对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 推崇 as lazy as possible.
+2. CMD 推崇依赖就近，AMD 推崇依赖前置。
+3. AMD 的 API 默认是一个当多个用，CMD 的 API 严格区分，推崇职责单一
+
+(84)form表单当前页面无刷新提交
+JS:document.forms[0].target="rfFrame"
+把提交的target改成iframe的名字
+
+(85)vue 父子 同级 之间数据怎么流动的
+
+(86)数组和链表的区别
+2、数组
+优点：
+1、可以利用偏移地址来访问元素，效率高，为O(1)；
+2、可以使用折半方法查找元素，效率较高；
+缺点：
+1、空间连续，存储效率低
+2、插入和删除元素效率比较低，且比较麻烦；
+3、链表
+优点：
+1、插入和删除元素不需要移动其余元素，效率高，为O(1)；
+2、不要求连续空间，空间利用效率高
+缺点：
+1、不提高随机访问元素的限制
+2、查找元素和搜索元素的效率低，最快情况为O(1)，平均情况为O(N)；
+因此对于经常插入和删除的操作，数据结构采用链表或者使用二叉搜索树；
+
+(87)伪类和伪元素的区别
+伪类 :active :first-child
+伪元素:first-letter :before
+CSS 伪类用于向某些选择器添加特殊的效果。
+CSS 伪元素用于将特殊的效果添加到某些选择器。
+:Pseudo-classes
+::Pseudo-elements
 
 
-(77)
+(88)margin 坍塌
+1.当两个对象为上下关系时，而且都具备margin属性时，上面的margin-bottom与下面的margin-top会发生塌陷
+当margin-bottom和margin都为正数时，结果为两者之间的最大值
+当margin-bottom和margin-top为一正一负时，结果为两者之和。
+2.当两个对象为上下包含关系
+父元素无填充内容，且没有设置border时，子元素的margin-top不会起作用
+父元素设置border属性，子元素的margin-top起作用
+父元素有填充内容，子元素的margin-top会起作用，当margin-top小于填充内容时，距离为填充内容的高度
+
+解决办法
+1、为父元素添加overflow:hidden;，
+2、为父元素float非none属性，也可为子元素添加float非none属性
+3、需要给父div设置：边框，当然可以设置边框为透明;
+border:1px solid transparent
+或
+border-top:1px solid transparent
+4、为父DIV添加padding，或者至少添加padding-top;
+5，如果遇到上下两个并排内容块的安排，最好只设置其中每个块上或下margin的一处即可。
 
 
+(89)
 
-(78)
+(90)
+
+(91)
+
+(92)
+
+(93)
+
+(94)
+
+(95)
+
+(96)
+
+(97)
+
+(98)
+
+(99)
 
 
-(79)
-
-(80)
-
-
-
+(100)
