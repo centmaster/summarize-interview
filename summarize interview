@@ -695,9 +695,12 @@ Referer:https://www.nowcoder.com/discuss/7600?type=0&order=3&pos=4600&page=2
 User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
 X-Requested-With:XMLHttpRequest
 
-(74)为什么一定是三次握手？不是两次？
+(74)为什么一定是三次握手？不是两次？为什么要四次挥手？
 “已失效的连接请求报文段”的产生在这样一种情况下：client发出的第一个连接请求报文段并没有丢失，而是在某个网络结点长时间的滞留了，以致延误到连接释放以后的某个时间才到达server。
 本来这是一个早已失效的报文段。但server收到此失效的连接请求报文段后，就误认为是client再次发出的一个新的连接请求。于是就向client发出确认报文段，同意建立连接。假设不采用“三次握手”，那么只要server发出确认，新的连接就建立了。
+你听得到吗---我听得到你听得到吗---我听得到，blabla
+
+因为tcp是全双工，接收到FIN意味着没有数据再发来，但是还可以继续发送数据。两对  我不发了--收到
 
 
 (75)http2
@@ -900,21 +903,47 @@ border-top:1px solid transparent
 5，如果遇到上下两个并排内容块的安排，最好只设置其中每个块上或下margin的一处即可。
 
 
-(89)
+(89)display 的值和意义
+none block  inline(默认，内敛元素，不换行） inline-block
+table inherit list-item(元素作为列表显示)  run-in(根据上下文决定块级还是内敛)
 
-(90)
+position 属性
+static  relative(偏移之后，原本占据空间还在占据)
+absolute(脱离文档流，变成块，然后相对于包含块定位) fixed(块相对于整个视窗)
 
-(91)
+(90)TCP和UDP的区别(http://www.cnblogs.com/bizhu/archive/2012/05/12/2497493.html)
+三次握手和四次挥手！！
+TCP是一个面向连接的协议，收发数据前必须建立可靠的链接
+UDP是非链接协议，也由于不链接，可以一次像多个发送。包的标题很短。
+1.基于连接与无连接；
+2.对系统资源的要求（TCP较多，UDP少）；
+3.UDP程序结构较简单；
+4.流模式与数据报模式 ；
+5.TCP保证数据正确性，UDP可能丢包，TCP保证数据顺序，UDP不保证。
 
-(92)
+(91)w3c事件与IE事件的区别(http://caibaojian.com/javascript-stoppropagation-preventdefault.html)
+IE事件为事件冒泡，Netspace为事件捕获
+防止冒泡  阻止儿子告诉爸爸
+w3c的方法是e.stopPropagation()，IE则是使用e.cancelBubble = true
+阻止默认行为  直接把行为屏蔽掉
+e.preventDefault()  e.returnValue=false
 
-(93)
+(92)ajax readyState 5个状态的含义
+　0 － （未初始化）还没有调用send()方法
+　　1 － （载入）已调用send()方法，正在发送请求
+　　2 － （载入完成）send()方法执行完成，已经接收到全部响应内容
+　　3 － （交互）正在解析响应内容
+　　4 － （完成）响应内容解析完成，可以在客户端调用了
 
-(94)
+(93)实现可以拖动的div
 
-(95)
+(94)webpack是干嘛的(http://www.jianshu.com/p/01a606c97d76)
+模块打包机，一切皆模块
+看看源码吧
 
-(96)
+(95)js设计模式
+
+(96)react vue angular
 
 (97)
 

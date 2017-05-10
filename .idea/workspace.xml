@@ -21,8 +21,8 @@
       <file leaf-file-name="summarize interview" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/summarize interview">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="428">
-              <caret line="898" column="35" lean-forward="false" selection-start-line="898" selection-start-column="35" selection-end-line="898" selection-end-column="35" />
+            <state relative-caret-position="360">
+              <caret line="935" column="28" lean-forward="true" selection-start-line="935" selection-start-column="28" selection-end-line="935" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -65,7 +65,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="509" />
+    <option name="x" value="720" />
     <option name="y" value="23" />
     <option name="width" value="771" />
     <option name="height" value="777" />
@@ -196,15 +196,15 @@
       <option name="presentableId" value="Default" />
       <updated>1494210714438</updated>
       <workItem from="1494210716420" duration="2237000" />
-      <workItem from="1494292147738" duration="14496000" />
+      <workItem from="1494292147738" duration="17206000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="16733000" />
+    <option name="totallyTimeSpent" value="19443000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="509" y="23" width="771" height="777" extended-state="0" />
+    <frame x="720" y="23" width="771" height="777" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -298,8 +298,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/summarize interview">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="428">
-          <caret line="898" column="35" lean-forward="false" selection-start-line="898" selection-start-column="35" selection-end-line="898" selection-end-column="35" />
+        <state relative-caret-position="360">
+          <caret line="935" column="28" lean-forward="true" selection-start-line="935" selection-start-column="28" selection-end-line="935" selection-end-column="28" />
           <folding />
         </state>
       </provider>
