@@ -523,7 +523,7 @@ http://www.cnblogs.com/hyddd/archive/2009/04/09/1432744.html
  }
 
 (60)手写一个类的继承，并解释一下。new对象的过程发生了什么
-function Student(name){
+function Student(name){         //构造函数
     this.name=name;
 }
 
@@ -533,6 +533,25 @@ Student.prototype.hello=function(){
 
 var xiaoming = new Student('xiaoming');
 
+
+// 原型对象:继承
+var Student = {
+    name: 'Robot',
+    height: 1.2,
+    run: function () {
+        console.log(this.name + ' is running...');
+    }
+};
+
+function createStudent(name) {
+    // 基于Student原型创建一个新对象:
+    var s = Object.create(Student);
+    // 初始化新对象:
+    s.name = name;
+    return s;
+}
+
+var xiaoming = createStudent('小明');
 
 ES6:
 class Student{
@@ -990,17 +1009,34 @@ i:first-child{
 用vh vw这种比例单位
 
 
-(102)
+(102)原生JS添加class
+function hasClass(obj, cls) {
+    return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+}
+
+function addClass(obj, cls) {
+    if (!this.hasClass(obj, cls)) obj.className += " " + cls;
+}
+
+function removeClass(obj, cls) {
+    if (hasClass(obj, cls)) {
+        var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+        obj.className = obj.className.replace(reg, ' ');
+    }
+}
 
 
 
-(103)
+(103)http头有哪些字段
 
 
-(104)
+(104)PromiseStatus：用于记录Promise对象的三种状态，这三中状态分别是：
+     pending：待定状态，Promise对象刚被初始化的状态
+     fulfilled：完成状态，承诺被完成了的状态
+     rejected：拒绝状态，承诺完成失败的状态
 
 
-(105)
+(105)静态属性怎么继承
 
 
 (106)
