@@ -80,6 +80,7 @@ href是一种链接前往，是引用的的感觉。
 
 (10)css中clear的作用是什么？
 对于CSS的清除浮动(clear)，一定要牢记：这个规则只能影响使用清除的元素本身，不能影响其他元素。
+清除浮动:clear:both   overflow:hidden（相当于让父元素贴紧内容)  zoom:1
 
 (11)为什么要初始化CSS样式
 因为浏览器的兼容性，因为每个浏览设计时都有自己的特性，没有统一的规定，所以对于某些标签是不同的，不进行浏览器初始化，则会造成浏览器显示页面有微小的差异
@@ -653,6 +654,8 @@ Location    Location 对象包含有关当前 URL 的信息。 域名 端口 主
 (71)原生js读取cookie
 document.cookie  读 写就是等号后边写
 document.cookie.split(';') 把cookie分开
+localStorage
+localStorage.setItem  .getItem
 
 
 (72)Ajax Request
@@ -893,22 +896,25 @@ CSS 伪元素用于将特殊的效果添加到某些选择器。
 父元素有填充内容，子元素的margin-top会起作用，当margin-top小于填充内容时，距离为填充内容的高度
 
 解决办法
-1、为父元素添加overflow:hidden;，
-2、为父元素float非none属性，也可为子元素添加float非none属性
-3、需要给父div设置：边框，当然可以设置边框为透明;
+1.需要给父div设置：边框，当然可以设置边框为透明;
 border:1px solid transparent
 或
 border-top:1px solid transparent
-4、为父DIV添加padding，或者至少添加padding-top;
-5，如果遇到上下两个并排内容块的安排，最好只设置其中每个块上或下margin的一处即可。
+2.内层元素绝对定位，或者float脱离文档流，或者外层换成padding
+3.BFC 还可以清浮动
 
+如何形成BFC 对父元素添加下面效果就可以清浮动
+float为 left|right
+overflow为 hidden|auto|scroll
+display为 table-cell|table-caption|inline-block
+position为 absolute|fixed
 
 (89)display 的值和意义
 none block  inline(默认，内敛元素，不换行） inline-block
 table inherit list-item(元素作为列表显示)  run-in(根据上下文决定块级还是内敛)
 
 position 属性
-static  relative(偏移之后，原本占据空间还在占据)
+static  relative(偏移之后，原本占据空间还在占据。并没有脱离文档流)
 absolute(脱离文档流，变成块，然后相对于包含块定位) fixed(块相对于整个视窗)
 
 (90)TCP和UDP的区别(http://www.cnblogs.com/bizhu/archive/2012/05/12/2497493.html)
@@ -945,11 +951,135 @@ e.preventDefault()  e.returnValue=false
 
 (96)react vue angular
 
-(97)
+(97)原生ajax的四个过程
+实例化，open，send,onreadystatechange，然后是req,readyState和status。
 
-(98)
+(98)animation实现动画效果
+@-webkit-keyframes anim1{
+    0%{
+        transform:sacle(1);Cookie 是否会被覆盖，localStorage是否会被覆盖。
+    }
 
-(99)
+    100%{
+        transform:sacle(0.5)
+    }
+}
+animation 属性是一个简写属性，用于设置六个动画属性：
+animation-name
+animation-duration
+animation-timing-function
+animation-delay
+animation-iteration-count
+animation-direction
+
+transition:width
+2s;
+
+i:first-child{
+    animation:anim1 0.7s ease-in-out infinite;
+    }
+
+(99)网络分层结构。4层，应用层，传输层，网络层和数据链路层。依次是http等应用，TCP/UDP，IP和物理连接。然后又追问了一下ssl在哪一层。ssl是socket，是单独的一层。如果要算应该算传输层。
 
 
-(100)
+(100)1.怎么得到一个页面的a标签（就说了getElementByTagName和选择器）
+     2.怎么在页面里放置一个很简单的图标，不能用img和background-img
+     （说了canvas，或者一些库有icon库，data-icon).
+
+(101)Css实现保持长宽比1:1
+用vh vw这种比例单位
+
+
+(102)
+
+
+
+(103)
+
+
+(104)
+
+
+(105)
+
+
+(106)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1.以下文档声明正确的是：(C)
+A. <!doctype html>	B. <!DOCTYPE HTML 4.01>	C. <!DOCTYPE XHTML 1.0>	D. <!DOCTYPE XHTML 1.0 Frameset>
+2.以下均为自封闭标签的是：(C)
+A. html,script	B. link,style	C. meta,input	D. img,textarea
+3.以下标签包含顺序正确的有：(BC)
+A. a>p>span	B. h2>p>a	C. ul>li>div	D. span>a>input
+4.定义提供有关页面的元信息的标签是：(A)
+A. meta	B. DOCTYPE	C. base	D. var
+5.使表单支持文件上传功能，至少需要设置form标签的哪些属性(AC)
+A. action	B. name	C. method	D. enctype
+6.以下有关样式表定义说法有误的是：(D)
+A. 样式表都需要定义选择器	B. 一组样式表可以定义多组属性	C. 每组属性之间需要用;分隔	D. 属性名不能使用字母和-以外的字符
+7.以下选择器定义的样式表可作用于相同标签时，权重最高的是：(A)
+A. .main p.inner	B. div.main > p	C. body .main p	D. .header + .main p
+8.IE6中，以下CSS选择器被支持的有：(AB)
+A. span + p	B. ul > li	C. :after	D. .nav.current
+9.下列均属于行内标签的一组是：(C)
+A. span,p	B. ul,li	C. a,strong	D. div,dl
+10.下列哪些position定义时, left属性可以生效：(CD)
+A. static	B. relative	C. fixed	D. absolute
+11.以下javascript代码片段存在语法错误的是：(D)
+A. var fn = function(){};	B. Math.PI * 3	C. var c = 2.toString()	D. '7'-4
+12.选择正确的通用JSON格式(非javascript对象)：(CD)
+A. {name:"lili"}	B. ["ok",{"id":2}]	C. {"amount":1.44e+10,"owner":null}	D. {"male":true,"friends":["a","b"]}
+13.代码 `var a = {a:2}, b; b = a; b.a = ++a.a - 2; 则: a.a的值为： ` (B)
+A. 0	B. 1	C. 2	D. 3
+14.以下不属于javascript中Array对象方法或属性的有：(B)
+A. splice,slice	B. sort,shuffle	C. concat,join	D. shift,unshift
+15.以下匹配javascript中变量名的正则表达式是：(C)
+A. [object Object]	B. [object Object]	C. [object Object]	D. [object Object]
+16.表示请求被客户端缓存的HTTP-code为：(C)
+A. 200	B. 404	C. 304	D. 500
+17.下列哪项属于GET请求和POST请求的不同点：(AC)
+A. 支持form标签表单提交	B. 支持XMLHttpRequest	C. 支持文件上传	D. 支持下载文件
+18.对于服务器返回js资源文件正确的MIME为：(D)
+A. text/script	B. application/javascript	C. text/javascript	D. script/text
+19.UserAgent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36 表示以下哪款浏览器(D)
+A. Microsoft Windows IE	B. Apple Safari	C. Mozilla Firefox	D. Google Chrome
+20.下列哪项信息一般不是浏览器发送给服务器的：(D)
+A. cookie	B. user-agent	C. Accept-Encoding	D. Content-Type
+21.同源策略, 是最常用的WEB安全策略, 这里的同源包括：(ABC)
+A. 协议相同	B. 域名相同	C. 端口相同	D. 请求路径相同
+22.下列哪些场景下不需要遵循同源策略(ABC)
+A. XMLHttpRequest	B. iframe间js操作	C. WebSocket通信	D. 多媒体(Audio/Video)文件播放
+23.下列哪种常用的WEB服务器默认的端口号不含80：(C)
+A. Apache	B. IIS	C. Tomcat	D. Nginx
+24.以下哪些方式有利于从HTTP请求上对资源加载进行优化(ABCD)
+A. 合并过多的零碎文件	B. 拆分过大的资源文件	C. 服务器开启gzip压缩	D. 对资源文件进行压缩
+25.以下哪些方式能有效的避免服务器的资源缓存(ABCD)
+A. 采用cdn优化资源	B. 使用MD5重命名资源和引入	C. 更新资源时添加必要的时间戳标记	D. 模块化资源, 实现按需异步加载
+
+
+
