@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sort</title>
+</head>
+<body>
+</body>
+<script>
+  var arr = [99,43,63,112,43,6,64,79];
+
+
+  var temp=0;
+  for(var i=0;i<arr.length;i++){
+      for(var j=0;j<i;j++){
+          if(arr[j]>arr[i]){
+              temp=arr[i];
+              arr[i]=arr[j];
+              arr[j]=temp;
+          }
+      }
+  }
+  arr.map(function (x) {
+      console.log(x);
+  })
+
+
+</script>
+</html>
