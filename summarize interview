@@ -70,7 +70,7 @@ opacity会继承父元素的 opacity 属性，而RGBA设置的元素的后代元
 
 (8)link和@import的区别
 区别1：link是XHTML标签，除了加载CSS外，还可以定义RSS等其他事务；@import属于CSS范畴，只能加载CSS。
-区别2：link引用CSS时，在页面载入时同时加载；@import需要页面网页完全载入以后加载。
+!!!区别2：link引用CSS时，在页面载入时同时加载；@import需要页面网页完全载入以后加载。
 区别3：link是XHTML标签，无兼容问题；@import是在CSS2.1提出的，低版本的浏览器不支持。
 区别4：link支持使用Javascript控制DOM去改变样式；而@import不支持。
 
@@ -154,17 +154,17 @@ CSS3实现圆角（border-radius），阴影（box-shadow），
    在CSS3中唯一引入的伪元素是::selection. //使被选中文本变红
   媒体查询，多栏布局 
 
-  (21)CSS中可以和不可以继承的属性
-  Bd 不可继承的：display、margin、border、padding、background、height、min-height、max-height、width、min-width、max-width、overflow、position、left、right、top、bottom、z-index、float、clear、table-layout、vertical-align、page-break-after、page-bread-before和unicode-bidi。 
-  所有元素可继承：visibility和cursor。 内联元素可继承：letter-spacing、word-spacing、white-space、line-height、color、font、font-family、font-size、font-style、font-variant、font-weight、text-decoration、text-transform、direction。 终端块状元素可继承：text-indent和text-align。 列表元素可继承：list-style、list-style-type、list-style-position、list-style-image。
+(21)CSS中可以和不可以继承的属性
+Bd 不可继承的：display、margin、border、padding、background、height、min-height、max-height、width、min-width、max-width、overflow、position、left、right、top、bottom、z-index、float、clear、table-layout、vertical-align、page-break-after、page-bread-before和unicode-bidi。
+所有元素可继承：visibility和cursor。 内联元素可继承：letter-spacing、word-spacing、white-space、line-height、color、font、font-family、font-size、font-style、font-variant、font-weight、text-decoration、text-transform、direction。 终端块状元素可继承：text-indent和text-align。 列表元素可继承：list-style、list-style-type、list-style-position、list-style-image。
 
-  (22)动画实现方案，并对比说明各自特点。
-  css3旋转，transform, transition, animate
+(22)动画实现方案，并对比说明各自特点。
+css3旋转，transform, transition, animate
 
-  (23)rem是CSS3新增的一个相对单位（root em，根em），这个单位引起了广泛关注。这个单位与em有什么区别呢？区别在于使用rem为元素设定字体大小时，仍然是相对大小，但相对的只是HTML根元素。这个单位可谓集相对大小和绝对大小的优点于一身，通过它既可以做到只修改根元素就成比例地调整所有字体大小，又可以避免字体大小逐层复合的连锁反应。目前，除了IE8及更早版本外，所有浏览器均已支持rem。对于不支持它的浏览器，应对方法也很简单，就是多写一个绝对单位的声明。
+(23)rem是CSS3新增的一个相对单位（root em，根em），这个单位引起了广泛关注。这个单位与em有什么区别呢？区别在于使用rem为元素设定字体大小时，仍然是相对大小，但相对的只是HTML根元素。这个单位可谓集相对大小和绝对大小的优点于一身，通过它既可以做到只修改根元素就成比例地调整所有字体大小，又可以避免字体大小逐层复合的连锁反应。目前，除了IE8及更早版本外，所有浏览器均已支持rem。对于不支持它的浏览器，应对方法也很简单，就是多写一个绝对单位的声明。
 
-  (24)要使页面的 <a> 标签中，文字超出 80 像素的部分显示为 .....
-  display:block；
+(24)要使页面的 <a> 标签中，文字超出 80 像素的部分显示为 .....
+display:block；
 overflow:hidden;
 white-space:nowrap;//文本不会换行，文本会在在同一行上继续，直到遇到 <br> 标签为止。
 text-overflow:ellipsis;//	显示省略符号来代表被修剪的文本。
@@ -654,7 +654,7 @@ for(var i=0; i<tags.length; i++)document.createElement(tags[i]);})(["article","a
 
 (69)内置的方法
 Array
-indexOf slice push pop shift unshift splice sort reverse concat join
+indexOf slice(start,end) push pop shift unshift splice sort reverse concat join
 
 String
 substring(start,end) indexOf charAt substr(start,length) search(reExp) concat split toLowerCase
@@ -717,7 +717,7 @@ Referer:https://www.nowcoder.com/discuss/7600?type=0&order=3&pos=4600&page=2
 User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36
 X-Requested-With:XMLHttpRequest
 
-(74)为什么一定是三次握手？不是两次？为什么要四次挥手？
+(74)为什么一定是三次握手？不是两次？为什么要四次挥手？（http://www.jellythink.com/archives/705）
 “已失效的连接请求报文段”的产生在这样一种情况下：client发出的第一个连接请求报文段并没有丢失，而是在某个网络结点长时间的滞留了，以致延误到连接释放以后的某个时间才到达server。
 本来这是一个早已失效的报文段。但server收到此失效的连接请求报文段后，就误认为是client再次发出的一个新的连接请求。于是就向client发出确认报文段，同意建立连接。假设不采用“三次握手”，那么只要server发出确认，新的连接就建立了。
 你听得到吗---我听得到你听得到吗---我听得到，blabla
