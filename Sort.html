@@ -10,19 +10,21 @@
   var arr = [99,43,63,112,43,6,64,79];
 
 
-  var temp=0;
-  for(var i=0;i<arr.length;i++){
-      for(var j=0;j<i;j++){
-          if(arr[j]>arr[i]){
-              temp=arr[i];
-              arr[i]=arr[j];
-              arr[j]=temp;
-          }
+  var key;
+  for(var i=1;i<arr.length;i++){
+      key = arr[i];
+      var j=i-1;
+      while(j>=0&&arr[j]>key){
+
+          arr[j+1]=arr[j];
+          j--;
       }
+      arr[j+1]=key;
   }
-  arr.map(function (x) {
-      console.log(x);
-  })
+  console.log(arr);
+//  arr.map(function (x) {
+//      console.log(x);
+//  })
 
 
 </script>
