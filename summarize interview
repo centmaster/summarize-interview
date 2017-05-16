@@ -1027,7 +1027,7 @@ function removeClass(obj, cls) {
 
 
 
-(103)http头有哪些字段
+(103)
 
 
 (104)PromiseStatus：用于记录Promise对象的三种状态，这三中状态分别是：
@@ -1036,10 +1036,148 @@ function removeClass(obj, cls) {
      rejected：拒绝状态，承诺完成失败的状态
 
 
-(105)静态属性怎么继承
+(105)静态属性（怎么继承？）实例属性，原型对象属性  （https://segmentfault.com/q/1010000004196727）
+function Myobject(){
+    this.instanceProp="456";
+    this.instanceMethod=function(){};
+}
+Myobject.prototype.protoProp="789";
+Myobject.prototype.protoMethod=function(){
+
+};
+
+Myobject.staticProp="123";
+Myobject.staticMethod =function(){
+
+};
+
+var myobject=new Myobject();
+
+staticProp就是静态属性？
+staticMethod就是静态方法
+静态是面向对象的编程语言中的叫法吧
+函数也是对象，只要声明函数后，就可以往这个函数添加属性和方法
+
+instanceProp就是个实例属性
+instanceMethod就是个实例方法
+实例对象的属性和方法只在使用new操作符创建以这个函数为构造函数的实例对象后才存在
+当函数作为普通函数或一个对象方法调用时，是另外一种情况了
+
+protoProp为原型对象的属性
+protoMethod为原型对象的方法
+为一个函数的原型对象赋值后就会存在，以这个函数为构造函数创建的实例对象能够访问到原型的属性及方法
+JS中通过基于原型(基于对象)的方式来实现对象继承的~~
 
 
-(106)
+(106)eval('a')&&eval(a)区别是啥
+eval的作用就是转换成js语言。不管加不加都是字符串
+eval(2+2) = 4   eval(2+'2')=22
+里边并没有变量提升，因为是顺序解析字符串
+
+(107) 如何按照第一个字的拼音排序
+var arr = ["张三","李四","王五","阿三"];
+    document.write(arr+"");
+    arr.sort(function(a,b){
+        return a.localeCompare(b);
+    });
+    document.write(arr);
+
+(108)flex 布局
+
+(109)用函数表达式，没声明函数之前调用会报错吗？
+undefined
+
+(110)邮箱的正则表达式
+
+
+(111)body 三块不包定位
+
+(112)
+
+(113)对象中定义getter setter  //可以做到不让别人设置这个属性，并返回这个属性不能被改变
+var book = {
+  _year: 2004, edition: 1
+};
+Object.defineProperty(book, "year", {
+  get: function() { return this._year; },
+  set: function(newValue) {
+    if (newValue > 2004) {
+      this._year = newValue; this.edition += newValue - 2004;
+    }
+  }
+});
+book.year = 2005;
+alert(book.edition); //2
+
+定义多个属性用Object.defineProperties(book,{
+year:{}})
+
+
+(114)判断两个对象是否相等
+简单的办法就是 JSON.stringify(obj_a) === JSON.stringify(obj_b);  性能比较差
+
+
+(115)isArray isFunction isNull
+Object.prototype.toString.call(test)=='[Object Array]' //'[Object Function]' '[Object Null]' 简直万能啊,连Undefined都可以
+instanceOf也可以判断前两个
+
+(116)await async es7
+三个并行加载的js，在全部加载完成之后执行init
+promise实现出来一个剩下99个就不要了 都出错才退出
+
+
+(117)
+
+(118)
+
+(119)
+
+(120)
+
+(121)css禁止的写法
+
+(122)
+
+(123)
+
+(124)
+
+(125)
+
+(126)
+
+(127)
+
+
+(128)
+
+(129)
+
+
+(130)
+
+
+(131)
+
+(132)
+
+(133)
+
+(134)
+
+
+(135)
+
+
+(136)
+
+(137)
+
+(138)
+
+(139)
+
+(140)
 
 
 
