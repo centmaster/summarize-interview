@@ -1027,7 +1027,8 @@ function removeClass(obj, cls) {
 
 
 
-(103)
+(103)同源策略限制什么？不限制什么？
+
 
 
 (104)PromiseStatus：用于记录Promise对象的三种状态，这三中状态分别是：
@@ -1121,9 +1122,11 @@ year:{}})
 Object.prototype.toString.call(test)=='[Object Array]' //'[Object Function]' '[Object Null]' 简直万能啊,连Undefined都可以
 instanceOf也可以判断前两个
 
-(116)await async es7
+(116)await async es7 （http://www.ruanyifeng.com/blog/2015/05/async.html）（http://www.jianshu.com/p/2afb088abd08）
 三个并行加载的js，在全部加载完成之后执行init
 promise实现出来一个剩下99个就不要了 都出错才退出
+
+async await是为了配合promise才出来的。await只等promise函数
 
 
 (117)
