@@ -36,21 +36,81 @@
 
 ### Js
 
-##### ES6新特性了解多少
+#### ES6
 
 let const Map Set => generator promise class
 
-##### eval是做什么用的
+##### let/const
+
+###### ES6生命变量的六种方式
+
+var function let const import class
+
+###### let	
+
+1.块级作用域
+
+2.不存在变量提升
+
+```javascript
+// var 的情况
+console.log(foo); // 输出undefined
+var foo = 2;
+
+// let 的情况
+console.log(bar); // 报错ReferenceError
+let bar = 2;
+```
+
+3.暂时性死区
+
+```javascript
+var tmp = 123;
+
+if (true) {
+  tmp = 'abc'; // ReferenceError
+  let tmp;
+}
+```
+
+4.在同一个块级作用域中不允许重复声明
+
+###### const
+
+声明一个只读常量，一旦声明不能改变。声明也必须带着值
+
+实质是，对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，因此等同于常量。但对于复合类型的数据（主要是对象和数组），变量指向的内存地址，保存的只是一个指针，`const`只能保证这个指针是固定的，至于它指向的数据结构是不是可变的，就完全不能控制了。也就是说，可以再往对象里填东西，但不能重复声明。
+
+const同时也满足，块级作用域，变量不提升，暂时性死区。
+
+###### 块级作用域
+
+在ES6浏览器中，允许块级作用域中声明函数
+
+因为外边看不到块里边的变量，所以提案，do用来得到块级作用域中的变量
+
+```javascript
+let x = do {
+  let t = f();
+  t * t + 1;
+};
+```
+
+###### 顶层对象
+
+一般我们顶层对象和全局是不区分的。let和const声明的全局对象不属于顶层对象（window，global）
+
+#### eval是做什么用的
 
 把字符串解析成js代码运行。因为按顺序解析，所以没有变量提升
 
-##### for in 和for of的区别是什么
+#### for in 和for of的区别是什么
 
 for in 遍历的是索引. 还可以遍历对象，但是可能会遍历到继承的元素方法，使用hasOwnProperty（）判断
 
 for of遍历的是对应的元素值
 
-##### 闭包 ！（这个真的很重要）
+#### 闭包 ！（这个真的很重要）
 
 http://www.jianshu.com/p/21a16d44f150
 
@@ -62,13 +122,15 @@ http://www.jianshu.com/p/9b4a54a98660
 
 
 
+### 
+
 
 
 
 
 ### vue
 
-##### vue的生命周期
+#### vue的生命周期
 
 beforecreate    created
 
@@ -101,7 +163,7 @@ beforedestory	destroyed
 
 
 
-##### vue和react的区别
+#### vue和react的区别
 
 ###### 共同点
 
@@ -125,23 +187,23 @@ ReactNative  vs  Vue+Veex 阿里，跨平台框架
 
 
 
-##### vue中socpe css怎么实现的
+#### vue中socpe css怎么实现的
 
 这个可选 `scoped` 属性会自动添加一个唯一的属性（比如 `data-v-21e5b78`）为组件内 CSS 指定作用域，编译的时候 `.list-container:hover` 会被编译成类似 `.list-container[data-v-21e5b78]:hover`。
 
 
 
-##### vue-router怎么实现的（history）
+#### vue-router怎么实现的（history）
 
 `vue-router` 默认 hash 模式 —— 使用 URL 的 hash 来模拟一个完整的 URL，于是当 URL 改变时，页面不会重新加载。
 
-##### vuex是为什么出现的
+#### vuex是为什么出现的
 
 子组建之间通讯，还要通过父组件非常麻烦
 
 我们经常会采用父子组件直接引用或者通过事件来变更和同步状态的多份拷贝
 
-#### 构建工具
+### 构建工具
 
 ##### webpack
 
