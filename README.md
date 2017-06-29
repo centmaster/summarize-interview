@@ -8,9 +8,9 @@
 
 ## 第一部分 前端面经总结
 
-### html
+### html基础
 
-##### h5标签了解多少
+#### h5标签了解多少
 
 ```html
 <header><aside><nav><footer><hgroup><canvas><vedio><source><mark>
@@ -28,13 +28,15 @@
 
 
 
-### CSS
+### CSS基础
 
 ##### 
 
 
 
-### Js
+
+
+### Js基础
 
 #### ES6
 
@@ -100,15 +102,23 @@ let x = do {
 
 一般我们顶层对象和全局是不区分的。let和const声明的全局对象不属于顶层对象（window，global）
 
+
+
 #### eval是做什么用的
 
 把字符串解析成js代码运行。因为按顺序解析，所以没有变量提升
+
+
 
 #### for in 和for of的区别是什么
 
 for in 遍历的是索引. 还可以遍历对象，但是可能会遍历到继承的元素方法，使用hasOwnProperty（）判断
 
 for of遍历的是对应的元素值
+
+遍历对象新出的 Object.keys() Object.values. Object.entires()
+
+
 
 #### 闭包 ！（这个真的很重要）
 
@@ -118,11 +128,62 @@ http://www.jianshu.com/p/9b4a54a98660
 
 
 
-##### 原型链与构造对象
+#### 原型链与构造对象
 
 
 
-### 
+####this的使用
+
+##### this的误区
+
+指向自身，this指向函数的作用域。 //this取决于调用位置
+
+##### this对象绑定规则（箭头函数不满足）
+
+new>call或者apply>上下文对象调用>严格模式下绑定undefined否则global
+
+```javascript
+var p= {
+   data:{
+      flag: true
+   },
+   init: ()=>{
+     console.log(this.data.flag)
+   }
+}			 //箭头函数没有自己的this，他的this值继承自外部。而这里就是继承p的，p的上下文this是全局				window对象了，所以会报						undefined的错误
+p.init()     //结果是undefined，如果是普通函数结果是true
+```
+
+
+
+#### 箭头函数
+
+##### 箭头函数有几个使用注意点。
+
+（1）函数体内的`this`对象，就是定义时所在的对象，而不是使用时所在的对象。
+
+（2）不可以当作构造函数，也就是说，不可以使用`new`命令，否则会抛出一个错误。
+
+（3）不可以使用`arguments`对象，该对象在函数体内不存在。如果要用，可以用 rest 参数代替。
+
+（4）不可以使用`yield`命令，因此箭头函数不能用作 Generator 函数。
+
+```javascript
+function foo() {
+  setTimeout(() => {
+    console.log('id:', this.id);
+  }, 100);
+}
+
+var id = 21;
+
+foo.call({ id: 42 });
+// id: 42
+```
+
+
+
+#### Promise
 
 
 
