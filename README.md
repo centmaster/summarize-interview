@@ -104,12 +104,6 @@ let x = do {
 
 
 
-#### eval是做什么用的
-
-把字符串解析成js代码运行。因为按顺序解析，所以没有变量提升
-
-
-
 #### for in 和for of的区别是什么
 
 for in 遍历的是索引. 还可以遍历对象，但是可能会遍历到继承的元素方法，使用hasOwnProperty（）判断
@@ -185,9 +179,77 @@ foo.call({ id: 42 });
 
 #### Promise
 
+##### 基本用法
 
+```javascript
+var promise = new Promise(function(resolve, reject) {
+  // ... some code
+  if (/* 异步操作成功 */){
+    resolve(value);
+  } else {
+    reject(error);		//catch和then都返回的是一个新的promise对象
+  }
+});		//then中第一个func为resolve的回调，第二个参数可选，catch更好，因为也可捕获之前then中的错误
+promise.then().catch. or promise.then(()=>{},()=>{});
+```
 
+##### 其他一些方法
 
+###### Promise.all()
+
+```javascript
+var p = Promise.all([p1, p2, p3]);
+```
+
+当三个都resolve的时候才会继续往下走，有一个reject了就直接reject了。返回的是一个数组，方法参数可以不是数组
+
+###### Promise.race()
+
+```
+var p = Promise.race([p1, p2, p3]);
+```
+
+只要`p1`、`p2`、`p3`之中有一个实例率先改变状态，`p`的状态就跟着改变。那个率先改变的 Promise 实例的返回值，就传递给`p`的回调函数。会先把p1包装成Promise
+
+###### Promise.resolve()
+
+```javascript
+var jsPromise = Promise.resolve($.ajax('/whatever.json'));
+```
+
+有时需要将现有对象转为Promise对象，`Promise.resolve`方法就起到这个作用
+
+###### Promise.reject()
+
+###### Promise.done()
+
+Promise对象的回调链，不管以`then`方法或`catch`方法结尾，要是最后一个方法抛出错误，都有可能无法捕捉到（因为Promise内部的错误不会冒泡到全局）。因此，我们可以提供一个`done`方法，总是处于回调链的尾端，保证抛出任何可能出现的错误。
+
+```javascript
+asyncFunc()
+  .then(f1)
+  .catch(r1)
+  .then(f2)
+  .done();
+```
+
+它的实现代码相当简单。
+
+```javascript
+Promise.prototype.done = function (onFulfilled, onRejected) {
+  this.then(onFulfilled, onRejected)
+    .catch(function (reason) {
+      // 抛出一个全局错误
+      setTimeout(() => { throw reason }, 0);
+    });
+};
+```
+
+从上面代码可见，`done`方法的使用，可以像`then`方法那样用，提供`Fulfilled`和`Rejected`状态的回调函数，也可以不提供任何参数。但不管怎样，`done`都会捕捉到任何可能出现的错误，并向全局抛出。
+
+###### Promise.finally()
+
+`finally`方法用于指定不管Promise对象最后状态如何，都会执行的操作。它与`done`方法的最大区别，它接受一个普通的回调函数作为参数，该函数不管怎样都必须执行。
 
 ### vue
 
