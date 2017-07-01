@@ -328,7 +328,7 @@ ReactNative  vs  Vue+Veex 阿里，跨平台框架
 
 ### 构建工具
 
-##### webpack
+#### webpack
 
 具体请查简书   http://www.jianshu.com/p/b83a251d53db
 
@@ -392,13 +392,13 @@ module.exports = {
 
 
 
-##### webpack vs gulp&grunt
+#### webpack vs gulp&grunt
 
 前者的工作流程是，将整个项目作为一个主体，通过给定的主文件，根据整个文件开始找到项目的所有依赖。然后通过loaders处理，最后打包成一个浏览器可以识别的js文件。
 
 后者就有点像小孩。在配置文件中给出需要对文件的各种操作命令，然后他会帮你操作完成。
 
-##### vue-cli webpack配置分析
+#### vue-cli webpack配置分析
 
 
 
@@ -418,7 +418,7 @@ http://exam.webfuture.cn/index.html
 
 ## 第三部分 计算机网络
 
-##### http状态码
+#### http状态码
 
 1xx：信息性状态码，表示服务器接受请求正在处理
 
@@ -453,7 +453,59 @@ http://exam.webfuture.cn/index.html
 |      | 500：Internal Server Error 服务器端在执行时发生错误   |
 |      | 503：Service Unavailable 服务器处于超负载或者正在进行停机维护 |
 
- 
+####  计算机网络---自顶向下总结(http://www.jianshu.com/p/48f2bebaeb40)
+
+##### 应用层   进程与计算机网络间的接口
+
+###### 协议
+
+http协议（web） ：无状态，乱序是TCP考虑的事，拉协议
+
+FTP协议（文件传输）
+
+SMTP协议（电子邮件）：推协议
+
+###### DNS
+
+主机名—>IP地址转换的目录服务
+
+通常从请求主机到本地DNS服务器的查询是递归的，其余的查询是迭代的
+
+###### 攻击
+
+DDos：向处理如.com域的域名服务器发送大量DNS请求，使得大部分合法请求无法获得响应
+
+DNS反射：请求中冒充目标主机源地址，大量请求DNS服务器，DNS就大量向源地址主机发送回答，淹没目标主机
+
+##### 传输层 为应用程序提供正确的应用级进程之间的交付服务
+
+###### 协议
+
+TCP：有连接的，需要握手包到底的。稳定但是大。HTTP FTP    head:20bit
+
+TCP does error checking and error recovery. Erroneous packets are retransmitted from the source to the destination.
+
+UDP：										DNS,VOIP.   	        8bit	
+
+UDP does error checking but simply discards erroneous packets. Error recovery is not attempted.
+
+##### 网络层
+
+仅在网络层提供连接服务的计算机网络成为虚电路；仅在网络层提供无连接服务的计算机网络称为数据报网络
+
+
+
+##### 链路层
+
+
+
+##### 物理层
+
+
+
+#### http报文格式
+
+
 
 ## 第四部分 数据结构和算法
 
