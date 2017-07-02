@@ -511,13 +511,102 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 
 ### 数据结构
 
+#### 栈的实现
+
+```javascript
+	function stack(){
+      this.dataStore=[];
+      this.top=0;
+      this.push=push;
+      this.pop=pop;
+      this.peek=peek;
+	}
+
+	function push(element){
+      this.dataStore[top++]=element;
+	}
+	function pop(element){
+      return this.dataStore[--this.top];
+	}
+	function peek(){
+      return this.dataStore[this.top-1];
+	}
+	function length(){
+      return this.top;
+	}
+	function clear(){
+      this.top=0;
+	}
+```
+
+#### 队列的实现
+
+```javascript
+	function Queue(){
+      this.dataStore=[];
+      this.enqueue=enqueue;
+      this.dequeue=dequeue;
+      this.front=front;
+      this.back=back;
+      this.toString=toString;
+      this.empty=empty;
+    }
+	function enqueue(element){
+      this.dataStore.push(element);
+	}
+	function dequeue(element){
+      this.dataStore.shift();
+	}
+	function front(){
+      return this.dataStore[0];
+	}
+	function back(){
+      return this.dataStore[this.dataStore.length-1];
+	}
+	function toString(){
+      var resstr='';
+      for(var i=0;i<this.dataStore.length;i++){
+        resstr+=this.dataStore[i]+'/n';
+      }
+      return resstr;
+	}
+	function empty(){
+      return this.dataStore.length==0?true:false;
+	}
+	
+```
+
+### 算法
+
+#### 数组去重
+
+```javascript
+		var array = [1,3,4,4,5,6];
+        function filt(array){
+          var result=[];
+          var hash = {};
+          array.forEach(function(item){
+            if(!hash[item]){
+              result.push(item);
+              hash[item]=true;
+            }
+          })
+          console.log(result);
+        }
+		filt();
+```
+
 
 
 
 
 ## 第五部分 简历和面试技巧总结
 
+#### 反问面试官的最后一个问题
 
+###### 这次面试我还有哪些需要提高的地方
+
+###### 在公司里的部门，做什么
 
 
 
