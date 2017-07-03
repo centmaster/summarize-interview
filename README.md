@@ -576,6 +576,89 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 	
 ```
 
+#### 链表的实现
+
+```javascript
+	function Node(element){
+      this.element=element;
+      this.next=null;
+	}
+	function llist(){
+      this.head=new Node('head');
+      this.find=find;
+      this.insert=insert;
+      this.remove=remove;
+      this.display=display;
+	}
+	function find(item){
+      var curNode=this.head;
+      while(curNode!=item){
+        curNode=curNode.next;
+      }
+      return curNode;
+	}
+	function insert(newELement,item){
+      var newNode=new Node(newElment);
+      var current=this.find(item);
+      newNode.next=current.next;
+      current.next=newNode;
+	}
+	function display(){
+      var curNode=this.head;
+      while(!(curNode.next==null)){
+        print(curNode.next.element);
+        curNode=curNode.next;
+      }
+	}
+	function findprevious(item){
+		var curNode=this.head;
+      	while(!(curNode.next==null)&&(curNode.next.element!=item)){
+          curNode=curNode.next;
+      	}
+      	return curNode;
+    }
+	function remove(item){
+      var previous=findprevious(item);
+      if(!(previous.next.next==null)){
+        previous.next=previous.next.next;
+      }
+	}
+
+	//双向链表
+	function Node(element){
+      this.element=element;
+      this.next=null;
+      this.previous=null;
+	}
+	function LList(){
+      this.head=new Node('head');
+      this.find=find;
+      this.insert=insert;
+      this.display=display;
+      this.remove=remove;
+      this.findlast=findlast;
+      this.dispReverse=dispReverse;
+	}
+	funciton dispReverse(){
+      var curNode=this.head;
+      curNode=this.findLast();
+      while(!(curNode==null)){
+        print(curNode.element);
+        curNode=curNode.previous;
+      }
+	}
+	function findLast(){
+      var curNode=this.head;
+      while(!(curNode.next==null)){
+        curNode=curNode.next;
+      }
+      return curNode;
+	}
+	
+
+	
+```
+
 ### 算法
 
 #### 数组去重
