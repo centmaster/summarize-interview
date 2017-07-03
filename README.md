@@ -124,7 +124,38 @@ http://www.jianshu.com/p/9b4a54a98660
 
 #### 原型链与构造对象
 
+##### 原型继承
 
+```javascript
+// 原型对象:
+var Student = {
+    name: 'Robot',
+    height: 1.2,
+    run: function () {
+        console.log(this.name + ' is running...');
+    }
+};
+
+function createStudent(name) {
+    // 基于Student原型创建一个新对象:
+    var s = Object.create(Student);
+    // 初始化新对象:
+    s.name = name;
+    return s;
+}
+
+
+//构造函数
+function Student(name) {
+    this.name = name;
+    this.hello = function () {
+        alert('Hello, ' + this.name + '!');
+    }
+}
+var xiaoming = new Student('小明'); //一定要有new，创建新的对象，默认返回this
+xiaoming.name; // '小明'
+xiaoming.hello(); // Hello, 小明!
+```
 
 ####this的使用
 
