@@ -1,3 +1,5 @@
+
+
 # 面经总结
 
 #### 前言
@@ -30,11 +32,139 @@
 
 ### CSS基础
 
-##### 
+####flex的使用
 
+##### 容器属性
 
+Main axis:主轴线 从左到右 Cross axis:交叉轴线 从上到下
 
+```javascript
+flex-direction: row | row-reverse | column | column-reverse; 
+```
 
+```javascript
+flex-wrap: nowrap | wrap | wrap-reverse;
+```
+
+```javascript
+justify-content: flex-start | flex-end | center | space-between | space-around;主轴对齐方式
+```
+
+```javascript
+align-items: flex-start | flex-end | center | baseline | stretch;
+```
+
+```javascript
+align-content: flex-start | flex-end | center | space-between | space-around | stretch;
+定义了多根轴线的对齐方式。如果项目只有一根轴线，该属性不起作用
+```
+
+##### 项目属性
+
+```javascript
+order: <integer>;   数值越小，排列越靠前，默认为0
+```
+
+```javascript
+flex-grow: <number>; 默认为0，即如果存在剩余空间，也不放大
+```
+
+```javascript
+flex-shrink: <number>; 缩小比例，默认为1，即如果空间不足，该项目将缩小。如果所有项目的flex-shrink属性都为1，当空间不足时，都将等比例缩小。如果一个项目的flex-shrink属性为0，其他项目都为1，则空间不足时，前者不缩小
+```
+
+```javascript
+flex-basis: <length> | auto;  定义了在分配多余空间之前，项目占据的主轴空间。就是设宽度
+```
+
+```javascript
+flex: none|[ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]
+            该属性有两个快捷值：auto (1 1 auto) 和 none (0 0 auto)。
+```
+
+```javascript
+align-self: auto | flex-start | flex-end | center | baseline | stretch;
+允许单个项目有与其他项目不一样的对齐方式
+```
+
+##### 实战
+
+###### 骰子实现1239排列
+
+```css
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: space-between;
+```
+
+###### 圣杯布局
+
+```html
+<body class="HolyGrail">
+  <header>...</header>
+  <div class="HolyGrail-body">
+    <main class="HolyGrail-content">...</main>
+    <nav class="HolyGrail-nav">...</nav>
+    <aside class="HolyGrail-ads">...</aside>
+  </div>
+  <footer>...</footer>
+</body>
+```
+
+```css
+.HolyGrail {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+header,
+footer {
+  flex: 1;
+}
+
+.HolyGrail-body {
+  display: flex;
+  flex: 1;
+}
+
+.HolyGrail-content {
+  flex: 1;
+}
+
+.HolyGrail-nav, .HolyGrail-ads {
+  /* 两个边栏的宽度设为12em */
+  flex: 0 0 12em;
+}
+
+.HolyGrail-nav {
+  /* 导航放到最左边 */
+  order: -1;
+}
+```
+
+###### 固定低栏
+
+```html
+<body class="Site">
+  <header>...</header>
+  <main class="Site-content">...</main>
+  <footer>...</footer>
+</body>
+```
+
+```css
+.Site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.Site-content {
+  flex: 1;
+}
+```
 
 ### Js基础
 
@@ -124,7 +254,70 @@ http://www.jianshu.com/p/9b4a54a98660
 
 #### 原型链与构造对象
 
+##### 创建对象的三种方法
 
+###### Object.Create
+
+```javascript
+// 原型对象:
+var Student = {
+    name: 'Robot',
+    height: 1.2,
+    run: function () {
+        console.log(this.name + ' is running...');
+    }
+};
+
+function createStudent(name) {
+    // 基于Student原型创建一个新对象:
+    var s = Object.create(Student);
+    // 初始化新对象:
+    s.name = name;
+    return s;
+}
+```
+
+###### 构造函数
+
+```javascript
+function Student(props) {
+    this.name = props.name || '匿名'; // 默认值为'匿名'
+    this.grade = props.grade || 1; // 默认值为1
+}
+
+Student.prototype.hello = function () {
+    alert('Hello, ' + this.name + '!');
+};
+
+function createStudent(props) {
+    return new Student(props || {})
+}
+```
+
+###### class 实现
+
+```javascript
+class Student {
+    constructor(name) {
+        this.name = name;
+    }
+
+    hello() {
+        alert('Hello, ' + this.name + '!');
+    }
+}
+class PrimaryStudent extends Student {
+    constructor(name, grade) {
+        super(name); // 记得用super调用父类的构造方法!
+        this.grade = grade;
+    }
+
+    myGrade() {
+        alert('I am at grade ' + this.grade);
+    }
+}
+
+```
 
 ####this的使用
 
@@ -386,9 +579,29 @@ module.exports = {
 }
 ```
 
+##### AMD&CMD
 
+AMD | 速度快 | 会浪费资源 | 预先加载所有的依赖，直到使用的时候才执行
 
+CMD | 只有真正需要才加载依赖 | 性能较差 | 直到使用的时候才定义依赖
 
+AMD和CMD最大的区别是对依赖模块的执行时机处理不同，而不是加载的时机或者方式不同，二者皆为异步加载模块。
+AMD依赖前置，js可以方便知道依赖模块是谁，立即加载；而CMD就近依赖，需要使用把模块变为字符串解析一遍才知道依赖了那些模块，这也是很多人诟病CMD的一点，牺牲性能来带来开发的便利性，实际上解析模块用的时间短到可以忽略。
+
+```javascript
+//CMD
+define(function(require,exports,module){
+    var a = require("./a");
+    a.doSomethis();
+    var b = require("./b")//依赖可以就近书写
+    b.doSomething()
+})
+//AMD
+define(['./a,./b'],function(a,b){//依赖必须一开始就写好
+    a.dosomething()
+    b.dosomething()
+})
+```
 
 
 
