@@ -118,9 +118,39 @@ for of遍历的是对应的元素值
 
 http://www.jianshu.com/p/21a16d44f150
 
-http://www.jianshu.com/p/9b4a54a98660
+###### 什么是闭包？
 
+利用块状作用域把外部的变量hold住
 
+###### 闭包与setTimeout
+
+改变函数使得输出12345
+
+```javascript
+for (var i=1; i<=5; i++) { 
+    setTimeout( function timer() {
+        console.log(i);
+    }, i*1000 );
+}
+```
+
+answer
+
+```javascript
+for (var i=1; i<=5; i++) { 
+	(setTimeout(function timer(){
+      console.log(i);
+	},i*1000)
+     })(i)
+}
+for(var i=1;i<5;i++){
+  setTimeout((function timer(){
+    return function(i){
+      console.log(i)
+    })(i)
+  },i*1000)
+}
+```
 
 #### 原型链与构造对象
 
