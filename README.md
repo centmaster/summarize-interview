@@ -166,6 +166,22 @@ footer {
 }
 ```
 
+
+
+##### css选择器
+
+| [*element*,*element*](http://www.w3school.com.cn/cssref/selector_element_comma.asp) | div,p           | 选择所有 <div> 元素和所有 <p> 元素。        | 1    |
+| ---------------------------------------- | --------------- | ------------------------------- | ---- |
+| [*element* *element*](http://www.w3school.com.cn/cssref/selector_element_element.asp) | div p           | 选择 <div> 元素内部的所有 <p> 元素。        | 1    |
+| [*element*>*element*](http://www.w3school.com.cn/cssref/selector_element_gt.asp) | div>p           | 选择父元素为 <div> 元素的所有 <p> 元素。      | 2    |
+| [*element*+*element*](http://www.w3school.com.cn/cssref/selector_element_plus.asp) | div+p           | 选择紧接在 <div> 元素之后的所有 <p> 元素。     | 2    |
+| [[*attribute*\]](http://www.w3school.com.cn/cssref/selector_attribute.asp) | [target]        | 选择带有 target 属性所有元素。             | 2    |
+| [[*attribute*=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value.asp) | [target=_blank] | 选择 target="_blank" 的所有元素。       | 2    |
+| [[*attribute*~=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_contain.asp) | [title~=flower] | 选择 title 属性包含单词 "flower" 的所有元素。 | 2    |
+| [[*attribute*\|=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_start.asp) | [lang\|=en]     | 选择 lang 属性值以 "en" 开头的所有元素。      | 2    |
+
+
+
 ### Js基础
 
 #### ES6
@@ -284,7 +300,7 @@ for(var i=1;i<5;i++){
 
 #### 原型链与构造对象
 
-<<<<<<< HEAD
+
 ##### 原型继承
 
 ```javascript
@@ -309,19 +325,19 @@ function createStudent(name) {
 //构造函数
 function Student(name) {
     this.name = name;
-    this.hello = function () {
+}
+Student.prototype.hello= function () {
+  		constructor:Student,
         alert('Hello, ' + this.name + '!');
     }
-}
 var xiaoming = new Student('小明'); //一定要有new，创建新的对象，默认返回this
 xiaoming.name; // '小明'
 xiaoming.hello(); // Hello, 小明!
-=======
-##### 创建对象的三种方法
 
-###### Object.Create
+创建对象的三种方法
 
-```javascript
+Object.Create
+
 // 原型对象:
 var Student = {
     name: 'Robot',
@@ -508,7 +524,13 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 
 `finally`方法用于指定不管Promise对象最后状态如何，都会执行的操作。它与`done`方法的最大区别，它接受一个普通的回调函数作为参数，该函数不管怎样都必须执行。
 
-### vue
+#### vue
+
+#### 自己写一个vue组件
+
+https://juejin.im/entry/58a11c648d6d81006c9d739d
+
+仿照着分页自己写了个conole-panel的控制台。主要实现了，黑色背景，字体，以及随着控制log的增加，自动跟随到最新的信息。大概的思路就是自己写个普通的组件，要填的通过props传进来。然后vue.use引用就好了
 
 #### vue的生命周期
 
@@ -679,13 +701,90 @@ define(['./a,./b'],function(a,b){//依赖必须一开始就写好
 
 
 
+#### 移动端开发
+
+##### 像素
+
 
 
 ## 第二部分 自己面过的经
 
 http://exam.webfuture.cn/index.html  
 
+### 无敌面试题：当输入url之后发生了什么！！！（这个必须加粗再加粗）
 
+### html
+
+##### 浏览器内核
+
+### css
+
+##### Difference between block  inline-block inline
+
+大体来说HTML元素各有其自身的布局级别（block元素还是inline元素）：
+
+常见的块级元素有 DIV, FORM, TABLE, P, PRE, H1~H6, DL, OL, UL 等。
+
+常见的内联元素有 SPAN, A, STRONG, EM, LABEL, INPUT, SELECT, TEXTAREA, IMG, BR 等。
+
+block元素可以包含block元素和inline元素；但inline元素只能包含inline元素。
+
+- display:block
+
+1. 1. block元素会独占一行，多个block元素会各自新起一行。默认情况下，block元素宽度自动填满其父元素宽度。
+   2. block元素可以设置width,height属性。块级元素即使设置了宽度,仍然是独占一行。
+   3. block元素可以设置margin和padding属性。
+
+- display:inline
+
+1. 1. inline元素不会独占一行，多个相邻的行内元素会排列在同一行里，直到一行排列不下，才会新换一行，其宽度随元素的内容而变化。
+   2. inline元素设置width,height属性无效。
+   3. inline元素的margin和padding属性，水平方向的padding-left, padding-right, margin-left, margin-right都产生边距效果；但竖直方向的padding-top, padding-bottom, margin-top, margin-bottom不会产生边距效果。
+
+- display:inline-block
+
+1. 1. 简单来说就是将对象呈现为inline对象，但是对象的内容作为block对象呈现。之后的内联对象会被排列在同一行内。比如我们可以给一个link（a元素）inline-block属性值，使其既具有block的宽度高度特性又具有inline的同行特性。
+
+
+
+##### Difference between transition and transform
+
+###### transition
+
+```css
+img{
+    height:15px;
+    width:15px;
+}
+
+img:hover{
+    height: 450px;
+    width: 450px;
+}
+img{
+    transition: 1s 1s height ease;
+}
+```
+
+只选择效果时间。transition的优点在于简单易用，但是它有几个很大的局限。
+
+（1）transition需要事件触发，所以没法在网页加载时自动发生。
+
+（2）transition是一次性的，不能重复发生，除非一再触发。
+
+（3）transition只能定义开始状态和结束状态，不能定义中间状态，也就是说只有两个状态。
+
+（4）一条transition规则，只能定义一个属性的变化，不能涉及多个属性。
+
+
+
+##### css圆角
+
+如果是长度，就是圆角的半径，0就是直角。
+
+如果是百分比，超过50%，四个角就合成椭圆了
+
+### js
 
 
 
