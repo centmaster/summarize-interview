@@ -10,6 +10,8 @@
 
 ## 第一部分 前端面经总结
 
+大赞！https://github.com/paddingme/Front-end-Web-Development-Interview-Question/tree/master/%E5%89%8D%E7%AB%AF%E8%AF%95%E9%A2%98
+
 ### html基础
 
 #### h5标签了解多少
@@ -717,6 +719,18 @@ http://exam.webfuture.cn/index.html
 
 ##### 浏览器内核
 
+Gecko:Firefox
+
+Presto:opera
+
+Webkit:chrome,safari
+
+Trident:IE
+
+#### NodeList 和 HTMLCollection之间的关系？
+
+主要不同在于HTMLCollection是元素集合而NodeList是节点集合（即可以包含元素，也可以包含文本节点）。所以 node.childNodes 返回 NodeList，而 node.children 和 node.getElementsByXXX 返回 HTMLCollection 。
+
 ### css
 
 ##### Difference between block  inline-block inline
@@ -786,11 +800,27 @@ img{
 
 ### js
 
+##### 事件代理
 
+###### Jquery
 
+```javascript
+$("#tab").bind("click",function(ev)){
+   var $obj=$(ev.target);
+   $obj.css("background","red");
+}
+```
 
+###### Js
 
-
+```javascript
+  var ulNode=document.getElementById("list");
+  ulNode.addEventListener('click',function(e){
+       if(e.target&&e.target.nodeName.toUpperCase()=="LI"){/*判断目标事件是否为li*/
+         alert(e.target.innerHTML);
+       }
+     },false);
+```
 
 ## 第三部分 计算机网络
 
