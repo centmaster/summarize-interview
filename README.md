@@ -30,9 +30,48 @@
 >
 > 3.有益于SEO，爬虫
 
+##### 浏览器内核
 
+Gecko:Firefox
+
+Presto:opera
+
+Webkit:chrome,safari
+
+Trident:IE
+
+#### NodeList 和 HTMLCollection之间的关系？
+
+主要不同在于HTMLCollection是元素集合而NodeList是节点集合（即可以包含元素，也可以包含文本节点）。所以 node.childNodes 返回 NodeList，而 node.children 和 node.getElementsByXXX 返回 HTMLCollection 
 
 ### CSS基础
+
+##### Overflow :hidden 是否形成新的块级格式化上下文？
+
+```
+<div>
+    <p>I am floated</p>
+    <p>So am I</p>
+</div>
+
+```
+
+```
+div {overflow: hidden;}
+p {float: left;}
+
+```
+
+A：会形成。
+
+会触发BFC的条件有：
+
+- float的值不为none。
+- overflow的值不为visible。
+- display的值为table-cell, table-caption, inline-block 中的任何一个。
+- position的值不为relative 和static。
+
+
 
 ####flex的使用
 
@@ -181,6 +220,107 @@ footer {
 | [[*attribute*=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value.asp) | [target=_blank] | 选择 target="_blank" 的所有元素。       | 2    |
 | [[*attribute*~=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_contain.asp) | [title~=flower] | 选择 title 属性包含单词 "flower" 的所有元素。 | 2    |
 | [[*attribute*\|=*value*\]](http://www.w3school.com.cn/cssref/selector_attribute_value_start.asp) | [lang\|=en]     | 选择 lang 属性值以 "en" 开头的所有元素。      | 2    |
+
+
+
+##### screen关键词是指设备物理屏幕的大小还是指浏览器的视窗？
+
+```
+@media only screen and (max-width: 1024px) {margin: 0;}
+
+```
+
+A: 浏览器视窗
+
+
+
+##### Difference between block  inline-block inline
+
+大体来说HTML元素各有其自身的布局级别（block元素还是inline元素）：
+
+常见的块级元素有 DIV, FORM, TABLE, P, PRE, H1~H6, DL, OL, UL 等。
+
+常见的内联元素有 SPAN, A, STRONG, EM, LABEL, INPUT, SELECT, TEXTAREA, IMG, BR 等。
+
+block元素可以包含block元素和inline元素；但inline元素只能包含inline元素。
+
+- display:block
+
+1. 1. block元素会独占一行，多个block元素会各自新起一行。默认情况下，block元素宽度自动填满其父元素宽度。
+   2. block元素可以设置width,height属性。块级元素即使设置了宽度,仍然是独占一行。
+   3. block元素可以设置margin和padding属性。
+
+- display:inline
+
+1. 1. inline元素不会独占一行，多个相邻的行内元素会排列在同一行里，直到一行排列不下，才会新换一行，其宽度随元素的内容而变化。
+   2. inline元素设置width,height属性无效。
+   3. inline元素的margin和padding属性，水平方向的padding-left, padding-right, margin-left, margin-right都产生边距效果；但竖直方向的padding-top, padding-bottom, margin-top, margin-bottom不会产生边距效果。
+
+- display:inline-block
+
+1. 1. 简单来说就是将对象呈现为inline对象，但是对象的内容作为block对象呈现。之后的内联对象会被排列在同一行内。比如我们可以给一个link（a元素）inline-block属性值，使其既具有block的宽度高度特性又具有inline的同行特性。
+
+      ​
+
+##### Difference between transition and transform
+
+###### transition
+
+```css
+img{
+    height:15px;
+    width:15px;
+}
+
+img:hover{
+    height: 450px;
+    width: 450px;
+}
+img{
+    transition: 1s 1s height ease;
+}
+```
+
+只选择效果时间。transition的优点在于简单易用，但是它有几个很大的局限。
+
+（1）transition需要事件触发，所以没法在网页加载时自动发生。
+
+（2）transition是一次性的，不能重复发生，除非一再触发。
+
+（3）transition只能定义开始状态和结束状态，不能定义中间状态，也就是说只有两个状态。
+
+（4）一条transition规则，只能定义一个属性的变化，不能涉及多个属性。
+
+
+
+##### css圆角
+
+如果是长度，就是圆角的半径，0就是直角。
+
+如果是百分比，超过50%，四个角就合成椭圆了
+
+
+
+##### mypic.jpg会被浏览器加载吗？
+
+```
+<div id="test1">
+    <span id="test2"></span>
+</div>
+
+#test1 {
+    display: none;
+}
+#test2 {
+    background-image: url('mypic.jpg');
+    visibility: hidden;
+}
+
+```
+
+A: 不会被下载。
+
+
 
 
 
@@ -699,106 +839,9 @@ define(['./a,./b'],function(a,b){//依赖必须一开始就写好
 
 后者就有点像小孩。在配置文件中给出需要对文件的各种操作命令，然后他会帮你操作完成。
 
-#### vue-cli webpack配置分析
-
-
-
 #### 移动端开发
 
-##### 像素
 
-
-
-## 第二部分 自己面过的经
-
-http://exam.webfuture.cn/index.html  
-
-### 无敌面试题：当输入url之后发生了什么！！！（这个必须加粗再加粗）
-
-### html
-
-##### 浏览器内核
-
-Gecko:Firefox
-
-Presto:opera
-
-Webkit:chrome,safari
-
-Trident:IE
-
-#### NodeList 和 HTMLCollection之间的关系？
-
-主要不同在于HTMLCollection是元素集合而NodeList是节点集合（即可以包含元素，也可以包含文本节点）。所以 node.childNodes 返回 NodeList，而 node.children 和 node.getElementsByXXX 返回 HTMLCollection 。
-
-### css
-
-##### Difference between block  inline-block inline
-
-大体来说HTML元素各有其自身的布局级别（block元素还是inline元素）：
-
-常见的块级元素有 DIV, FORM, TABLE, P, PRE, H1~H6, DL, OL, UL 等。
-
-常见的内联元素有 SPAN, A, STRONG, EM, LABEL, INPUT, SELECT, TEXTAREA, IMG, BR 等。
-
-block元素可以包含block元素和inline元素；但inline元素只能包含inline元素。
-
-- display:block
-
-1. 1. block元素会独占一行，多个block元素会各自新起一行。默认情况下，block元素宽度自动填满其父元素宽度。
-   2. block元素可以设置width,height属性。块级元素即使设置了宽度,仍然是独占一行。
-   3. block元素可以设置margin和padding属性。
-
-- display:inline
-
-1. 1. inline元素不会独占一行，多个相邻的行内元素会排列在同一行里，直到一行排列不下，才会新换一行，其宽度随元素的内容而变化。
-   2. inline元素设置width,height属性无效。
-   3. inline元素的margin和padding属性，水平方向的padding-left, padding-right, margin-left, margin-right都产生边距效果；但竖直方向的padding-top, padding-bottom, margin-top, margin-bottom不会产生边距效果。
-
-- display:inline-block
-
-1. 1. 简单来说就是将对象呈现为inline对象，但是对象的内容作为block对象呈现。之后的内联对象会被排列在同一行内。比如我们可以给一个link（a元素）inline-block属性值，使其既具有block的宽度高度特性又具有inline的同行特性。
-
-
-
-##### Difference between transition and transform
-
-###### transition
-
-```css
-img{
-    height:15px;
-    width:15px;
-}
-
-img:hover{
-    height: 450px;
-    width: 450px;
-}
-img{
-    transition: 1s 1s height ease;
-}
-```
-
-只选择效果时间。transition的优点在于简单易用，但是它有几个很大的局限。
-
-（1）transition需要事件触发，所以没法在网页加载时自动发生。
-
-（2）transition是一次性的，不能重复发生，除非一再触发。
-
-（3）transition只能定义开始状态和结束状态，不能定义中间状态，也就是说只有两个状态。
-
-（4）一条transition规则，只能定义一个属性的变化，不能涉及多个属性。
-
-
-
-##### css圆角
-
-如果是长度，就是圆角的半径，0就是直角。
-
-如果是百分比，超过50%，四个角就合成椭圆了
-
-### js
 
 ##### 事件代理
 
@@ -821,6 +864,26 @@ $("#tab").bind("click",function(ev)){
        }
      },false);
 ```
+
+## 
+
+
+
+## 第二部分 自己面过的经
+
+http://exam.webfuture.cn/index.html  
+
+### 无敌面试题：当输入url之后发生了什么！！！（这个必须加粗再加粗）
+
+### html
+
+。
+
+### css
+
+
+
+### js
 
 ## 第三部分 计算机网络
 
