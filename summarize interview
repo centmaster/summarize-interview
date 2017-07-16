@@ -1129,19 +1129,94 @@ promise实现出来一个剩下99个就不要了 都出错才退出
 async await是为了配合promise才出来的。await只等promise函数
 
 
-(117)
+(117).CSS中可以通过哪些属性定义，使得一个DOM元素不显示在浏览器可视范围内？　　
 
-(118)
+　　最基本的：
 
-(119)
+　　设置display属性为none，或者设置visibility属性为hidden
 
-(120)
+　　技巧性：
+
+　　设置宽高为0，设置透明度为0，设置z-index位置在-1000
+
+(118)css中可以让文字在垂直和水平方向上重叠的两个属性是什么？
+
+
+　　垂直方向：line-height
+
+　　水平方向：letter-spacing
+
+(119)　浏览器的默认字体高都是16px。所以未经调整的浏览器都符合: 1em=16px。那么12px=0.75em, 10px=0.625em。
+
+
+
+(120)使用content css
+ //一种常见利用伪类清除浮动的代码
+ 2  .clearfix:after {
+ 3     content:".";       //这里利用到了content属性
+ 4     display:block; 
+ 5     height:0;
+ 6     visibility:hidden; 
+ 7     clear:both; }
+ 8 
+ 9 .clearfix { 
+10     *zoom:1; 
+11 }
+
 
 (121)css禁止的写法
 
-(122)
+(122)案：
 
-(123)
+caller是返回一个对函数的引用，该函数调用了当前函数；
+
+callee是返回正在被执行的function函数，也就是所指定的function对象的正文。
+
+那么问题来了？如果一对兔子每月生一对兔子；一对新生兔，从第二个月起就开始生兔子；假定每对兔子都是一雌一雄，试问一对兔子，第n个月能繁殖成多少对兔子？（使用callee完成）
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16caller是返回一个对函数的引用，该函数调用了当前函数；
+
+callee是返回正在被执行的function函数，也就是所指定的function对象的正文。
+var result=[];
+function fn(n){  //典型的斐波那契数列
+   if(n==1){
+        return 1;
+   }else if(n==2){
+           return 1;
+   }else{
+        if(result[n]){
+                return result[n];
+        }else{
+                //argument.callee()表示fn()
+                result[n]=arguments.callee(n-1)+arguments.callee(n-2);
+                return result[n];
+        }
+   }
+}
+
+(123)clone任意类型
+Object.prototype.clone = function() {
+    var o = this.constructor === Array ? [] : {};
+    for (var e in this) {
+        o[e] = typeof this[e] === "object" ? this[e].clone() : this[e];
+    }
+    return o;
+}
 
 (124)
 
