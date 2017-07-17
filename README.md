@@ -787,7 +787,9 @@ ReactNative  vs  Vue+Veex 阿里，跨平台框架
 
 #### vue中socpe css怎么实现的
 
-这个可选 `scoped` 属性会自动添加一个唯一的属性（比如 `data-v-21e5b78`）为组件内 CSS 指定作用域，编译的时候 `.list-container:hover` 会被编译成类似 `.list-container[data-v-21e5b78]:hover`。
+(源码https://github.com/AlloyTeam/AlloyTouch/blob/2b9f8ca35ab954c3a9a3ebb747e88c09503a16fa/example/scoped_css/index.html)
+
+一个scoper函数，传进去css，然后把这作用域加id。这个可选 `scoped` 属性会自动添加一个唯一的属性（比如 `data-v-21e5b78`）为组件内 CSS 指定作用域，编译的时候 `.list-container:hover` 会被编译成类似 `.list-container[data-v-21e5b78]:hover`。
 
 
 
@@ -860,6 +862,10 @@ module.exports = {
     ]
 }
 ```
+
+##### Webpack中 —save-dev 和 —save 的区别
+
+前者是开发时候用的，后者是发布之后也要用的
 
 ##### AMD&CMD
 
@@ -1010,17 +1016,13 @@ http://exam.webfuture.cn/index.html
 
 ### 无敌面试题：当输入url之后发生了什么！！！（这个必须加粗再加粗）
 
-### html
 
-。
-
-### css
-
-
-
-### js
 
 ## 第三部分 计算机网络
+
+#### 在css/js代码上线之后开发人员经常会优化性能，从用户刷新网页开始，一次js请求一般情况下有哪些地方会有缓存处理？
+
+dns缓存（地址），cdn缓存（文件），浏览器缓存，服务器缓存。
 
 #### http状态码
 
