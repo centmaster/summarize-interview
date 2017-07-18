@@ -98,6 +98,14 @@ Trident:IE
 
 主要不同在于HTMLCollection是元素集合而NodeList是节点集合（即可以包含元素，也可以包含文本节点）。所以 node.childNodes 返回 NodeList，而 node.children 和 node.getElementsByXXX 返回 HTMLCollection 
 
+
+
+
+
+
+
+
+
 ### CSS基础
 
 ##### Overflow :hidden 是否形成新的块级格式化上下文？
@@ -917,12 +925,13 @@ ReactNative  vs  Vue+Veex 阿里，跨平台框架
 
 ###### pushState(state, "My Profile", "/profile/") 方法
 
+当调用他们修改浏览器历史记录栈后，虽然当前URL改变了，但浏览器不会立即发送请求该URL
+
 执行`pushState`函数之后，会往浏览器的历史记录中添加一条新记录，同时改变地址栏的地址内容。它可以接收三个参数，按顺序分别为：
 
 1. 一个对象或者字符串，用于描述新记录的一些特性。这个参数会被一并添加到历史记录中，以供以后使用。这个参数是开发者根据自己的需要自由给出的。
 2. 一个字符串，代表新页面的标题。当前基本上所有浏览器都会忽略这个参数。
 3. 一个字符串，代表新页面的相对地址。
-4. 当调用他们修改浏览器历史记录栈后，虽然当前URL改变了，但浏览器不会立即发送请求该URL
 
 ###### popstate 事件
 
