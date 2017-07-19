@@ -1,6 +1,6 @@
 
 
-# 面经总结
+# 前端技术积累
 
 #### 前言
 
@@ -14,7 +14,7 @@
 
 ### html基础
 
-#### SEO
+##### SEO
 
 ###### html
 
@@ -94,15 +94,13 @@ Webkit:chrome,safari
 
 Trident:IE
 
+区分浏览器—navigator.userAgent
+
+判断是否是IE-window.ActiveXObject
+
 #### NodeList 和 HTMLCollection之间的关系？
 
 主要不同在于HTMLCollection是元素集合而NodeList是节点集合（即可以包含元素，也可以包含文本节点）。所以 node.childNodes 返回 NodeList，而 node.children 和 node.getElementsByXXX 返回 HTMLCollection 
-
-
-
-
-
-
 
 
 
@@ -582,9 +580,46 @@ for(var i=1;i<5;i++){
 }
 ```
 
+使用Promise
 
+```javascript
+const tasks = []; // 这里存放异步操作的 Promise
+const output = (i) => new Promise((resolve) => {
+    setTimeout(() => {
+        console.log(new Date, i);
+        resolve();
+    }, 1000 * i);
+});
 
+// 生成全部的异步操作
+for (var i = 0; i < 5; i++) {
+    tasks.push(output(i));
+}
 
+// 异步操作完成之后，输出最后的 i
+Promise.all(tasks).then(() => {
+    setTimeout(() => {
+        console.log(new Date, i);
+    }, 1000);
+});
+```
+
+```javascript
+// 模拟其他语言中的 sleep，实际上可以是任何异步操作
+const sleep = (timeountMS) => new Promise((resolve) => {
+    setTimeout(resolve, timeountMS);
+});
+
+(async () => {  // 声明即执行的 async 函数表达式
+    for (var i = 0; i < 5; i++) {
+        await sleep(1000);
+        console.log(new Date, i);
+    }
+
+    await sleep(1000);
+    console.log(new Date, i);
+})();
+```
 
 ##### 创建对象的三种方法
 
@@ -837,11 +872,23 @@ ReactNative  vs  Vue+Veex 阿里，跨平台框架
 
 
 
-##### vue中socpe css怎么实现的没说清楚
+##### vue中socpe css怎么实现的
 
 (源码https://github.com/AlloyTeam/AlloyTouch/blob/2b9f8ca35ab954c3a9a3ebb747e88c09503a16fa/example/scoped_css/index.html)
 
-传入后把整个套到一个div中，div有唯一的id。
+每个域中的dom都会自己添加自定义的data-id的属性，然后css中添加[data-id]，会匹配这些dom
+
+动态的把css变成.example[_v-f3f3eg9].  
+
+1. 在同一组件内，你能同时用有作用域和无作用域的样式：
+2. 父组件的有作用域的CSS和子组件的有作用域的CSS将同时影响子组件。
+3. 有作用域的样式对其他部分没有影响。
+4. **有作用域限定的样式不排除类的需要**. 由于浏览器渲染方式支持多种不同的CSS选择器，加了作用域的 `p { color: red }` 会慢好多倍 （即，和属性选择器组合时候的时候）。如果你用类或者id选择器，比如 `.example { color: red }` ，你就能消除性能损失。[这里有个练习场](http://stevesouders.com/efws/css-selectors/csscreate.php) ，你可以比较测试下其中的差异。
+5. **在递归组件中小心后代选择器！** 对于 CSS 规则的选择器 `.a .b`，如果匹配 `.a` 的元素内包含一个递归子组件，那么子组件中所有包含 `.b` 的元素都会被匹配到。
+
+
+
+
 
 ```javascript
         ;(function () {
@@ -912,7 +959,6 @@ ReactNative  vs  Vue+Veex 阿里，跨平台框架
                             color:green\
                             }*/");
         document.body.getElementsByTagName("div")[0].setAttribute("id",id);
-
 ```
 
 
@@ -1053,8 +1099,6 @@ setupListeners ()  //用来监听手动替换的hash
 
 ##### webpack
 
-具体请查简书   http://www.jianshu.com/p/b83a251d53db
-
 ```javascript
 // webpack.config.js
 
@@ -1109,11 +1153,78 @@ module.exports = {
 }
 ```
 
+
+
 ##### Webpack中 —save-dev 和 —save 的区别
 
 前者是开发时候用的，后者是发布之后也要用的
 
-##### AMD&CMD
+##### 模块系统
+
+###### CommonJS
+
+Nodejs
+
+优点：
+
+- 服务器端模块便于重用
+- [NPM](https://www.npmjs.com/) 中已经有将近20万个可以使用模块包
+
+缺点：
+
+- 同步的模块加载方式不适合在浏览器环境中，同步意味着阻塞加载，浏览器资源是异步加载的
+
+###### AMD
+
+[Asynchronous Module Definition](https://github.com/amdjs/amdjs-api) 规范其实只有一个主要接口 `define(id?, dependencies?, factory)`，它要在声明模块的时候指定所有的依赖 `dependencies`，并且还要当做形参传到 `factory` 中，对于依赖的模块提前执行，依赖前置。
+
+```
+define("module", ["dep1", "dep2"], function(d1, d2) {
+  return someExportedValue;
+});
+require(["module", "../file"], function(module, file) { /* ... */ });
+
+```
+
+优点：
+
+- 适合在浏览器环境中异步加载模块
+
+缺点：
+
+- 提高了开发成本，代码的阅读和书写比较困难，模块定义方式的语义不顺畅
+- 不符合通用的模块化思维方式，是一种妥协的实现
+
+实现：
+
+- [RequireJS](http://requirejs.org/)
+
+###### CMD
+
+[Common Module Definition](https://github.com/cmdjs/specification/blob/master/draft/module.md) 规范和 AMD 很相似，尽量保持简单，并与 CommonJS 和 Node.js 的 Modules 规范保持了很大的兼容性。
+
+```
+define(function(require, exports, module) {
+  var $ = require('jquery');
+  var Spinning = require('./spinning');
+  exports.doSomething = ...
+  module.exports = ...
+})
+
+```
+
+优点：
+
+- 依赖就近，延迟执行
+- 可以很容易在 Node.js 中运行
+
+缺点：
+
+- 依赖 SPM 打包，模块的加载逻辑偏重
+
+实现：
+
+- [Sea.js](http://seajs.org/)
 
 AMD | 速度快 | 会浪费资源 | 预先加载所有的依赖，直到使用的时候才执行
 
@@ -1471,13 +1582,79 @@ n{X,Y} `X`和 `Y` 为正整数。前面的模式`n` 连续出现至少 `X`次，
 
 
 
-## 第二部分 自己面过的经
+## 第二部分 看到的比较经典的覆盖很多知识点的题
 
 http://exam.webfuture.cn/index.html  
 
-### 无敌面试题：当输入url之后发生了什么！！！（这个必须加粗再加粗）
+#### 无敌面试题：当输入url之后发生了什么！！！（这个必须加粗再加粗）
 
+#### DOM操作插入节点
 
+```javascript
+(() => {
+    const ndContainer = document.getElementById('js-list');
+    if (!ndContainer) {
+        return;
+    }
+
+    const total = 30000;
+    const batchSize = 4; // 每批插入的节点次数，越大越卡
+    const batchCount = total / batchSize; // 需要批量处理多少次
+    let batchDone = 0;  // 已经完成的批处理个数
+
+    function appendItems() {
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < batchSize; i++) {
+            const ndItem = document.createElement('li');
+            ndItem.innerText = (batchDone * batchSize) + i + 1;
+            fragment.appendChild(ndItem);
+        }
+
+        // 每次批处理只修改 1 次 DOM
+        ndContainer.appendChild(fragment);
+
+        batchDone += 1;
+        doBatchAppend();
+    }
+
+    function doBatchAppend() {
+        if (batchDone < batchCount) {
+            window.requestAnimationFrame(appendItems);
+        }
+    }
+
+    // kickoff
+    doBatchAppend();
+
+    ndContainer.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target.tagName === 'LI') {
+            alert(target.innerHTML);
+        }
+    });
+})();
+```
+
+###### 知识点
+
+DocumentFragment:文档碎片，虚拟的dom，优化了多次插入。
+
+requestAnimationFrame:因为电脑屏幕是60帧，setInterval这些16.7并不好。
+
+- 浏览器可以优化并行的动画动作，更合理的重新排列动作序列，并把能够合并的动作放在一个渲染周期内完成，从而呈现出更流畅的动画效果。
+- 在一个浏览器标签页里运行一个动画，当这个标签页不可见时，浏览器会暂停它，这会减少CPU，内存的压力，节省电池电量。
+
+如果想自己设置频率：
+
+```javascript
+var fps = 15;
+function draw() {
+    setTimeout(function() {
+        requestAnimationFrame(draw);
+        // Drawing code goes here
+    }, 1000 / fps);
+}
+```
 
 ## 第三部分 计算机网络
 
@@ -1740,6 +1917,55 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 	
 ```
 
+#### 深度优先和广度优先的遍历
+
+```javascript
+function wideTraversal(selectNode) {  
+    var nodes = [];  
+    if (selectNode != null) {  
+        var queue = [];  
+        queue.unshift(selectNode);  
+        while (queue.length != 0) {  
+            var item = queue.shift();  
+            nodes.push(item);  
+            var children = item.children;  
+            for (var i = 0; i < children.length; i++)  
+                queue.push(children[i]);  
+        }  
+    }  
+    return nodes;   
+}
+
+
+
+
+var preOrder = function (node) {
+  if (node) {
+    console.log(node.value);
+    preOrder(node.left);
+    preOrder(node.right);
+  }
+}
+
+var inOrder = function (node) {
+  if(node){
+    inOrder(node.left);
+    console.log(node.value);
+    inOrder(node.right);
+  }
+}
+
+var postOrder = function (node) {
+  if (node) {
+    postOrder(node.left);
+    postOrder(node.right);
+    console.log(node.value);
+  }
+}
+```
+
+
+
 ### 算法
 
 #### 数组去重
@@ -1766,11 +1992,17 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 
 ## 第五部分 简历和面试技巧总结
 
-#### 反问面试官的最后一个问题
+##### 反问面试官的最后一个问题
 
 ###### 这次面试我还有哪些需要提高的地方
 
 ###### 在公司里的部门，做什么
+
+
+
+##### 平常关注的前端消息
+
+知乎，前端周刊 https://zhuanlan.zhihu.com/p/27966492
 
 
 
