@@ -98,9 +98,13 @@ Trident:IE
 
 判断是否是IE-window.ActiveXObject
 
-#### NodeList 和 HTMLCollection之间的关系？
+##### NodeList 和 HTMLCollection之间的关系？
 
 主要不同在于HTMLCollection是元素集合而NodeList是节点集合（即可以包含元素，也可以包含文本节点）。所以 node.childNodes 返回 NodeList，而 node.children 和 node.getElementsByXXX 返回 HTMLCollection 
+
+##### rem实现自适应
+
+相对于根元素决定字体大小。
 
 
 
@@ -380,7 +384,11 @@ img{
 
 A: 不会被下载。
 
+##### What is Flash of Unstyled Content? How do you avoid FOUC?
 
+原因大致为：1，使用import方法导入样式表。2，将样式表放在页面底部3，有几个样式表，放在html结构的不同位置。其实原理很清楚：当样式表晚于结构性html加载，当加载到此样式表时，页面将停止之前的渲染。此样式表被下载和解析后，将重新渲染页面，也就出现了短暂的花屏现象。
+
+解决方法：使用LINK标签将样式表放在文档HEAD中。
 
 
 
@@ -580,6 +588,20 @@ for(var i=1;i<5;i++){
 }
 ```
 
+```javascript
+var output = function (i) {
+    setTimeout(function() {
+        console.log(new Date, i);
+    }, 1000);
+};
+
+for (var i = 0; i < 5; i++) {
+    output(i);  // 这里传过去的 i 值被复制了
+}
+
+console.log(new Date, i);
+```
+
 使用Promise
 
 ```javascript
@@ -620,6 +642,67 @@ const sleep = (timeountMS) => new Promise((resolve) => {
     console.log(new Date, i);
 })();
 ```
+
+变异啦！
+
+```javascript
+for (var i = 0; i < 5; i++) {
+  (function() {
+    setTimeout(function() {
+      console.log(i);
+    }, i * 1000);
+  })(i);
+}          //内部其实没有对参数的引用，所以还是55555
+
+for (var i = 0; i < 5; i++) {
+  (function(i) {
+    setTimeout(function() {
+      console.log(i);
+    }, i * 1000);
+  })();
+}			//undefined x5
+
+
+for (var i = 0; i < 5; i++) {
+  setTimeout((function(i) {
+    console.log(i);
+  })(i), i * 1000);
+}				//立即执行函数立即执行，setTimeout就等于传了个undefined。会立刻输出01234
+
+setTimeout(function() {
+  console.log(1)
+}, 0);
+new Promise(function executor(resolve) {
+  console.log(2);
+  for( var i=0 ; i<10000 ; i++ ) {
+    i == 9999 && resolve();
+  }
+  console.log(3);
+}).then(function() {		//2 3 5 4 1
+  console.log(4);					
+});
+console.log(5);		
+//执行过程如下：
+JavaScript引擎首先从macrotask queue中取出第一个任务，
+执行完毕后，将microtask queue中的所有任务取出，按顺序全部执行；
+然后再从macrotask queue中取下一个，
+执行完毕后，再次将microtask queue中的全部取出；
+循环往复，直到两个queue中的任务都取完。
+
+解释：
+代码开始执行时，所有这些代码在macrotask queue中，取出来执行之。
+后面遇到了setTimeout，又加入到macrotask queue中，
+然后，遇到了promise.then，放入到了另一个队列microtask queue。
+等整个execution context stack执行完后，
+下一步该取的是microtask queue中的任务了。
+因此promise.then的回调比setTimeout先执行。
+```
+
+
+
+
+
+
 
 ##### 创建对象的三种方法
 
@@ -1473,6 +1556,18 @@ $("#tab").bind("click",function(ev)){
        }
      },false);
 ```
+
+##### async和defer的作用是什么？有什么区别
+
+1.<script src="example.js"></script>
+
+没有defer或async属性，浏览器会立即加载并执行相应的脚本。也就是说在渲染script标签之后的文档之前，不等待后续加载的文档元素，读到就开始加载和执行，此举会阻塞后续文档的加载；
+2.<script async src="example.js"></script>
+
+有了async属性，表示后续文档的加载和渲染与js脚本的加载和执行是并行进行的，即异步执行；（异步加载，加载完马上执行）
+3.<script defer src="example.js"></script>
+
+有了defer属性，加载后续文档的过程和js脚本的加载(此时仅加载不执行)是并行进行的(异步)，js脚本的执行需要等到文档所有元素解析完成之后，DOMContentLoaded事件触发执行之前。(不耽误后边文档加载，但是都加载完执行。)
 
 
 
