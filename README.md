@@ -915,6 +915,26 @@ https://segmentfault.com/a/1190000008782928
 
 ###### 核心：**比较只会在同层级进行, 不会跨层级比较。**
 
+更新流程：
+
+1.先判断两个vnode的key和sel是否相同。不值的比较就直接用新节点替代老节点。否则进入第二步
+
+2.节点的比较有5种情况
+
+1. `if (oldVnode === vnode)`，他们的引用一致，可以认为没有变化。
+2. `if(oldVnode.text !== null && vnode.text !== null && oldVnode.text !== vnode.text)`，文本节点的比较，需要修改，则会调用`Node.textContent = vnode.text`。
+3. `if( oldCh && ch && oldCh !== ch )`, 两个节点都有子节点，而且它们不一样，这样我们会调用`updateChildren`函数比较子节点，这是diff的核心，后边会讲到。
+4. `else if (ch)`，只有新的节点有子节点，调用`createEle(vnode)`，`vnode.el`已经引用了老的dom节点，`createEle`函数会在老dom节点上添加子节点。
+5. `else if (oldCh)`，新节点没有子节点，老节点有子节点，直接删除老节点。
+
+3.通过设置的key进行遍历比较子节点
+
+###### 结论
+
+- 尽量不要跨层级的修改dom
+- 设置key可以最大化的利用节点
+- 不要盲目相信diff的效率，在必要时可以手工优化
+
 ##### 自己写一个vue组件
 
 https://juejin.im/entry/58a11c648d6d81006c9d739d
