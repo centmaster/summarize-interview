@@ -905,6 +905,16 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 
 #### vue
 
+##### diff算法
+
+https://segmentfault.com/a/1190000008782928
+
+###### 为什么要virtual dom
+
+操作dom太耗资源，所以优化为操作对象
+
+###### 核心：**比较只会在同层级进行, 不会跨层级比较。**
+
 ##### 自己写一个vue组件
 
 https://juejin.im/entry/58a11c648d6d81006c9d739d
