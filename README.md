@@ -1341,6 +1341,13 @@ define(['./a,./b'],function(a,b){//依赖必须一开始就写好
 
 #### 移动端开发
 
+##### 响应式布局和自适应布局的区别
+
+Responsive design ＝ RWD，Adaptive design ＝ AWD
+
+​	响应式设计是采用 CSS 的 media query 技术，配合流体布局（ fluid grids ）和同样可以自适应的图片/视频等资源素材。以上所说，都是通过 HTML 和 CSS 就能完成的。一般来说，RWD 倾向于只改变元素的外观布局，而不大幅度改变内容。可以把 RWD 定义为一切能用来为各种分辨率和设备性能优化视觉体验的技术吧。
+​         自适应设计在包括 RWD 的 CSS media query 技术以外，也要用 Javascript 来操作 HTML 来更适应移动设备的能力。有可能会针对移动端用户减去内容，减去功能。也 可以在服务器端就进行优化，把优化过的内容送到终端上。
+
 ##### Difference between transition and transform
 
 ###### transition
@@ -2096,6 +2103,12 @@ var postOrder = function (node) {
 ##### 平常关注的前端消息
 
 知乎，前端周刊 https://zhuanlan.zhihu.com/p/27966492
+
+​	   前端外看评论 https://zhuanlan.zhihu.com/FrontendMagazine
+
+​	   前端学习指南 https://zhuanlan.zhihu.com/study-fe
+
+​	   前端大哈 https://zhuanlan.zhihu.com/qianduandaha
 
 
 #### 
