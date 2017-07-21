@@ -64,9 +64,16 @@
 | 安全性     | url中暴露数据   | 相对安全   |
 | 可见性     | url中可见     | 不可见    |
 
+##### What's the difference between HTML and XHTML?
 
+XHTML is not so much different from HTML 4.01 standard. The major differences are:
 
-#### h5标签了解多少
+- XHTML elements must be **properly nested**.
+- XHTML elements must always be **closed**.
+- XHTML elements must be in **lowercase**.
+- XHTML documents must have **one root element**.
+
+##### h5标签了解多少
 
 ```html
 <header><aside><nav><footer><hgroup><canvas><vedio><source><mark>
@@ -390,7 +397,13 @@ A: 不会被下载。
 
 解决方法：使用LINK标签将样式表放在文档HEAD中。
 
+##### 隐藏元素的方法
 
+Display,visibility,opacity,position:absolute;top:-9999px;
+
+##### { box-sizing: border-box; } 
+
+固定了盒子的尺寸，无论怎么调整边距都不会改变盒子的大小.似乎是padding变了
 
 ### Js基础
 
@@ -892,6 +905,16 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 
 #### vue
 
+##### diff算法
+
+https://segmentfault.com/a/1190000008782928
+
+###### 为什么要virtual dom
+
+操作dom太耗资源，所以优化为操作对象
+
+###### 核心：**比较只会在同层级进行, 不会跨层级比较。**
+
 ##### 自己写一个vue组件
 
 https://juejin.im/entry/58a11c648d6d81006c9d739d
@@ -1114,7 +1137,6 @@ $router.push() --> HashHistory.push() --> History.transitionTo() --> History.upd
 
 ```javascript
 export function install (Vue) {
-  
   Vue.mixin({
     beforeCreate () {
       if (isDef(this.$options.router)) {
