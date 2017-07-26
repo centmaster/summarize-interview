@@ -113,6 +113,52 @@ Trident:IE
 
 相对于根元素决定字体大小。
 
+##### 常见兼容性问题
+
+```
+* 上下margin重合问题
+ie和ff都存在，相邻的两个div的margin-left和margin-right不会重合，但是margin-top和margin-bottom却会发生重合。
+解决方法，养成良好的代码编写习惯，同时采用margin-top或者同时采用margin-bottom。
+```
+
+##### DOM操作——怎样添加、移除、移动、复制、创建和查找节点
+
+```
+（1）创建新节点
+
+      createDocumentFragment()    //创建一个DOM片段
+
+      createElement()   //创建一个具体的元素
+
+      createTextNode()   //创建一个文本节点
+
+（2）添加、移除、替换、插入
+
+      appendChild()
+
+      removeChild()
+
+      replaceChild()
+
+      insertBefore() //在已有的子节点前插入一个新的子节点
+
+（3）查找
+
+      getElementsByTagName()    //通过标签名称
+
+      getElementsByName()    //通过元素的Name属性的值(IE容错能力较强，会得到一个数组，其中包括id等于name值的)
+
+      getElementById()    //通过元素Id，唯一性
+```
+
+##### documen.write和 innerHTML的区别
+
+```
+document.write只能重绘整个页面
+
+innerHTML可以重绘页面的一部分
+```
+
 
 
 ### CSS基础

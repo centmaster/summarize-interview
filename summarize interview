@@ -138,6 +138,13 @@ IE6 双边距 bug：在 IE6 下，如果对元素设置了浮动，同时又设�
 
 (17)H5新标签
 <article>  <aside>  <audio> <canvas> <footer> <hgroup> <mark> <nav> <source>
+* 拖拽释放(Drag and drop) API 
+  语义化更好的内容标签（header,nav,footer,aside,article,section）
+  音频、视频API(audio,video)
+  画布(Canvas) API
+  地理(Geolocation) API
+  本地离线存储 localStorage 长期存储数据，浏览器关闭后数据不丢失；
+  sessionStorage 的数据在浏览器关闭后自动删除
 
 (18)背景色彩和文字色彩的HTML代码如下。
 bgcolol——背景色彩
