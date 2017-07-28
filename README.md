@@ -159,7 +159,75 @@ document.write只能重绘整个页面
 innerHTML可以重绘页面的一部分
 ```
 
+##### DOM操作插入节点
 
+```javascript
+(() => {
+    const ndContainer = document.getElementById('js-list');
+    if (!ndContainer) {
+        return;
+    }
+
+    const total = 30000;
+    const batchSize = 4; // 每批插入的节点次数，越大越卡
+    const batchCount = total / batchSize; // 需要批量处理多少次
+    let batchDone = 0;  // 已经完成的批处理个数
+
+    function appendItems() {
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < batchSize; i++) {
+            const ndItem = document.createElement('li');
+            ndItem.innerText = (batchDone * batchSize) + i + 1;
+            fragment.appendChild(ndItem);
+        }
+
+        // 每次批处理只修改 1 次 DOM
+        ndContainer.appendChild(fragment);
+
+        batchDone += 1;
+        doBatchAppend();
+    }
+
+    function doBatchAppend() {
+        if (batchDone < batchCount) {
+            window.requestAnimationFrame(appendItems);
+        }
+    }
+
+    // kickoff
+    doBatchAppend();
+
+    ndContainer.addEventListener('click', function (e) {
+        const target = e.target;
+        if (target.tagName === 'LI') {
+            alert(target.innerHTML);
+        }
+    });
+})();
+```
+
+###### 知识点
+
+DocumentFragment:文档碎片，虚拟的dom，优化了多次插入。
+
+requestAnimationFrame:因为电脑屏幕是60帧，setInterval这些16.7并不好。
+
+- 浏览器可以优化并行的动画动作，更合理的重新排列动作序列，并把能够合并的动作放在一个渲染周期内完成，从而呈现出更流畅的动画效果。
+- 在一个浏览器标签页里运行一个动画，当这个标签页不可见时，浏览器会暂停它，这会减少CPU，内存的压力，节省电池电量。
+
+如果想自己设置频率：
+
+```javascript
+var fps = 15;
+function draw() {
+    setTimeout(function() {
+        requestAnimationFrame(draw);
+        // Drawing code goes here
+    }, 1000 / fps);
+}
+```
+
+## 
 
 ### CSS基础
 
@@ -535,69 +603,151 @@ Number(undefined)// NaN
 
 （4）函数没有返回值时，默认返回undefined。
 
-##### ES6
+##### Object.defineProperty(obj, prop, descriptor)
 
-let const Map Set => generator promise class
+descriptor中定义的参数用来定义或修改的属性的描述符
 
-###### ES6生命变量的六种方式
+`configurable` 当且仅当该属性的 configurable 为 true 时，该属性`描述符`才能够被改变，也能够被删除。
 
-var function let const import class
+`enumerable `当且仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。。 
 
-###### let/const
+属性特性 `enumerable` 决定这个属性是否能被 `for...in` 循环或 `Object.keys` 方法遍历得到
 
-###### let	
+`writable`当且仅当该属性的 writable 为 true 时，该属性才能被`[赋值运算符]`改变。
 
-1.块级作用域
+`value`该属性对应的值。可以是任何有效的 JavaScript 值（数值，对象，函数等）。
 
-2.不存在变量提升
+`get`一个给属性提供 getter 的方法，如果没有 getter 则为 `undefined`。该方法返回值被用作属性值。
+
+`set`一个给属性提供 setter 的方法，如果没有 setter 则为 `undefined`。该方法将接受唯一参数，并将该参数的新值分配给该属性。
+
+##### 关于对象添加getter和setter的方法
+
+1.通过对象初始化器在创建对象的时候指明（也可以称为通过字面值创建对象时声明）
 
 ```javascript
-// var 的情况
-console.log(foo); // 输出undefined
-var foo = 2;
-
-// let 的情况
-console.log(bar); // 报错ReferenceError
-let bar = 2;
+(function () {
+    var o = {
+        a : 7,
+        get b(){return this.a +1;},//通过 get,set的 b,c方法间接性修改 a 属性
+        set c(x){this.a = x/2}
+    };
+    console.log(o.a);
+    console.log(o.b);
+    o.c = 50;
+    console.log(o.a);
+})();
 ```
 
-3.暂时性死区
+2.使用 `Object.create` 方法. Object.create(proto, [ propertiesObject ])
 
 ```javascript
-var tmp = 123;
+(function () {
+    var o = null;
+    o = Object.create(Object.prototype,//指定原型为 Object.prototype
+            {
+                bar:{
+                    get :function(){
+                        return this.a;
+                    },
+                    set : function (val) {
+                        console.log("Setting `o.bar` to ",val);
+                        this.a = val;
+                    },
+                    configurable :true
+                }
+            }//第二个参数
+        );
+    o.a = 10;
+    console.log(o.bar);
+    o.bar = 12;
+    console.log(o.bar);
+})();
+```
 
-if (true) {
-  tmp = 'abc'; // ReferenceError
-  let tmp;
+3.使用 `Object.defineProperty` 方法.    Object.defineProperty(obj, prop, descriptor)
+
+```javascript
+(function () {
+    var o = { a : 1}//声明一个对象,包含一个 a 属性,值为1
+    Object.defineProperty(o,"b",{
+        get: function () {
+            return this.a;
+        },
+        set : function (val) {
+            this.a = val;
+        },
+        configurable : true
+    });
+
+    console.log(o.b);
+    o.b = 2;
+    console.log(o.b);
+})();
+```
+
+4.使用 `Object.defineProperties`方法.   Object.defineProperties(obj, props)
+
+```javascript
+(function () {
+    var obj = {a:1,b:"string"};
+    Object.defineProperties(obj,{
+        "A":{
+            get:function(){return this.a+1;},
+            set:function(val){this.a = val;}
+        },
+        "B":{
+            get:function(){return this.b+2;},
+            set:function(val){this.b = val}
+        }
+    });
+
+    console.log(obj.A);
+    console.log(obj.B);
+    obj.A = 3;
+    obj.B = "hello";
+    console.log(obj.A);
+    console.log(obj.B);
+})();
+```
+
+
+
+##### 事件代理
+
+###### Jquery
+
+```javascript
+$("#tab").bind("click",function(ev)){
+   var $obj=$(ev.target);
+   $obj.css("background","red");
 }
 ```
 
-4.在同一个块级作用域中不允许重复声明
-
-###### const
-
-声明一个只读常量，一旦声明不能改变。声明也必须带着值
-
-实质是，对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，因此等同于常量。但对于复合类型的数据（主要是对象和数组），变量指向的内存地址，保存的只是一个指针，`const`只能保证这个指针是固定的，至于它指向的数据结构是不是可变的，就完全不能控制了。也就是说，可以再往对象里填东西，但不能重复声明。
-
-const同时也满足，块级作用域，变量不提升，暂时性死区。
-
-###### 块级作用域
-
-在ES6浏览器中，允许块级作用域中声明函数
-
-因为外边看不到块里边的变量，所以提案，do用来得到块级作用域中的变量
+###### Js
 
 ```javascript
-let x = do {
-  let t = f();
-  t * t + 1;
-};
+  var ulNode=document.getElementById("list");
+  ulNode.addEventListener('click',function(e){
+       if(e.target&&e.target.nodeName.toUpperCase()=="LI"){/*判断目标事件是否为li*/
+         alert(e.target.innerHTML);
+       }
+     },false);
 ```
 
-###### 顶层对象
+##### async和defer的作用是什么？有什么区别
 
-一般我们顶层对象和全局是不区分的。let和const声明的全局对象不属于顶层对象（window，global）
+1.<script src="example.js"></script>
+
+没有defer或async属性，浏览器会立即加载并执行相应的脚本。也就是说在渲染script标签之后的文档之前，不等待后续加载的文档元素，读到就开始加载和执行，此举会阻塞后续文档的加载；
+2.<script async src="example.js"></script>
+
+有了async属性，表示后续文档的加载和渲染与js脚本的加载和执行是并行进行的，即异步执行；（异步加载，加载完马上执行）
+3.<script defer src="example.js"></script>
+
+有了defer属性，加载后续文档的过程和js脚本的加载(此时仅加载不执行)是并行进行的(异步)，js脚本的执行需要等到文档所有元素解析完成之后，DOMContentLoaded事件触发执行之前。(不耽误后边文档加载，但是都加载完执行。)
+
+
 
 
 
@@ -784,7 +934,6 @@ function createStudent(name) {
     s.name = name;
     return s;
 }
-
 ```
 
 ###### 构造函数
@@ -848,9 +997,206 @@ var p= {
 p.init()     //结果是undefined，如果是普通函数结果是true
 ```
 
+##### 深度拷贝对象https://www.zhihu.com/question/23031215
 
 
-##### 箭头函数
+
+#### 正则表达式
+
+RegExp 是JS中的类，同Array类似。
+
+第一个参数正则匹配。第二个参数（g:全局查找  i:不区分大小写  m:多行查找）
+
+##### 正则表达式的方法
+
+test()—return boolean
+
+exec()—return a Array with index and input
+
+search()—return index and u can both input RegExp or String                               //字符串带的方法
+
+replace()—as it looks like 
+
+##### difference between [] {} ()
+
+[0-9] 查找任何从 0 至 9 的数字
+
+{8} 表示位数为8位
+
+()的作用是提取匹配的字符串。表达式中有几个`()`就会得到几个相应的匹配字符串。比如`(\s+)`表示连续空格的字符串
+
+##### ^ 和 $
+
+`^` 匹配一个字符串的开头，比如 (`^a`) 就是匹配以字母`a`开头的字符串
+
+`$` 匹配一个字符串的结尾,比如 (`b$`) 就是匹配以字母`b`结尾的字符串
+
+`^`还有另个一个作用就是取反，比如`[^xyz]`表示匹配的字符串不包含`xyz`
+
+##### \d \s \w .
+
+`\d` 匹配一个非负整数， 等价于 `[0-9]`；
+
+`\s` 匹配一个空白字符；
+
+`\w` 匹配一个英文字母或数字，等价于`[0-9a-zA-Z]`；
+
+`.` 匹配除换行符以外的任意字符，等价于`[^\n]`。
+
+##### * + ?
+
+`*`表示匹配前面元素0次或多次，比如`(\s*)`就是匹配0个或多个空格；
+
+`+` 表示匹配前面元素1次或多次，比如`(\d+)`就是匹配由至少1个整数组成的字符串；
+
+`?`表示匹配前面元素0次或1次，相当于`{0,1}`，比如`(\w?)` 就是匹配最多由1个字母或数字组成的字符串 。
+
+##### 还有一些语法
+
+[adgk]   查找给定集合内的任何字符。
+
+`\W`  查找非单词字符。
+
+`\d`  查找数字。
+
+`\D` 查找非数字字符。
+
+`\b` 匹配单词边界。
+
+`\B` 匹配非单词边界。
+
+`\0` 查找 NULL 字符。
+
+`\n` 查找换行符。
+
+`\f` 查找换页符。
+
+`\r` 查找回车符。
+
+`\t` 查找制表符。
+
+`\v` 查找垂直制表符。
+
+`\xxx` 查找以八进制数 xxx 规定的字符。
+
+`\xdd` 查找以十六进制数 dd 规定的字符。
+
+`\uxxxx` 查找以十六进制数 xxxx 规定的 Unicode 字符。
+
+n{X,Y} `X`和 `Y` 为正整数。前面的模式`n` 连续出现至少 `X`次，至多 `Y`次时匹配
+
+?=n 匹配任何其后紧接指定字符串`n` 的字符串。
+
+?!n 匹配任何其后没有紧接指定字符串 `n` 的字符串
+
+
+
+#### ES6
+
+###### ES6生命变量的六种方式
+
+var function let const import class
+
+##### 1.let/const
+
+###### let	
+
+1.块级作用域
+
+```javascript
+var funcs = [],
+    object = {
+        a: true,
+        b: true,
+        c: true
+    };
+
+for (let key in object) {
+    funcs.push(function() {
+        console.log(key);
+    });
+}
+
+funcs.forEach(function(func) {
+    func();     // outputs "a", then "b", then "c"
+});				//if change to var then outputs c c c
+```
+
+2.不存在变量提升
+
+```javascript
+// var 的情况
+console.log(foo); // 输出undefined
+var foo = 2;
+
+// let 的情况
+console.log(bar); // 报错ReferenceError
+let bar = 2;
+```
+
+3.暂时性死区
+
+```javascript
+var tmp = 123;
+
+if (true) {
+  tmp = 'abc'; // ReferenceError
+  let tmp;
+}
+```
+
+4.在同一个块级作用域中不允许重复声明
+
+###### const
+
+声明一个只读常量，一旦声明不能改变。声明也必须带着值
+
+实质是，对于简单类型的数据（数值、字符串、布尔值），值就保存在变量指向的那个内存地址，因此等同于常量。但对于复合类型的数据（主要是对象和数组），变量指向的内存地址，保存的只是一个指针，`const`只能保证这个指针是固定的，至于它指向的数据结构是不是可变的，就完全不能控制了。也就是说，可以再往对象里填东西，但不能重复声明。
+
+const同时也满足，块级作用域，变量不提升，暂时性死区。
+
+###### const必须生命的时候赋值
+
+###### 块级作用域
+
+在ES6浏览器中，允许块级作用域中声明函数
+
+因为外边看不到块里边的变量，所以提案，do用来得到块级作用域中的变量
+
+```javascript
+let x = do {
+  let t = f();
+  t * t + 1;
+};
+```
+
+let与const表现相同，因为在每个块级作用于中都没有被改变。for循环就不行，因为i++试图更改const
+
+```javascript
+var funcs = [],
+    object = {
+        a: true,
+        b: true,
+        c: true
+    };
+
+// doesn't cause an error
+for (const key in object) {
+    funcs.push(function() {
+        console.log(key);
+    });
+}
+
+funcs.forEach(function(func) {
+    func();     // outputs "a", then "b", then "c"
+});
+```
+
+###### 顶层对象
+
+一般我们顶层对象和全局是不区分的。let和const声明的全局对象不属于顶层对象（window，global）
+
+##### 2.箭头函数
 
 ##### 箭头函数有几个使用注意点。
 
@@ -875,9 +1221,7 @@ foo.call({ id: 42 });
 // id: 42
 ```
 
-
-
-##### Promise基本用法
+##### 3.Promise基本用法
 
 ```javascript
 var promise = new Promise(function(resolve, reject) {
@@ -948,6 +1292,90 @@ Promise.prototype.done = function (onFulfilled, onRejected) {
 ###### Promise.finally()
 
 `finally`方法用于指定不管Promise对象最后状态如何，都会执行的操作。它与`done`方法的最大区别，它接受一个普通的回调函数作为参数，该函数不管怎样都必须执行。
+
+##### 4.变量的结构赋值
+
+###### 数组
+
+等号右边不是可遍历的结构，将会报错。Set也可以结构赋值
+
+```javascript
+let [a, b, c] = [1, 2, 3];
+let [x, y = 'b'] = ['a']; // x='a', y='b'
+let [x = 1] = [null];  x // null  必须要严格等于undefined才会使用默认值
+let [x = f()] = [1];  //惰性求值
+let [x = 1, y = x] = [1, 2]; // x=1; y=2
+```
+
+###### 对象
+
+```javascript
+let { foo, bar } = { foo: "aaa", bar: "bbb" };  //按照属性名来对应
+let { foo: baz } = { foo: "aaa", bar: "bbb" };
+baz // "aaa"
+foo // error: foo is not defined
+var {x: y = 3} = {x: 5}; y // 5
+let arr = [1, 2, 3];
+let {0 : first, [arr.length - 1] : last} = arr;
+first // 1
+last // 3
+```
+
+###### 字符串
+
+```javascript
+const [a, b, c, d, e] = 'hello';
+let {length : len} = 'hello';
+```
+
+###### 数值和布尔值
+
+解构赋值时，如果等号右边是数值和布尔值，则会先转为对象。
+
+```javascript
+let {toString: s} = 123;
+s === Number.prototype.toString // true
+```
+
+###### 函数
+
+```javascript
+[[1, 2], [3, 4]].map(([a, b]) => a + b);  // [ 3, 7 ]
+function move({x = 0, y = 0} = {}) {
+  return [x, y];				//设置默认值
+}
+```
+
+###### 圆括号问题
+
+变量声明不能使用圆括号，模式（就是一个对象的感觉）不能使用
+
+###### 用途
+
+```javascript
+let jsonData = {
+  id: 42,
+  status: "OK",
+  data: [867, 5309]
+};
+let { id, status, data: number } = jsonData;  //json快速赋值
+
+let x = 1;
+let y = 2;
+[x, y] = [y, x];				//交换
+
+for (let [key, value] of map) {
+  console.log(key + " is " + value);	//遍历Map
+}
+```
+
+##### 5.
+
+
+
+
+
+
 
 #### vue
 
@@ -1518,335 +1946,9 @@ ps：Rendering Tree 渲染树并不等同于DOM树，因为一些像Header或dis
 - 当你Resize窗口的时候（移动端没有这个问题），或是滚动的时候。
 - 当你修改网页的默认字体时。
 
-#### js
 
-##### Object.defineProperty(obj, prop, descriptor) 
 
-descriptor中定义的参数用来定义或修改的属性的描述符
-
-`configurable` 当且仅当该属性的 configurable 为 true 时，该属性`描述符`才能够被改变，也能够被删除。
-
-`enumerable `当且仅当该属性的 enumerable 为 true 时，该属性才能够出现在对象的枚举属性中。。 
-
-属性特性 `enumerable` 决定这个属性是否能被 `for...in` 循环或 `Object.keys` 方法遍历得到
-
-`writable`当且仅当该属性的 writable 为 true 时，该属性才能被`[赋值运算符]`改变。
-
-`value`该属性对应的值。可以是任何有效的 JavaScript 值（数值，对象，函数等）。
-
-`get`一个给属性提供 getter 的方法，如果没有 getter 则为 `undefined`。该方法返回值被用作属性值。
-
-`set`一个给属性提供 setter 的方法，如果没有 setter 则为 `undefined`。该方法将接受唯一参数，并将该参数的新值分配给该属性。
-
-##### 关于对象添加getter和setter的方法
-
-1.通过对象初始化器在创建对象的时候指明（也可以称为通过字面值创建对象时声明）
-
-```javascript
-(function () {
-    var o = {
-        a : 7,
-        get b(){return this.a +1;},//通过 get,set的 b,c方法间接性修改 a 属性
-        set c(x){this.a = x/2}
-    };
-    console.log(o.a);
-    console.log(o.b);
-    o.c = 50;
-    console.log(o.a);
-})();
-```
-
-2.使用 `Object.create` 方法. Object.create(proto, [ propertiesObject ])
-
-```javascript
-(function () {
-    var o = null;
-    o = Object.create(Object.prototype,//指定原型为 Object.prototype
-            {
-                bar:{
-                    get :function(){
-                        return this.a;
-                    },
-                    set : function (val) {
-                        console.log("Setting `o.bar` to ",val);
-                        this.a = val;
-                    },
-                    configurable :true
-                }
-            }//第二个参数
-        );
-    o.a = 10;
-    console.log(o.bar);
-    o.bar = 12;
-    console.log(o.bar);
-})();
-```
-
-3.使用 `Object.defineProperty` 方法.    Object.defineProperty(obj, prop, descriptor)
-
-```javascript
-(function () {
-    var o = { a : 1}//声明一个对象,包含一个 a 属性,值为1
-    Object.defineProperty(o,"b",{
-        get: function () {
-            return this.a;
-        },
-        set : function (val) {
-            this.a = val;
-        },
-        configurable : true
-    });
-
-    console.log(o.b);
-    o.b = 2;
-    console.log(o.b);
-})();
-```
-
-4.使用 `Object.defineProperties`方法.   Object.defineProperties(obj, props)
-
-```javascript
-(function () {
-    var obj = {a:1,b:"string"};
-    Object.defineProperties(obj,{
-        "A":{
-            get:function(){return this.a+1;},
-            set:function(val){this.a = val;}
-        },
-        "B":{
-            get:function(){return this.b+2;},
-            set:function(val){this.b = val}
-        }
-    });
-
-    console.log(obj.A);
-    console.log(obj.B);
-    obj.A = 3;
-    obj.B = "hello";
-    console.log(obj.A);
-    console.log(obj.B);
-})();
-```
-
-
-
-##### 事件代理
-
-###### Jquery
-
-```javascript
-$("#tab").bind("click",function(ev)){
-   var $obj=$(ev.target);
-   $obj.css("background","red");
-}
-```
-
-###### Js
-
-```javascript
-  var ulNode=document.getElementById("list");
-  ulNode.addEventListener('click',function(e){
-       if(e.target&&e.target.nodeName.toUpperCase()=="LI"){/*判断目标事件是否为li*/
-         alert(e.target.innerHTML);
-       }
-     },false);
-```
-
-##### async和defer的作用是什么？有什么区别
-
-1.<script src="example.js"></script>
-
-没有defer或async属性，浏览器会立即加载并执行相应的脚本。也就是说在渲染script标签之后的文档之前，不等待后续加载的文档元素，读到就开始加载和执行，此举会阻塞后续文档的加载；
-2.<script async src="example.js"></script>
-
-有了async属性，表示后续文档的加载和渲染与js脚本的加载和执行是并行进行的，即异步执行；（异步加载，加载完马上执行）
-3.<script defer src="example.js"></script>
-
-有了defer属性，加载后续文档的过程和js脚本的加载(此时仅加载不执行)是并行进行的(异步)，js脚本的执行需要等到文档所有元素解析完成之后，DOMContentLoaded事件触发执行之前。(不耽误后边文档加载，但是都加载完执行。)
-
-
-
-####正则表达式 
-
-RegExp 是JS中的类，同Array类似。
-
-第一个参数正则匹配。第二个参数（g:全局查找  i:不区分大小写  m:多行查找）
-
-##### 正则表达式的方法
-
-test()—return boolean
-
-exec()—return a Array with index and input
-
-search()—return index and u can both input RegExp or String                               //字符串带的方法
-
-replace()—as it looks like 
-
-##### difference between [] {} ()
-
-[0-9] 查找任何从 0 至 9 的数字
-
-{8} 表示位数为8位
-
-()的作用是提取匹配的字符串。表达式中有几个`()`就会得到几个相应的匹配字符串。比如`(\s+)`表示连续空格的字符串
-
-##### ^ 和 $
-
-`^` 匹配一个字符串的开头，比如 (`^a`) 就是匹配以字母`a`开头的字符串
-
-`$` 匹配一个字符串的结尾,比如 (`b$`) 就是匹配以字母`b`结尾的字符串
-
-`^`还有另个一个作用就是取反，比如`[^xyz]`表示匹配的字符串不包含`xyz`
-
-##### \d \s \w .
-
-`\d` 匹配一个非负整数， 等价于 `[0-9]`；
-
-`\s` 匹配一个空白字符；
-
-`\w` 匹配一个英文字母或数字，等价于`[0-9a-zA-Z]`；
-
-`.` 匹配除换行符以外的任意字符，等价于`[^\n]`。
-
-##### * + ?
-
-`*`表示匹配前面元素0次或多次，比如`(\s*)`就是匹配0个或多个空格；
-
-`+` 表示匹配前面元素1次或多次，比如`(\d+)`就是匹配由至少1个整数组成的字符串；
-
-`?`表示匹配前面元素0次或1次，相当于`{0,1}`，比如`(\w?)` 就是匹配最多由1个字母或数字组成的字符串 。
-
-##### 还有一些语法
-
-[adgk]   查找给定集合内的任何字符。
-
-
-`\W`  查找非单词字符。
-
-
-`\d`  查找数字。
-
-
-`\D` 查找非数字字符。
-
-
-`\b` 匹配单词边界。
-
-
-`\B` 匹配非单词边界。
-
-
-`\0` 查找 NULL 字符。
-
-
-`\n` 查找换行符。
-
-
-`\f` 查找换页符。
-
-
-`\r` 查找回车符。
-
-
-`\t` 查找制表符。
-
-
-`\v` 查找垂直制表符。
-
-
-`\xxx` 查找以八进制数 xxx 规定的字符。
-
-
-`\xdd` 查找以十六进制数 dd 规定的字符。
-
-
-`\uxxxx` 查找以十六进制数 xxxx 规定的 Unicode 字符。
-
-n{X,Y} `X`和 `Y` 为正整数。前面的模式`n` 连续出现至少 `X`次，至多 `Y`次时匹配
-
-?=n 匹配任何其后紧接指定字符串`n` 的字符串。
-
-?!n 匹配任何其后没有紧接指定字符串 `n` 的字符串
-
-
-
-
-
-## 第二部分 看到的比较经典的覆盖很多知识点的题
-
-http://exam.webfuture.cn/index.html  
-
-#### 无敌面试题：当输入url之后发生了什么！！！（这个必须加粗再加粗）
-
-#### DOM操作插入节点
-
-```javascript
-(() => {
-    const ndContainer = document.getElementById('js-list');
-    if (!ndContainer) {
-        return;
-    }
-
-    const total = 30000;
-    const batchSize = 4; // 每批插入的节点次数，越大越卡
-    const batchCount = total / batchSize; // 需要批量处理多少次
-    let batchDone = 0;  // 已经完成的批处理个数
-
-    function appendItems() {
-        const fragment = document.createDocumentFragment();
-        for (let i = 0; i < batchSize; i++) {
-            const ndItem = document.createElement('li');
-            ndItem.innerText = (batchDone * batchSize) + i + 1;
-            fragment.appendChild(ndItem);
-        }
-
-        // 每次批处理只修改 1 次 DOM
-        ndContainer.appendChild(fragment);
-
-        batchDone += 1;
-        doBatchAppend();
-    }
-
-    function doBatchAppend() {
-        if (batchDone < batchCount) {
-            window.requestAnimationFrame(appendItems);
-        }
-    }
-
-    // kickoff
-    doBatchAppend();
-
-    ndContainer.addEventListener('click', function (e) {
-        const target = e.target;
-        if (target.tagName === 'LI') {
-            alert(target.innerHTML);
-        }
-    });
-})();
-```
-
-###### 知识点
-
-DocumentFragment:文档碎片，虚拟的dom，优化了多次插入。
-
-requestAnimationFrame:因为电脑屏幕是60帧，setInterval这些16.7并不好。
-
-- 浏览器可以优化并行的动画动作，更合理的重新排列动作序列，并把能够合并的动作放在一个渲染周期内完成，从而呈现出更流畅的动画效果。
-- 在一个浏览器标签页里运行一个动画，当这个标签页不可见时，浏览器会暂停它，这会减少CPU，内存的压力，节省电池电量。
-
-如果想自己设置频率：
-
-```javascript
-var fps = 15;
-function draw() {
-    setTimeout(function() {
-        requestAnimationFrame(draw);
-        // Drawing code goes here
-    }, 1000 / fps);
-}
-```
-
-## 第三部分 计算机网络
+## 第二部分 计算机网络
 
 ##### 在css/js代码上线之后开发人员经常会优化性能，从用户刷新网页开始，一次js请求一般情况下有哪些地方会有缓存处理？
 
@@ -1965,7 +2067,7 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 
 
 
-## 第四部分 数据结构和算法
+## 第三部分 数据结构和算法
 
 ### 数据结构
 
@@ -2190,7 +2292,7 @@ var postOrder = function (node) {
 
 
 
-## 第五部分 简历和面试技巧总结
+## 第四部分 简历和面试技巧总结
 
 ##### 反问面试官的最后一个问题
 
@@ -2208,8 +2310,15 @@ var postOrder = function (node) {
 
 ​	   前端大哈 https://zhuanlan.zhihu.com/qianduandaha
 
+##### 看过的前端书籍
 
-#### 
+js：权威指南，你不知道的js，understunding es6，exploring es6，阮es6
+
+css：
+
+
+
+
 
 ##### 
 
