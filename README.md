@@ -1198,7 +1198,82 @@ funcs.forEach(function(func) {
 
 ##### 2.函数的扩展
 
+###### 基本的用法
 
+```javascript
+function log(x, y = 'World') {
+  console.log(x, y);		//设置初始值不能有重复的参数
+}
+
+function foo(x = 5) {
+  let x = 1; // error
+  const x = 2; // error
+}
+
+function fetch(url, { body = '', method = 'GET', headers = {} }) {
+  console.log(method);					//与赋值结构一同使用
+}
+fetch('http://example.com', {})
+// "GET"
+fetch('http://example.com')
+// 报错
+
+function f(x = 1, y) {
+  return [x, y];			//省略值只能在末尾
+}
+f() // [1, undefined]
+f(2) // [2, undefined])
+f(, 1) // 报错
+f(undefined, 1) // [1, 1]
+
+(function (a, b, c = 5) {}).length // 2。 length属性返回参数没有默认值的个数
+(function (a, b = 1, c) {}).length // 1。 在尾部的参数不计入
+(function(...args) {}).length // 0
+
+function f(y = x) {
+  let x = 2;		//赋值是在一开始完成的
+  console.log(y);
+}
+f() // ReferenceError: x is not defined
+
+
+var x = 1;			//这个比较复杂，如果把var去掉，foo()的结果就是2.
+function foo(x, y = function() { x = 2; }) {
+  var x = 3;
+  y();
+  console.log(x);
+}
+
+foo() // 3
+x // 1
+```
+
+###### rest参数
+
+```javascript
+const sortNumbers = (...numbers) => numbers.sort(); //rest本来就是数组，不需要像arguments一样转
+
+function f(a, ...b, c) {
+ 						 // 不能这么些，rest之后不能再有其他参数，会报错
+}
+```
+
+###### 严格模式
+
+规定只要函数参数使用了默认值、解构赋值、或者扩展运算符，那么函数内部就不能显式设定为严格模式，否则会报错。禁止这种写法的原因是因为先解析参数，可是函数执行才判断严格模式。
+
+###### name属性
+
+```javascript
+var f = function () {};
+// ES5
+f.name // ""
+// ES6		
+f.name // "f"
+
+function foo() {};
+foo.bind({}).name // "bound foo"  会加bound
+```
 
 ###### 箭头函数有几个使用注意点。
 
@@ -1216,12 +1291,89 @@ function foo() {
     console.log('id:', this.id);
   }, 100);
 }
-
 var id = 21;
-
 foo.call({ id: 42 });
 // id: 42
+
+var getTempItem = id => ({ id: id, name: "Temp" }); //直接返回对象的话要加括号
+
+
+// ES6   这就是箭头函数的this，就是直接绑定不变且根据父亲this的指向
+function foo() {
+  setTimeout(() => {
+    console.log('id:', this.id);
+  }, 100);
+}
+// ES5
+function foo() {
+  var _this = this;
+  setTimeout(function () {
+    console.log('id:', _this.id);
+  }, 100);
+}
+
 ```
+
+除了`this`，以下三个变量在箭头函数之中也是不存在的，指向外层函数的对应量： `arguments`、`super`、`new.target`。由于箭头函数没有自己的`this`，所以当然也就不能用`call()`、`apply()`、`bind()`这些方法去改变`this`的指向。
+
+###### 替换掉call，apply，bind绑定
+
+```javascript
+foo::bar;
+// 等同于
+bar.bind(foo);
+```
+
+###### 尾部调用优化！！！
+
+我们知道，函数调用会在内存形成一个“调用记录”，又称“调用帧”（call frame），保存调用位置和内部变量等信息。如果在函数`A`的内部调用函数`B`，那么在`A`的调用帧上方，还会形成一个`B`的调用帧。等到`B`运行结束，将结果返回到`A`，`B`的调用帧才会消失。如果函数`B`内部还调用函数`C`，那就还有一个`C`的调用帧，以此类推。所有的调用帧，就形成一个“调用栈”（call stack）。
+
+```javascript
+function f() {
+  let m = 1;
+  let n = 2;
+  return g(m + n);
+}
+f();
+// 等同于
+function f() {
+  return g(3);
+}
+f();
+```
+
+###### 尾部递归！！！（栈溢出）
+
+```javascript
+function Fibonacci (n) {
+  if ( n <= 1 ) {return 1};
+  return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+
+
+function Fibonacci2 (n , ac1 = 1 , ac2 = 1) {
+  if( n <= 1 ) {return ac2};
+  return Fibonacci2 (n - 1, ac2, ac1 + ac2);
+}
+
+```
+
+改写有两种：
+
+1.函数式编程有一个概念，叫做柯里化（currying），意思是将多参数的函数转换成单参数的形式。这里也可以使用柯里化。f(x,y,z)===>f(x)g(y)n(z)
+
+2.使用默认值，就可以只传一个参数
+
+ES6 的尾调用优化只在严格模式下开启，正常模式是无效的。
+
+这是因为在正常模式下，函数内部有两个变量，可以跟踪函数的调用栈。
+
+- `func.arguments`：返回调用时函数的参数。
+- `func.caller`：返回调用当前函数的那个函数。
+
+尾调用优化发生时，函数的调用栈会改写，因此上面两个变量就会失真。严格模式禁用这两个变量，所以尾调用模式仅在严格模式下生效。
+
+###### 允许最后一个参数有分号
 
 ##### 3.Promise基本用法
 
@@ -1371,7 +1523,87 @@ for (let [key, value] of map) {
 }
 ```
 
-##### 5.
+##### 5.数组的扩展
+
+###### 扩展运算符
+
+替代apply
+
+```javascript
+f.apply(null, args);
+f(...args);
+// ES5 的写法
+Math.max.apply(null, [14, 3, 77])
+// ES6 的写法
+Math.max(...[14, 3, 77])
+
+arr1.push(...arr2);
+```
+
+应用
+
+```javascript
+// ES5
+[1, 2].concat(more)
+// ES6
+[1, 2, ...more]
+
+// ES5
+a = list[0], rest = list.slice(1)
+// ES6
+[a, ...rest] = list
+
+[...'hello']  // [ "h", "e", "l", "l", "o" ] 将字符串转换成数组
+
+var nodeList = document.querySelectorAll('div');
+var array = [...nodeList];   　　　　　　//将Iterator 接口的对象转换成真正数组
+```
+
+###### Array.from
+
+`Array.from`方法用于将两类对象转为真正的数组：类似数组的对象（array-like object）和可遍历（iterable）的对象。第一个参数为对象，第二个参数可以像map一样操作，最后一个参数绑定this
+
+```javascript
+Array.from(arrayLike, x => x * x);
+```
+
+###### Array.of
+
+`Array.of`方法用于将一组值，转换为数组
+
+主要其实是为了弥补Array(2)这个bug，要是我想这样呢
+
+```javascript
+Array.of(3) // [3]
+```
+
+###### copyWithin
+
+```javascript
+Array.prototype.copyWithin(target, start = 0, end = this.length)
+
+[1, 2, 3, 4, 5].copyWithin(0, 3) // [4, 5, 3, 4, 5]
+```
+
+###### find && findindex
+
+```javascript
+[1, 4, -5, 10].find((n) => n < 0)  // -5
+```
+
+主要是弥补了indexOf无法识别NAN，因为其内部用的是‘===’来判断的
+
+###### includes
+
+感觉和上边这个差不多，只不过返回T/F。两个共同弥补indexOf
+
+###### fill
+
+全部擦除然后添上。允许第二，三个参数选择起始和结束位置
+
+###### entries()，keys() 和 values()
+
+最后一点！数组的空位处理标准都不一样，ES6按undefined来。总之避免使用空位
 
 
 
