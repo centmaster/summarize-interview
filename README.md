@@ -1427,15 +1427,6 @@ define(['./a,./b'],function(a,b){//依赖必须一开始就写好
 
 后者就有点像小孩。在配置文件中给出需要对文件的各种操作命令，然后他会帮你操作完成。
 
-#### 移动端开发
-
-##### 响应式布局和自适应布局的区别
-
-Responsive design ＝ RWD，Adaptive design ＝ AWD
-
-​	响应式设计是采用 CSS 的 media query 技术，配合流体布局（ fluid grids ）和同样可以自适应的图片/视频等资源素材。以上所说，都是通过 HTML 和 CSS 就能完成的。一般来说，RWD 倾向于只改变元素的外观布局，而不大幅度改变内容。可以把 RWD 定义为一切能用来为各种分辨率和设备性能优化视觉体验的技术吧。
-​         自适应设计在包括 RWD 的 CSS media query 技术以外，也要用 Javascript 来操作 HTML 来更适应移动设备的能力。有可能会针对移动端用户减去内容，减去功能。也 可以在服务器端就进行优化，把优化过的内容送到终端上。
-
 ##### Difference between transition and transform
 
 ###### transition
@@ -1664,7 +1655,18 @@ $("#tab").bind("click",function(ev)){
 
 有了defer属性，加载后续文档的过程和js脚本的加载(此时仅加载不执行)是并行进行的(异步)，js脚本的执行需要等到文档所有元素解析完成之后，DOMContentLoaded事件触发执行之前。(不耽误后边文档加载，但是都加载完执行。)
 
+#### 移动端开发
 
+##### 响应式布局和自适应布局的区别
+
+Responsive design ＝ RWD，Adaptive design ＝ AWD
+
+​	响应式设计是采用 CSS 的 media query 技术，配合流体布局（ fluid grids ）和同样可以自适应的图片/视频等资源素材。以上所说，都是通过 HTML 和 CSS 就能完成的。一般来说，RWD 倾向于只改变元素的外观布局，而不大幅度改变内容。可以把 RWD 定义为一切能用来为各种分辨率和设备性能优化视觉体验的技术吧。
+​         自适应设计在包括 RWD 的 CSS media query 技术以外，也要用 Javascript 来操作 HTML 来更适应移动设备的能力。有可能会针对移动端用户减去内容，减去功能。也 可以在服务器端就进行优化，把优化过的内容送到终端上。
+
+##### 移动端布局的三种方法
+
+媒体查询，rem，设置viewpoint中的width
 
 ####正则表达式 
 
