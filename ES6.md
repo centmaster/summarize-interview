@@ -62,7 +62,7 @@ if (true) {
 
 const同时也满足，块级作用域，变量不提升，暂时性死区。
 
-###### const必须生命的时候赋值
+###### const必须声明的时候赋值
 
 ##### 块级作用域
 
@@ -627,7 +627,489 @@ ES5 的对象属性名都是字符串，这容易造成属性名的冲突。比�
 
 
 
-#### 8.Proxy
+#### 8.Proxy&&Reflect
+
+##### Proxy
+
+写在一起是因为是配套使用的。
+
+Proxy 可以理解成，在目标对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写。
+
+- get() set() has() deleteProperty() difineProperty()//与属性有关的方法
+- getOwnPropertyDescriptor() ownKeys()//Own的属性描述和属性keys
+- getPrototypeOf() setPrototypeOf()//与原型有关的方法
+- isExtensible()判断是否可以扩展 preventExtensions()阻止添加新属性
+- apply()//调用方法有关
+- construct()//和new 有关的
+- revocabal //用来取消proxy实例
+
+```javascript
+var proxy = new Proxy(target, handler);
+
+var obj = new Proxy({}, {
+  get: function (target, key, receiver) {
+    console.log(`getting ${key}!`);
+    return Reflect.get(target, key, receiver);
+  },
+  set: function (target, key, value, receiver) {
+    console.log(`setting ${key}!`);
+    return Reflect.set(target, key, value, receiver);
+  }
+});
+```
+
+this的指向问题：指向proxy而不是指向对象
+
+
+
+##### Reflect
+
+1.将`Object`对象的一些明显属于语言内部的方法（比如`Object.defineProperty`），放到`Reflect`对象上。现阶段，某些方法同时在`Object`和`Reflect`对象上部署，未来的新方法将只部署在`Reflect`对象上。也就是说，从`Reflect`对象上可以拿到语言内部的方法。
+
+2.修改某些`Object`方法的返回结果，让其变得更合理。比如，`Object.defineProperty(obj, name, desc)`在无法定义属性时，会抛出一个错误，而`Reflect.defineProperty(obj, name, desc)`则会返回`false`。
+
+3.让`Object`操作都变成函数行为。某些`Object`操作是命令式
+
+```javascript
+// 老写法
+'assign' in Object // true
+
+// 新写法
+Reflect.has(Object, 'assign') // true
+```
+
+4.`Reflect`对象的方法与`Proxy`对象的方法一一对应，只要是`Proxy`对象的方法，就能在`Reflect`对象上找到对应的方法。这就让`Proxy`对象可以方便地调用对应的`Reflect`方法，完成默认行为，作为修改行为的基础。也就是说，不管`Proxy`怎么修改默认行为，你总可以在`Reflect`上获取默认行为。
+
+
+
+#### 9.Iterator与for…of 循环
+
+因为现在已经有四种数据类型，Iterator 接口的目的，就是为所有数据结构，提供了一种统一的访问机制，即`for...of`循环。
+
+##### 默认Iterator接口———[Symbol.iterator]
+
+Iterator 接口的目的，就是为所有数据结构，提供了一种统一的访问机制，即`for...of`循环。当使用`for...of`循环遍历某种数据结构时，该循环会自动去寻找 Iterator 接口。
+
+原生具备 Iterator 接口的数据结构如下。
+
+- Array
+- Map
+- Set
+- String
+- TypedArray
+- 函数的 arguments 对象
+
+```javascript
+const obj = {
+  [Symbol.iterator] : function () {
+    return {
+      next: function () {
+        return {
+          value: 1,
+          done: true
+        };
+      }
+    };
+  }			//每次调用next方法，都会返回一个代表当前成员的信息对象，具有value和done两个属性。
+};
+
+NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];//简便的赋方法
+
+let iterable = {
+  a: 'a',
+  b: 'b',
+  c: 'c',
+  length: 3,
+  [Symbol.iterator]: Array.prototype[Symbol.iterator]
+};
+for (let item of iterable) {
+  console.log(item); // undefined, undefined, undefined  键名不是数字不行
+}
+```
+
+##### 3.调用Iterator接口的场合
+
+1.结构赋值
+
+2.扩展运算符（…)
+
+3.yield
+
+4.遍历
+
+##### 4.遍历器对象的return(),throw()
+
+遍历器对象除了具有`next`方法，还可以具有`return`方法和`throw`方法。如果你自己写遍历器对象生成函数，那么`next`方法是必须部署的，`return`方法和`throw`方法是否部署是可选的。
+
+`return`方法的使用场合是，如果`for...of`循环提前退出（通常是因为出错，或者有`break`语句或`continue`语句），就会调用`return`方法。如果一个对象在完成遍历前，需要清理或释放资源，就可以部署`return`方法。
+
+##### 5.for…of 好在哪里
+
+forEach:不能break跳出
+
+for…in:
+
+主要是用来遍历对象。但是遍历对象其实也能用for(x of arr.keys())
+
+遍历数组有三个问题：（1)index本来是数字，它处理成字符串
+
+​					 (2)遍历顺序不定
+
+​					 (3)原型链上其他的值也会被遍历到
+
+
+
+#### 10.Generator函数
+
+然后，Generator 函数的调用方法与普通函数一样，也是在函数名后面加上一对圆括号。不同的是，调用 Generator 函数后，该函数并不执行，返回的也不是函数运行结果，而是一个指向内部状态的指针对象，也就是上一章介绍的遍历器对象（Iterator Object）。
+
+```javascript
+function* helloWorldGenerator() {
+  yield 'hello';
+  yield 'world';
+  return 'ending';
+}
+var hw = helloWorldGenerator();
+hw.next()
+// { value: 'hello', done: false }
+hw.next()
+// { value: 'world', done: false }
+hw.next()
+// { value: 'ending', done: true }
+hw.next()
+```
+
+与Iterator接口的关系
+
+```javascript
+var myIterable = {};
+myIterable[Symbol.iterator] = function* () {
+  yield 1;
+  yield 2;
+  yield 3;
+};
+[...myIterable] // [1, 2, 3]
+
+function* gen(){
+  // some code
+}
+var g = gen();
+g[Symbol.iterator]() === g  		//他自己本身返回的就是iterator
+```
+
+next方法
+
+```javascript
+function* foo(x) {
+  var y = 2 * (yield (x + 1));
+  var z = yield (y / 3);
+  return (x + y + z);
+}
+
+var a = foo(5);
+a.next() // Object{value:6, done:false}
+a.next() // Object{value:NaN, done:false}
+a.next() // Object{value:NaN, done:true}
+
+var b = foo(5);
+b.next() // { value:6, done:false }
+b.next(12) // { value:8, done:false }
+b.next(13) // { value:42, done:true }
+```
+
+for…of遍历
+
+```javascript
+function *foo() {
+  yield 1;
+  yield 2;
+  yield 3;
+  yield 4;
+  yield 5;
+  return 6;
+}
+
+for (let v of foo()) {
+  console.log(v);
+}
+// 1 2 3 4 5 		一旦done:true 循环就会终止
+```
+
+利用generator为对象添加Iterator接口
+
+```javascript
+function* objectEntries(obj) {
+  let propKeys = Reflect.ownKeys(obj);
+
+  for (let propKey of propKeys) {
+    yield [propKey, obj[propKey]];
+  }
+}
+
+let jane = { first: 'Jane', last: 'Doe' };
+
+for (let [key, value] of objectEntries(jane)) {
+  console.log(`${key}: ${value}`);
+}
+// first: Jane
+// last: Doe
+```
+
+当然也可以加上遍历器接口
+
+```javascript
+function* objectEntries() {
+  let propKeys = Object.keys(this);
+
+  for (let propKey of propKeys) {
+    yield [propKey, this[propKey]];
+  }
+}
+
+let jane = { first: 'Jane', last: 'Doe' };
+
+jane[Symbol.iterator] = objectEntries;
+
+for (let [key, value] of jane) {
+  console.log(`${key}: ${value}`);
+}
+// first: Jane
+// last: Doe
+```
+
+其他调用Iterator接口的也可以使用。这就可以把generator看成一种数据类型
+
+```javascript
+function* numbers () {
+  yield 1
+  yield 2
+  return 3
+  yield 4
+}
+// 扩展运算符
+[...numbers()] // [1, 2]
+
+// Array.from 方法
+Array.from(numbers()) // [1, 2]
+
+// 解构赋值
+let [x, y] = numbers();
+x // 1
+y // 2
+
+// for...of 循环
+for (let n of numbers()) {
+  console.log(n)
+}
+// 1
+// 2
+```
+
+return,throw
+
+```javascript
+function* gen() {
+  yield 1;
+  yield 2;
+  yield 3;
+}
+
+var g = gen();
+
+g.next()        // { value: 1, done: false }
+g.return('foo') // { value: "foo", done: true }
+g.next()        // { value: undefined, done: true }
+```
+
+可以利用yield*来用generator调用另一个generator
+
+```javascript
+function* foo() {
+  yield 'a';
+  yield 'b';
+}
+function* bar() {
+  yield 'x';
+  yield* foo();
+  yield 'y';
+}
+// 等同于
+function* bar() {
+  yield 'x';
+  yield 'a';
+  yield 'b';
+  yield 'y';
+}
+```
+
+```javascript
+function* inner() {
+  yield 'hello!';
+}
+
+function* outer1() {
+  yield 'open';
+  yield inner();
+  yield 'close';
+}
+
+var gen = outer1()
+gen.next().value // "open"
+gen.next().value // 返回一个遍历器对象
+gen.next().value // "close"
+
+function* outer2() {
+  yield 'open'
+  yield* inner()
+  yield 'close'
+}
+
+var gen = outer2()
+gen.next().value // "open"
+gen.next().value // "hello!"
+gen.next().value // "close"
+```
+
+实际上，任何数据结构只要有 Iterator 接口，就可以被`yield*`遍历。
+
+如果把`g`当作普通的构造函数，并不会生效，因为`g`返回的总是遍历器对象，而不是`this`对象。
+
+```javascript
+function* g() {
+  this.a = 11;
+}
+
+let obj = g();
+obj.a // undefined
+```
+
+Generator函数也不能跟`new`命令一起用，会报错。因为返回的是指针，不是this，指针中有next。调用next后返回对象
+
+那么，有没有办法让 Generator 函数返回一个正常的对象实例，既可以用`next`方法，又可以获得正常的`this`？
+
+```javascript
+function* F() {
+  this.a = 1;
+  yield this.b = 2;
+  yield this.c = 3;
+}
+var f = F.call(F.prototype);
+
+f.next();  // Object {value: 2, done: false}
+f.next();  // Object {value: 3, done: false}
+f.next();  // Object {value: undefined, done: true}
+
+f.a // 1
+f.b // 2
+f.c // 3
+```
+
+##### 应用
+
+```javascript
+function* main() {
+  var result = yield request("http://some.url");
+  var resp = JSON.parse(result);
+    console.log(resp.value);
+}
+
+function request(url) {
+  makeAjaxCall(url, function(response){
+    it.next(response);		//必须要加上参数，yield本身没有返回值
+  });
+}
+
+var it = main();
+it.next();
+```
+
+For…of本质是一个while循环
+
+```javascript
+var it = iterateJobs(jobs);
+var res = it.next();
+
+while (!res.done){
+  var result = res.value;
+  // ...
+  res = it.next();
+}
+```
+
+Thunk和co用来处理generator的异步处理
+
+#### async
+
+`async`函数就是将 Generator 函数的星号（`*`）替换成`async`，将`yield`替换成`await`，仅此而已。
+
+`async`函数的返回值是 Promise 对象，这比 Generator 函数的返回值是 Iterator 对象方便多了。你可以用`then`方法指定下一步的操作。
+
+`async`函数返回一个 Promise 对象，可以使用`then`方法添加回调函数。当函数执行的时候，一旦遇到`await`就会先返回，等到异步操作完成，再接着执行函数体内后面的语句。
+
+下面是一个例子。
+
+```javascript
+async function getStockPriceByName(name) {
+  var symbol = await getStockSymbol(name);
+  var stockPrice = await getStockPrice(symbol);
+  return stockPrice;
+}
+
+getStockPriceByName('goog').then(function (result) {
+  console.log(result);
+});
+```
+
+`async`函数返回的 Promise 对象，必须等到内部所有`await`命令后面的 Promise 对象执行完，才会发生状态改变，除非遇到`return`语句或者抛出错误。
+
+正常情况下，`await`命令后面是一个 Promise 对象。如果不是，会被转成一个立即`resolve`的 Promise 对象。
+
+多个`await`命令后面的异步操作，如果不存在继发关系，最好让它们同时触发。
+
+```javascript
+// 写法一
+let [foo, bar] = await Promise.all([getFoo(), getBar()]);
+```
+
+`await`命令只能用在`async`函数之中，如果用在普通函数，就会报错。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

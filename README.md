@@ -711,7 +711,81 @@ descriptor中定义的参数用来定义或修改的属性的描述符
 })();
 ```
 
+##### 对象的扩展，密封以及冻结
 
+- 扩展特性
+
+  - `Object.isExtensible` 方法
+
+    可扩展和上述的可修改不是一个概念
+
+    ```javascript
+    //对象是否可以扩展与对象的属性是否可以配置无关
+    empty = Object.create({},{
+        "a":{
+            value : 1,
+            configurable : false,//不可配置
+            enumerable : true,//可枚举
+            writable : true//可写
+        }
+    });
+    console.log(Object.isExtensible(empty) === true);//true
+    ```
+
+  - `Object.preventExtensions` 方法
+
+    修改为不可扩展。如果为当前不可扩展对象 empty 修改属性是成功的，这是因为一个对象的属性是否可以被修改与该对象是否可以扩展无关，而是与该对象在创建的时候是否声明为不可重写有关
+
+- 密封特性
+
+  - `Object.isSealed` 方法
+
+    密封对象是指那些不能添加新的属性，不能删除已有属性，以及不能修改已有属性的可枚举性、可配置性、可写性，但可以修改已有属性的值的对象。
+
+    ```javascript
+    (function () {
+        //新建的对象默认不是密封的
+        var empty = {};
+        console.log(Object.isSealed(empty) === false);//true
+
+        //如果把一个空对象变得不可扩展,则它同时也会变成个密封对象.
+        Object.preventExtensions(empty);
+        console.log(Object.isSealed(empty) === true);//true
+
+        //但如果这个对象不是空对象,则它不会变成密封对象,因为密封对象的所有自身属性必须是不可配置的.
+        var hasProp = {fee : "fie foe fum"};
+        Object.preventExtensions(hasProp);
+        console.log(Object.isSealed(hasProp) === false);//true
+
+        //如果把这个属性变得不可配置,则这个对象也就成了密封对象.
+        Object.defineProperty(hasProp,"fee",{configurable : false});
+        console.log(Object.isSealed(hasProp) === true);//true
+    })();
+    ```
+
+  - `Object.seal` 方法
+
+  ```javascript
+  Object.seal(o);  //与下面的操作效果相同
+
+  Object.defineProperty(o,"a",{configurable:false,writable:false});
+  Object.preventExtensions(o);
+  ```
+
+- 冻结特性
+
+  - `Object.isFrozen` 方法
+
+     冻结对象是指那些不能添加新的属性，不能修改已有属性的值，不能删除已有属性，以及不能修改已有属性的可枚举性、可配置性、可写性的对象。也就是说，这个对象永远是不可变的。
+
+
+  - `Object.freeze` 方法
+
+    - `浅冻结` 与 `深冻结`
+
+      倘若一个对象的属性是一个对象，那么对这个外部对象进行冻结，内部对象的属性是依旧可以改变的，这就叫浅冻结，若把外部对象冻结的同时把其所有内部对象甚至是内部的内部无限延伸的对象属性也冻结了，这就叫深冻结。
+
+      深冻结：遍历递归操作冻结每一层
 
 ##### 事件代理
 
@@ -906,8 +980,6 @@ JavaScript引擎首先从macrotask queue中取出第一个任务，
 下一步该取的是microtask queue中的任务了。
 因此promise.then的回调比setTimeout先执行。
 ```
-
-
 
 
 
