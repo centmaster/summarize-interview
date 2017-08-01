@@ -1038,7 +1038,7 @@ while (!res.done){
 
 Thunk和co用来处理generator的异步处理
 
-#### async
+#### 11.async
 
 `async`函数就是将 Generator 函数的星号（`*`）替换成`async`，将`yield`替换成`await`，仅此而已。
 
@@ -1075,33 +1075,520 @@ let [foo, bar] = await Promise.all([getFoo(), getBar()]);
 
 
 
+#### 12.Class
+
+注意，定义“类”的方法的时候，前面不需要加上`function`这个关键字，直接把函数定义放进去了就可以了。另外，方法之间不需要逗号分隔，加了会报错。
+
+```javascript
+//定义类
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+  [methodName]() {
+    // ...
+  }
+}
+```
+
+下面代码表明，类的数据类型就是函数，类本身就指向构造函数。
+
+使用的时候，也是直接对类使用`new`命令，跟构造函数的用法完全一致。
+
+```javascript
+class Point {
+  // ...
+}
+
+typeof Point // "function"
+Point === Point.prototype.constructor // true
+
+var b=new Point() //与构造函数使用方法一样,必须要加new否则报错
+```
+
+类的所有方法都定义在类的`prototype`属性上面。
+
+```javascript
+class Point {
+  constructor() {
+    // ...
+  }
+
+  toString() {
+    // ...
+  }
+
+  toValue() {
+    // ...
+  }
+}
+
+// 等同于
+
+Point.prototype = {
+  constructor() {},
+  toString() {},
+  toValue() {},
+};
 
 
+//这样也可以
+Object.assign(Point.prototype, {
+  toString(){},
+  toValue(){}
+});
+```
+
+区别于ES5，类的内部所有定义的方法，都是不可枚举的（non-enumerable）
+
+`constructor`方法是类的默认方法，通过`new`命令生成对象实例时，自动调用该方法。一个类必须有`constructor`方法，如果没有显式定义，一个空的`constructor`方法会被默认添加。
+
+```javascript
+class Point {
+}
+
+// 等同于
+class Point {
+  constructor() {}
+}
+```
+
+子类必须在`constructor`方法中调用`super`方法，否则新建实例时会报错。这是因为子类没有自己的`this`对象，而是继承父类的`this`对象，然后对其进行加工。如果不调用`super`方法，子类就得不到`this`对象。在子类的构造函数中，只有调用`super`之后，才可以使用`this`关键字，否则会报错。这是因为子类实例的构建，是基于对父类实例加工，只有`super`方法才能返回父类实例。
+
+```javascript
+class ColorPoint extends Point {
+}
+
+// 等同于
+class ColorPoint extends Point {
+  constructor(...args) {
+    super(...args);
+  }
+}
+```
+
+与 ES5 一样，实例的属性除非显式定义在其本身（即定义在`this`对象上），否则都是定义在原型上（即定义在`class`上）。
+
+```javascript
+//定义类
+class Point {
+
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+
+}
+
+var point = new Point(2, 3);
+
+point.toString() // (2, 3)
+
+point.hasOwnProperty('x') // true
+point.hasOwnProperty('y') // true
+point.hasOwnProperty('toString') // false
+point.__proto__.hasOwnProperty('toString') // true
+```
+
+```javascript
+const MyClass = class Me {
+  getClassName() {
+    return Me.name;		//只能在内部看到结果是Me，外部读不到
+  }
+};
+```
+
+不存在变量提升。否则，下面这种情况，提升完因为let Foo(还没声明，没提升)，就会报错
+
+```javascript
+{
+  let Foo = class {};
+  class Bar extends Foo {
+  }
+}
+```
+
+原则上讲是不存在私有属性和方法的。
+
+```javascript
+class Widget {
+  foo (baz) {
+    bar.call(this, baz);
+  }
+
+  // ...曲线救国，或者用symbol
+}
+
+function bar(baz) {
+  return this.snaf = baz;
+}
+```
+
+私有方法使用#号。
+
+```javascript
+class Foo {
+  #a;
+  #b;
+  #sum() { return #a + #b; }  //也相应的私有方法
+  printSum() { console.log(#sum()); }
+  constructor(a, b) { #a = a; #b = b; }
+}
+```
+
+注意内部this的指向。说白了跟其他的方法里边包了this，调用上下文不一致一样
+
+```javascript
+class Logger {
+  printName(name = 'there') {
+    this.print(`Hello ${name}`);
+  }
+
+  print(text) {
+    console.log(text);
+  }
+}
+
+const logger = new Logger();
+const { printName } = logger;
+printName();
 
 
+//使用箭头函数解决
 
+class Logger {
+  constructor() {
+    this.printName = (name = 'there') => {
+      this.print(`Hello ${name}`);
+    };
+  }
 
+  // ...
+}
+```
 
+类相当于实例的原型，所有在类中定义的方法，都会被实例继承。如果在一个方法前，加上`static`关键字，就表示该方法不会被实例继承，而是直接通过类来调用，这就称为“静态方法”。
 
+父类的静态方法，可以被子类继承。静态方法也是可以从`super`对象上调用的。
 
+```javascript
+class Foo {
+  static classMethod() {
+    return 'hello';
+  }
+}
 
+Foo.classMethod() // 'hello'
 
+var foo = new Foo();
+foo.classMethod()
+// TypeError: foo.classMethod is not a function
+```
 
+下面的写法为`Foo`类定义了一个静态属性`prop`。
 
+目前，只有这种写法可行，因为 ES6 明确规定，Class 内部只有静态方法，没有静态属性。
 
+```javascript
+class Foo {
+}
 
+Foo.prop = 1;
+Foo.prop // 1
+```
 
+`new`是从构造函数生成实例的命令。ES6 为`new`命令引入了一个`new.target`属性，该属性一般用在在构造函数之中，返回`new`命令作用于的那个构造函数。如果构造函数不是通过`new`命令调用的，`new.target`会返回`undefined`，因此这个属性可以用来确定构造函数是怎么调用的。
 
+```javascript
+class Shape {
+  constructor() {
+    if (new.target === Shape) {
+      throw new Error('本类不能实例化');
+    }
+  }
+}
 
+class Rectangle extends Shape {
+  constructor(length, width) {
+    super();
+    // ...
+  }
+}
 
+var x = new Shape();  // 报错
+var y = new Rectangle(3, 4);  // 正确
+```
 
+Object.getPrototypeOf()
 
+```javascript
+Object.getPrototypeOf(ColorPoint) === Point
+// true    判断一个类是否继承了另一个类
+```
 
+super关键字，既可以当作函数使用，也可以当作对象使用
 
+第一种情况，`super`作为函数调用时，代表父类的构造函数。ES6 要求，子类的构造函数必须执行一次`super`函数。`super()`在这里相当于`A.prototype.constructor.call(this)`。代表了父类`A`的构造函数，但是返回的是子类`B`的实例
 
+第二种情况，`super`作为对象时，在普通方法中，指向父类的原型对象；在静态方法中，指向父类。
 
+```javascript
+class A {
+  p() {
+    return this;
+  }
+}
 
+class B extends A {
+  constructor() {
+    super();
+    console.log(super.p()); // this是B中的this	A.prototype.p()
+  }
+}
+```
 
+由于`super`指向父类的原型对象，所以定义在父类实例上的方法或属性，是无法通过`super`调用的。
+
+```javascript
+class A {
+  constructor() {
+    this.p = 2;
+  }
+}
+
+class B extends A {
+  get m() {
+    return super.p;
+  }
+}//调用不到
+```
+
+ES5 的继承，实质是先创造子类的实例对象`this`，然后再将父类的方法添加到`this`上面（`Parent.apply(this)`）。ES6 的继承机制完全不同，实质是先创造父类的实例对象`this`（所以必须先调用`super`方法），然后再用子类的构造函数修改`this`
+
+ES6 允许继承原生构造函数定义子类，因为 ES6 是先新建父类的实例对象`this`，然后再用子类的构造函数修饰`this`，使得父类的所有行为都可以继承。
+
+```javascript
+class MyArray extends Array {
+  constructor(...args) {
+    super(...args);
+  }
+}
+```
+
+Mixin 模式指的是，将多个类的接口“混入”（mix in）另一个类。它在 ES6 的实现如下。
+
+```javascript
+function mix(...mixins) {
+  class Mix {}
+
+  for (let mixin of mixins) {
+    copyProperties(Mix, mixin);
+    copyProperties(Mix.prototype, mixin.prototype);
+  }
+
+  return Mix;
+}
+
+function copyProperties(target, source) {
+  for (let key of Reflect.ownKeys(source)) {
+    if ( key !== "constructor"
+      && key !== "prototype"
+      && key !== "name"
+    ) {
+      let desc = Object.getOwnPropertyDescriptor(source, key);
+      Object.defineProperty(target, key, desc);
+    }
+  }
+}
+```
+
+#### 13.修饰器
+
+类的修饰
+
+```javascript
+@testable
+class MyTestableClass {
+  // ...
+}
+
+function testable(target) {
+  target.isTestable = true;
+}
+
+MyTestableClass.isTestable // true
+```
+
+方法的修饰
+
+```javascript
+class Person {
+  @readonly
+  name() { return `${this.first} ${this.last}` }
+}
+function readonly(target, name, descriptor){
+  // descriptor对象原来的值如下
+  // {
+  //   value: specifiedFunction,
+  //   enumerable: false,
+  //   configurable: true,
+  //   writable: true
+  // };
+  descriptor.writable = false;
+  return descriptor;
+}
+
+readonly(Person.prototype, 'name', descriptor);
+// 类似于   修饰类不可写
+Object.defineProperty(Person.prototype, 'name', descriptor);
+```
+
+为什么不能修饰函数？因为函数有变量提升
+
+```javascript
+var counter = 0;
+
+var add = function () {
+  counter++;
+};
+
+@add
+function foo() {
+}
+
+//变量提升之后
+@add
+function foo() {
+}
+
+var counter;
+var add;
+
+counter = 0;
+
+add = function () {
+  counter++;
+};
+```
+
+由于存在函数提升，使得修饰器不能用于函数。类是不会提升的，所以就没有这方面的问题。
+
+Mixin模式
+
+```javascript
+export function mixins(...list) {
+  return function (target) {
+    Object.assign(target.prototype, ...list);
+  };
+}
+
+import { mixins } from './mixins';
+
+const Foo = {
+  foo() { console.log('foo') }
+};
+
+@mixins(Foo)
+class MyClass {}
+
+let obj = new MyClass();
+obj.foo() // "foo"
+```
+
+#### 14.Module的加载实现
+
+ES6 模块的设计思想，是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量。CommonJS 和 AMD 模块，都只能在运行时确定这些东西。比如，CommonJS 模块就是对象，输入时必须查找对象属性。
+
+export
+
+```javascript
+export var firstName = 'Michael';
+export {firstName, lastName, year};
+export function multiply(x, y) {
+  return x * y;//可以输出类
+};
+export {		//使用as重命名
+  v1 as streamV1,
+  v2 as streamV2,
+  v2 as streamLatestVersion
+};
+```
+
+`export`语句输出的接口，与其对应的值是动态绑定关系，即通过该接口，可以取到模块内部实时的值。
+
+```javascript
+export var foo = 'bar';
+setTimeout(() => foo = 'baz', 500);
+```
+
+上面代码输出变量`foo`，值为`bar`，500毫秒之后变成`baz`。
+
+import
+
+`import`命令具有提升效果，会提升到整个模块的头部，首先执行。
+
+由于`import`是静态执行，所以不能使用表达式和变量，这些只有在运行时才能得到结果的语法结构。
+
+```javascript
+import {firstName, lastName, year} from './profile';
+import * as circle from './circle';//整体加载
+```
+
+Export default
+
+当你不知道输出了什么模块也懒得看api的时候。
+
+```javascript
+// 第一组  
+export default function crc32() { // 输出
+  // ...
+}
+
+import crc32 from 'crc32'; // 输入   因为只能输出一个default，所以没必要加大括号了
+
+// 第二组
+export function crc32() { // 输出
+  // ...
+};
+
+import {crc32} from 'crc32'; // 输入   
+```
+
+`defer`与`async`的区别是：前者要等到整个页面正常渲染结束，才会执行；后者一旦下载完，渲染引擎就会中断渲染，执行这个脚本以后，再继续渲染。一句话，`defer`是“渲染完再执行”，`async`是“下载完就执行”。另外，如果有多个`defer`脚本，会按照它们在页面出现的顺序加载，而多个`async`脚本是不能保证加载顺序的。
+
+浏览器加载 ES6 模块，也使用`<script>`标签，但是要加入`type="module"`属性。
+
+```javascript
+<script type="module" src="foo.js"></script>
+```
+
+浏览器对于带有`type="module"`的`<script>`，都是异步加载，不会造成堵塞浏览器，即等到整个页面渲染完，再执行模块脚本，等同于打开了`<script>`标签的`defer`属性。
+
+ES6 模块也允许内嵌在网页中，语法行为与加载外部脚本完全一致。
+
+```javascript
+<script type="module">
+  import utils from "./utils.js";
+
+  // other code
+</script>
+```
+
+##### ES6模块加载与commonJS的差异
+
+它们有两个重大差异。
+
+- CommonJS 模块输出的是一个值的拷贝，ES6 模块输出的是值的引用。
+- CommonJS 模块是运行时加载，ES6 模块是编译时输出接口。
 
 
 
