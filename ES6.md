@@ -2,7 +2,11 @@
 
 #### ES6生命变量的六种方式
 
-var function let const import class
+let const promise reflect proxy generator decorator Symbol Iterator 结构赋值
+
+Array: .from .of …(扩展运算符) .copyWithin .find .findindex .includes .fill .entires .keys .values
+
+Object: 属性表达式 .is .assign 
 
 #### 1.let/const
 
@@ -292,6 +296,37 @@ var promise = new Promise(function(resolve, reject) {
   }
 });		//then中第一个func为resolve的回调，第二个参数可选，catch更好，因为也可捕获之前then中的错误
 promise.then().catch. or promise.then(()=>{},()=>{});
+
+
+var getJSON = function(url) {
+  var promise = new Promise(function(resolve, reject){
+    var client = new XMLHttpRequest();
+    client.open("GET", url);
+    client.onreadystatechange = handler;
+    client.responseType = "json";
+    client.setRequestHeader("Accept", "application/json");
+    client.send();
+
+    function handler() {
+      if (this.readyState !== 4) {
+        return;
+      }
+      if (this.status === 200) {
+        resolve(this.response);
+      } else {
+        reject(new Error(this.statusText));
+      }
+    };
+  });
+
+  return promise;
+};
+
+getJSON("/posts.json").then(function(json) {
+  console.log('Contents: ' + json);
+}, function(error) {
+  console.error('出错了', error);
+});
 ```
 
 ##### 其他一些方法
@@ -757,7 +792,29 @@ for…in:
 
 ​					 (3)原型链上其他的值也会被遍历到
 
+##### 6.为对象添加Iterator接口
 
+```javascript
+let obj = {
+  data: [ 'hello', 'world' ],
+  [Symbol.iterator]() {
+    const self = this;
+    let index = 0;
+    return {
+      next() {
+        if (index < self.data.length) {
+          return {
+            value: self.data[index++],
+            done: false
+          };
+        } else {
+          return { value: undefined, done: true };
+        }
+      }
+    };
+  }
+};
+```
 
 #### 10.Generator函数
 

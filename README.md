@@ -227,9 +227,7 @@ function draw() {
 }
 ```
 
-## 
-
-### CSS基础
+#### CSS基础
 
 ##### Overflow :hidden 是否形成新的块级格式化上下文？
 
@@ -519,7 +517,7 @@ Display,visibility,opacity,position:absolute;top:-9999px;
 
 固定了盒子的尺寸，无论怎么调整边距都不会改变盒子的大小.似乎是padding变了
 
-### Js基础
+#### Js基础
 
 ##### 原始数据结构类型和引用类型的区别
 
@@ -779,7 +777,7 @@ descriptor中定义的参数用来定义或修改的属性的描述符
      冻结对象是指那些不能添加新的属性，不能修改已有属性的值，不能删除已有属性，以及不能修改已有属性的可枚举性、可配置性、可写性的对象。也就是说，这个对象永远是不可变的。
 
 
-  - `Object.freeze` 方法
+-   `Object.freeze` 方法
 
     - `浅冻结` 与 `深冻结`
 
@@ -1845,7 +1843,7 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 
 ### 数据结构
 
-#### 栈的实现
+##### 栈的实现
 
 ```javascript
 	function stack(){
@@ -1873,7 +1871,7 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 	}
 ```
 
-#### 队列的实现
+##### 队列的实现
 
 ```javascript
 	function Queue(){
@@ -1910,7 +1908,7 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 	
 ```
 
-#### 链表的实现
+##### 链表的实现
 
 ```javascript
 	function Node(element){
@@ -1993,7 +1991,7 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 	
 ```
 
-#### 深度优先和广度优先的遍历
+##### 深度优先和广度优先的遍历
 
 ```javascript
 function wideTraversal(selectNode) {  
@@ -2044,7 +2042,7 @@ var postOrder = function (node) {
 
 ### 算法
 
-#### 数组去重
+##### 数组去重
 
 ```javascript
 		var array = [1,3,4,4,5,6];
@@ -2062,7 +2060,13 @@ var postOrder = function (node) {
 		filt();
 ```
 
+##### 判断两个json是否相同
 
+```javascript
+const x={a:1,b:2},y={b:2,a:1},z={a:2,b:3};
+deter(x,y)  //true
+deter(x,z)  //false
+```
 
 
 
