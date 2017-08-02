@@ -87,7 +87,9 @@ href是一种链接前往，是引用的的感觉。
 
 (12)浏览器兼容问题
 IE6 双边距 bug：在 IE6 下，如果对元素设置了浮动，同时又设置了margin-left或margin-right，margin值会加倍。
-#box{ float:left; width:10px; margin:0 0 0 10px;} 
+
+box{ float:left; width:10px; margin:0 0 0 10px;}
+
 这种情况之下 IE6 会产生20px的距离
 解决方案：在float的标签样式控制中加入 _display:inline; 将其转化为行内属性。
 
@@ -232,21 +234,6 @@ alert('博主的名字是：myvin 。');
            align-items: center;
     
            display:table-cell; //让元素渲染成表格单元格
-  	width:300px; height:300px; 
-  	text-align:center; vertical-align:middle;
-
-
-
-(31)函数声明和函数表达式之间的区别
-(1)函数声明必须有标识符，也就是常说的函数名；函数表达式可以省略函数名。
-(2)函数声明是在浏览器准备执行代码的时候执行的。
-（记住变量提升，函数声明感觉有点像）
-(3)ECMAScript规范中表示，函数声明语句可以出现在全局代码中，或者内嵌在其他函数中，但是不能出现在循环、条件判、或者try/finally以及with语句中。
-(4)可以创建一个函数表达式即刻执行。
-(function(){
-alert('博主的名字是：myvin 。');
-})()
-
 
 
 (32).cookie和session. Local storage
@@ -660,7 +647,7 @@ for(var i=0; i<tags.length; i++)document.createElement(tags[i]);})(["article","a
 通过插入dom节点相应的标签让他认识
 
 (68)圣杯布局  http://www.jianshu.com/p/f9bcddb0e8b4
-写结构的时候要注意，父元素的的三栏务必先写中间盒子。因为中间盒子是要被优先渲染嘛~并且设置其自适应，也就是width:100%。写结构的时候要注意，父元素的的三栏务必先写中间盒子。因为中间盒子是要被优先渲染嘛~并且设置其自适应，也就是width:100%。
+写结构的时候要注意，父元素的的三栏务必先写中间盒子。因为中间盒子是要被优先渲染嘛~并且设置其自适应，也就是width:100%。
 具体结果见test
 
 (69)内置的方法

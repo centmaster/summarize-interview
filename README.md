@@ -2064,6 +2064,7 @@ var postOrder = function (node) {
 
 ```javascript
 const x={a:1,b:2},y={b:2,a:1},z={a:2,b:3};
+//我能想到的方法就是便利每个变量，然后对比
 deter(x,y)  //true
 deter(x,z)  //false
 ```
@@ -2071,6 +2072,8 @@ deter(x,z)  //false
 
 
 ## 第四部分 简历和面试技巧总结
+
+
 
 ##### 反问面试官的最后一个问题
 
@@ -2090,9 +2093,9 @@ deter(x,z)  //false
 
 ##### 看过的前端书籍
 
-js：权威指南，你不知道的js，understunding es6，exploring es6，阮es6
+权威指南，你不知道的js，understunding es6，阮es6，DOM编程艺术，bad things about JavaScript，图解http，css secrets ,css 权威指南，算法导论，jquery实战，黑客与画家,编写高质量JavaScript代码的68个有效方法,Head First HTML5 Programming,数据结构与算法JavaScript描述，编写高质量代码--Web前端开发修炼之道
 
-css：
+
 
 
 
