@@ -1254,6 +1254,42 @@ vue有scope 自己的css作用域，相互之间不影响
 
 ReactNative  vs  Vue+Veex 阿里，跨平台框架
 
+作者：Leekaven276链接：https://www.zhihu.com/question/31585377/answer/152146777来源：知乎著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。## 状态变化跟踪，界面同步 
+
+- react 可以随时添加新的 state 成员；vue 不行，必须定义时准备好顶级成员，而且非顶级成员也必须通过api设置才能是响应式的；这点，react 比较方便 
+- vue 可以跟踪任何 scope 的状态，包括各级父甚至不相关的，因为vue采用 getter/setter机制；react 默认只能检测本组件的状态变化，比较受限制 
+
+
+以 javascript 为核心，和以 html 为核心
+
+* react 是状态到 html 的映射 
+* vue 是现有 HTML 模板，然后绑定到对应的 Vue javascript 对象上 
+
+
+组件化比较
+
+* react 倾向于细粒度的组件划分，确实也容易做到 
+* vue 相对不太，但是如果 Vue 也采用 jsx 语法，那么还是比较容易做到的 
+
+
+directive
+
+vue 由于提供的 direct 特别是预置的 directive 因为场景场景开发更容易；react 没有 directive 
+- v-if, v-show, v-else 
+- v-text, v-html, 
+- v-model 对于表单处理 vue 明显更方便 
+- @event.prevent @keyxxx.enter 
+
+
+watch
+
+- vue 可以 watch 一个数据项；而 react 不行 
+
+
+计算属性
+
+- vue 有，提供方便；而 react 不行 
+
 
 
 ##### vue中socpe css怎么实现的
