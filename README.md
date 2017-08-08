@@ -519,6 +519,115 @@ Display,visibility,opacity,position:absolute;top:-9999px;
 
 #### Js基础
 
+##### 原型链，继承       http://www.jianshu.com/p/3255d9eb8ece
+
+区别类的继承和实例化
+
+非常常用的类继承是这个样子的：
+
+`B.prototype = new A()`
+这时候特别容易和实例化给混淆了(反正我混了*—*)：
+`b = new A()`
+
+
+
+js的继承方式
+
+1.原型链继承：
+
+```javascript
+//父类
+var Animal = function(){
+  //可以在构造函数里面直接设置属性~
+  this.name = 'animal';
+}
+//也可以通过prototype
+Animal.prototype.say = function(){
+  console.log('Animal here');
+}
+
+//子类
+var Dog = function(){
+}
+Dog.prototype = new Animal();
+//改写父类prototype
+Dog.prototype.name = 'dog';
+```
+
+2.构造继承
+
+```javascript
+//父类还是一样样的
+var Dog = function(){
+    Animal.call(this);
+    this.name = 'dog';
+}
+
+var doge = new Dog();
+console.log(doge.name) //'dog';
+doge.say() //error;
+```
+
+3.实例继承
+
+```javascript
+var Dog = function(){ 
+    var dog = new Animal();
+    dog.name = 'dog';
+    return dog;
+}
+
+var doge = new Dog();
+console.log(doge.name)  //'dog';
+doge.say()  //'Animal here';
+console.log(doge instanceof Animal)  // true
+console.log(doge instanceof Dog)  // false
+```
+
+4.拷贝继承
+
+```javascript
+var Dog = function(){ 
+    var animal = new Animal();
+    for(var attr in animal){
+        this[attr] = animal[attr];
+    }
+    this.name = 'dog';
+}
+
+//创建实例
+var doge = new Dog();
+console.log(doge.name) //'dog';
+doge.say() //'Animal here';
+console.log(doge instanceof Animal) // false
+console.log(doge instanceof Dog) // true
+```
+
+5.组合继承
+
+```javascript
+var Dog = function(){ 
+  Animal.call(this, arguments);
+  this.name = 'dog';
+}
+Dog.prototype = new Animal();
+
+//创建实例
+var doge = new Dog();
+console.log(doge.name) //'dog';
+doge.say() //'Animal here';
+console.log(doge instanceof Dog) // true
+console.log(doge instanceof Animal) // true
+```
+
+6.Object.create
+
+
+
+
+
+
+
 ##### 原始数据结构类型和引用类型的区别
 
 （讲的特好https://segmentfault.com/a/1190000008472264）
@@ -838,6 +947,29 @@ for of遍历的是对应的元素值
 ###### 什么是闭包？
 
 利用块状作用域把外部的变量hold住
+
+js分全局作用域和函数作用域。函数作用域里可以访问到全局，通过一个叫作用域链的东西。但全局怎么访问函数呢？就有人想了在函数里面再写一个函数(闭包)，这样把作用域链加长了。就可以在全局访问到函数里的数据了。闭包能访问到父级函数里面的数据说明父级里的数据一直存在内存中(闭包存在的情况下)，这就会导致内存一直被占着。
+
+一句话总结闭包：对函数外层的变量持有访问权。
+
+```javascript
+function Counter(start) {
+    var count = start;
+    return {
+        increment: function() {
+            count++;
+        },
+
+        get: function() {
+            return count;
+        }
+    }
+}
+
+var foo = Counter(4);
+foo.increment();
+foo.get(); // 5
+```
 
 ###### 闭包与setTimeout
 
@@ -1232,9 +1364,9 @@ beforedestory	destroyed
 
 
 
-##### vue和react的区别
+#### vue和react的区别
 
-###### 共同点
+##### 共同点
 
 都是组件化
 
@@ -1244,7 +1376,7 @@ ajax，route等功能都不在核心包里，而是以插件的方式加载
 
 使用 Virtual DOM
 
-###### 区别
+##### 区别
 
 React依赖Virtual DOM,而Vue.js使用的是DOM模板
 
@@ -1254,7 +1386,7 @@ vue有scope 自己的css作用域，相互之间不影响
 
 ReactNative  vs  Vue+Veex 阿里，跨平台框架
 
-作者：Leekaven276链接：https://www.zhihu.com/question/31585377/answer/152146777来源：知乎著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。## 状态变化跟踪，界面同步 
+状态变化跟踪，界面同步
 
 - react 可以随时添加新的 state 成员；vue 不行，必须定义时准备好顶级成员，而且非顶级成员也必须通过api设置才能是响应式的；这点，react 比较方便 
 - vue 可以跟踪任何 scope 的状态，包括各级父甚至不相关的，因为vue采用 getter/setter机制；react 默认只能检测本组件的状态变化，比较受限制 
@@ -1289,6 +1421,63 @@ watch
 计算属性
 
 - vue 有，提供方便；而 react 不行 
+
+
+
+
+
+
+react的写法
+
+```javascript
+class Brother2 extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {}
+  }
+  
+  render(){
+    return (
+      <div>
+         {this.props.text || "兄弟组件未更新"}
+      </div>
+    )
+  }
+}
+class Parent extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {}
+  }
+  refresh(){
+    return (e)=>{
+      this.setState({
+        text: "兄弟组件沟通成功",
+      })
+    }
+  }
+  render(){
+    return (
+      <div>
+        <h2>兄弟组件沟通</h2>
+        <Brother1 refresh={this.refresh()}/>
+        <Brother2 text={this.state.text}/>
+      </div>
+    )
+```
+
+##### react组件之间交流方式
+
+父子：父组件更新组件状态／子组件触发更新父组件状态—也在props里调用父亲组件的方法改变state
+
+兄弟：借助父组件更新，层次比较深就很不方便／React提供了一种上下文方式（挺方便的），可以让子组件直接访问祖先的数据或函数，无需从祖先组件一层层地传递数据到子组件中。
+
+
+
+
+
+
+
 
 
 
@@ -1703,6 +1892,19 @@ img{
 （3）transition只能定义开始状态和结束状态，不能定义中间状态，也就是说只有两个状态。
 
 （4）一条transition规则，只能定义一个属性的变化，不能涉及多个属性。
+
+##### 清除浮动
+
+外边距重合，父div撑不起来
+
+清除浮动指的是运用clear属性去解决浮动父容器高度塌陷的问题，clear属性规定元素的哪一侧不允许其他浮动元素。
+可选择的值有：left, right, both, none, inherit
+
+**清除浮动方法1**：在最后添加一个空div，对它进行清理，缺点是增加了一个无意义标签。
+
+**清除浮动方法2**：BFC（Block Format Content）清理浮动，BFC可以**阻止垂直外边距折叠**、**不会重叠浮动元素**、可以**包含浮动**。因此清理浮动在BFC的语境下就是“包含浮动”，也即让父容器形成BFC就可以。
+
+
 
 ##### 会触发BFC的条件有：
 
@@ -2129,6 +2331,28 @@ deter(x,y)  //true
 deter(x,z)  //false
 ```
 
+##### 快速排序时间复杂度 o(nlogn)
+
+数组有n个元素，因为要递归运算，算出支点pivot的位置，然后递归调用左半部分和有半部分，这个时候理解上是若第一层的话就是n/2，n/2，若是第二层就是n/4,n/4,n/4,n/4这四部分，即n个元素理解上是一共有几层2^x=n，x=logn，然后每层都是n的复杂度，那么平均就是O(nlogn)的时间复杂度。但这种肯定是平均情况，如果你是标准排序的情况下，如果已经是ascending的顺序，那么递归只存在右半部分了，左半部分都被淘汰了。(n-1)*(n-2)*....*1，这个复杂度肯定就是O(n^2)，这种情况还不如用插入排序作者：
+
+主定理严格推倒
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 第四部分 简历和面试技巧总结
@@ -2155,7 +2379,40 @@ deter(x,z)  //false
 
 权威指南，你不知道的js，understunding es6，阮es6，DOM编程艺术，bad things about JavaScript，图解http，css secrets ,css 权威指南，算法导论，jquery实战，黑客与画家,编写高质量JavaScript代码的68个有效方法,Head First HTML5 Programming,数据结构与算法JavaScript描述，编写高质量代码--Web前端开发修炼之道
 
+#### 简历内容具体分析
 
+##### 弹幕
+
+功能实现：
+
+颜色随机 span.style.color = colors[index];
+
+高度：算出一共能多少行，随机行数
+
+一开始在屏幕的最右侧：
+
+var screenW = window.innerWidth;
+span.style.left = screenW +'px';
+
+动态往左：arr[i] -= 2。oSpan[i].style.left = arr[i]+'px';
+
+判断是否超出屏幕：if (arr[i] < -oSpan[i].offsetWidth)
+
+细节处理：
+
+观看量35万的视5000条弹幕。可以设置屏幕的弹幕数，vip有优先权。
+
+bilibili也会出现弹幕太多覆盖屏幕，只能关了再看。会有遮盖，不过颜色不同，行高固定。
+
+使用的是transform translate
+
+
+
+
+
+
+
+##### 抽奖页面
 
 
 
