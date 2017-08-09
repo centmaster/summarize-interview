@@ -8,6 +8,8 @@ Array: .from .of …(扩展运算符) .copyWithin .find .findindex .includes .fi
 
 Object: 属性表达式 .is .assign 
 
+class
+
 #### 1.let/const
 
 ##### let

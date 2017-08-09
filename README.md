@@ -529,8 +529,6 @@ Display,visibility,opacity,position:absolute;top:-9999px;
 这时候特别容易和实例化给混淆了(反正我混了*—*)：
 `b = new A()`
 
-
-
 js的继承方式
 
 1.原型链继承：
@@ -664,7 +662,7 @@ console.log(name)//change1
 
 4.引用类型的比较是引用的比较
 
-5.引用类型是同时存在栈河和中
+5.引用类型是同时存在栈和堆中
 
 引用类型的存储需要在内存的栈区和堆区共同完成，栈区保存变量标识符和指向堆内存的地址
 
@@ -1201,6 +1199,54 @@ p.init()     //结果是undefined，如果是普通函数结果是true
 
 ##### 深度拷贝对象https://www.zhihu.com/question/23031215
 
+```javascript
+ window.val = 1;
+  var obj = {
+    val: 2,
+    dbl: function () {
+      this.val *= 2;
+      val *= 2;
+      console.log(val);
+      console.log(this.val);
+    }
+  };
+  // 说出下面的输出结果
+  obj.dbl();
+  var func = obj.dbl;
+  func();      		// 2 4 8 8
+
+
+  var obj = {
+    say: function () {
+      var f1 = () => {
+        console.log(this); // obj
+        setTimeout(() => {
+          console.log(this); // obj
+        })
+      }
+      f1();
+    }
+  }
+  obj.say()
+  
+    var obj = {
+    say: function () {
+      var f1 = function () {
+        console.log(this);    // window, f1调用时,没有宿主对象,默认是window
+        setTimeout(() => {
+          console.log(this); // window
+        })
+      };
+      f1();
+    }
+  }
+  obj.say()
+```
+
+
+
+
+
 
 
 #### 正则表达式
@@ -1374,7 +1420,7 @@ beforedestory	destroyed
 
 ajax，route等功能都不在核心包里，而是以插件的方式加载
 
-使用 Virtual DOM
+使用 Virtual DOM 
 
 ##### 区别
 
