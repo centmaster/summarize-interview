@@ -392,6 +392,8 @@ localStorage的修改会促发其他文档窗口的update事件
 cookie有secure属性要求HTTPS传输
 浏览器不能保存超过300个cookie，单个服务器不能超过20个，每个cookie不能超过4k。web storage大小支持能达到5M
 
+!!1.cookie可以由server端操作另外俩不行2.cookie和LocalStorage可以共享3.cookie比较小，数量也有限制4.有效期
+
 
 (43).1+'1'='11'
 '1'+1='11'
@@ -406,6 +408,9 @@ cookie有secure属性要求HTTPS传输
 在检查相等性时，不能把 null 和 undefined 转换成其他值。
 如果某个运算数是 NaN，等号将返回 false，非等号将返回 true。
 如果两个运算数都是对象，那么比较的是它们的引用值。如果两个运算数指向同一对象，那么等号返回 true，否则两个运算数不等。
+!!boolean<Number<String
+
+
 
 (44).[]==true //false
 []==[] //false

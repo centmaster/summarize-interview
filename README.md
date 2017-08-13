@@ -519,6 +519,44 @@ Display,visibility,opacity,position:absolute;top:-9999px;
 
 #### Js基础
 
+##### JS原生自定义事件
+
+**在某个对象上绑定不同类别的一个或多个方法，并且让它们分别执行**
+
+```javascript
+var eventHandle = {
+    on: function(obj,events,fn){
+        obj.listeners = obj.listeners || {};
+        obj.listeners[events] = obj.listeners[events] || [];
+        obj.listeners[events].push(fn);
+    },
+    fire: function(obj,events){
+        for(var i = 0, n = obj.listeners[events].length; i &lt; n; i++){
+            console.log(obj.listeners[events]);
+            obj.listeners[events][i] && obj.listeners[events][i]();
+        }
+    },
+    off: function(obj,events){
+        for(var i = 0, n = obj.listeners[events].length; i &lt; n; i++){
+            obj.listeners[events][i] = null;
+        }
+    }
+};
+
+//绑定自定义事件，
+eventHandle.on(oDiv,"eventType1",function(){console.log(1);});//准备执行方法1
+eventHandle.on(oDiv,"eventType1",function(){console.log(2);});//准备执行方法2
+eventHandle.on(oDiv,"eventType1",function(){console.log(3);});//准备执行方法3
+eventHandle.on(oDiv,"eventType2",function(){console.log(4);});//准备执行方法4
+
+//触发执行
+eventHandle.fire(oDiv,"eventType1");//执行eventType1下的所有方法
+```
+
+
+
+
+
 ##### 原型链，继承       http://www.jianshu.com/p/3255d9eb8ece
 
 区别类的继承和实例化
