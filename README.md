@@ -2,6 +2,8 @@
 
 # 前端技术积累
 
+[TOC]
+
 #### 前言
 
 这个面经的来源一共分为三部分。第一部分是市面上的面经结合自己的知识总结。第二部分就是自己的面经，大大小小面了也有一些了，希望自己也能总结总结造福自己造福后人。最后一部分就是针对自己做过的东西，简历上的东西做的总结，不具有普遍性。当然文件夹里还有一些算法题，平常做前端的也要动动脑嘛。希望自己和大家都能找到满意的工作。
@@ -227,7 +229,7 @@ function draw() {
 }
 ```
 
-#### CSS基础
+### CSS基础
 
 ##### Overflow :hidden 是否形成新的块级格式化上下文？
 
@@ -517,7 +519,7 @@ Display,visibility,opacity,position:absolute;top:-9999px;
 
 固定了盒子的尺寸，无论怎么调整边距都不会改变盒子的大小.似乎是padding变了
 
-#### Js基础
+### Js基础
 
 ##### JS原生自定义事件
 
@@ -1283,7 +1285,16 @@ p.init()     //结果是undefined，如果是普通函数结果是true
 
 
 
-
+```javascript
+var a=10;
+(function test(){
+  console.log(a);//undefined
+  a=100;
+  console.log(a);//100
+  console.log(this.a);//10
+  var a;
+})()
+```
 
 
 
@@ -1414,6 +1425,69 @@ https://segmentfault.com/a/1190000008782928
 https://juejin.im/entry/58a11c648d6d81006c9d739d
 
 仿照着分页自己写了个conole-panel的控制台。主要实现了，黑色背景，字体，以及随着控制log的增加，自动跟随到最新的信息。大概的思路就是自己写个普通的组件，要填的通过props传进来。然后vue.use引用就好了
+
+##### 父子组件间通信
+
+```javascript
+Vue.component('button-counter', {
+  template: '<button v-on:click="incrementCounter">{{ counter }}</button>',
+  data: function () {
+    return {
+      counter: 0
+    }
+  },
+  methods: {
+    incrementCounter: function () {
+      this.counter += 1
+      this.$emit('increment')
+    }
+  },
+})
+new Vue({
+  el: '#counter-event-example',
+  data: {
+    total: 0
+  },
+  methods: {
+    incrementTotal: function () {
+      this.total += 1
+    }
+  }
+})
+```
+
+##### 非父子组件间通信
+
+如果2个组件不是父子组件那么如何通信呢？这时可以通过eventHub来实现通信. 
+所谓eventHub就是创建一个事件中心，相当于中转站，可以用它来传递事件和接收事件.
+
+```
+let Hub = new Vue(); //创建事件中心11
+```
+
+组件1触发：
+
+```
+<div @click="eve"></div>
+methods: {
+    eve() {
+        Hub.$emit('change','hehe'); //Hub触发事件
+    }
+}123456123456
+```
+
+组件2接收:
+
+```
+<div></div>
+created() {
+    Hub.$on('change', () => { //Hub接收事件
+        this.msg = 'hehe';
+    });
+}123456123456
+```
+
+这样就实现了非父子组件之间的通信了.原理就是把Hub当作一个中转站！
 
 ##### vue的生命周期
 
