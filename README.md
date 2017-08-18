@@ -19,3 +19,7 @@
 [我的面经自我总结---新版](https://github.com/centmaster/summarize-interview/blob/master/FE.md)
 
 [看到别人的面经总结](https://github.com/centmaster/summarize-interview/blob/master/niuke.md)
+
+[webpack原理与实战](https://github.com/gwuhaolin/blog/issues/4)
+
+[webpack优化](https://github.com/gwuhaolin/blog/issues/2)

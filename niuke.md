@@ -42,6 +42,88 @@ border-box表示width和height属性是`border + padding + content`的大小
 
 面向对象设计的核心思想是模块化，对问题进行抽象。
 
+##### JS实现异步的方法
+
+1.回调函数
+
+2.Promise
+
+3.事件监听，监听到再触发下一个任务
+
+4.发布订阅模式
+
+publish（‘done’） subscribe（‘done’，）
+
+##### 移动端前端配适方案
+
+1.Media Query
+
+2.Flex
+
+它的`viewport`是固定的：`<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">`
+
+3.rem
+
+##### 懒加载的性能优化
+
+全部一次性插入进去设置隐藏的效率远比动态插入删除效率高的多
+
+##### cookie除了key与value还有哪些参数
+
+path domain Expire size
+
+##### typeof
+
+| Undefined                                | `"undefined"`              |
+| ---------------------------------------- | -------------------------- |
+| Null                                     | `"object" `(see below)     |
+| Boolean                                  | `"boolean"`                |
+| Number                                   | `"number"`                 |
+| String                                   | `"string"`                 |
+| Symbol (new in ECMAScript 2015)          | `"symbol"`                 |
+| Host object (provided by the JS environment) | *Implementation-dependent* |
+| Function object (implements [[Call]] in ECMA-262 terms) | `"function"`               |
+| Any other object                         | `"object"`                 |
+
+##### 常用算法排序
+
+| 排序法   | 最差时间分析     | 平均时间复杂度    | 稳定度  | 空间复杂度         |
+| ----- | ---------- | ---------- | ---- | ------------- |
+| 冒泡排序  | O(n2)      | O(n2)      | 稳定   | O(1)          |
+| 快速排序  | O(n2)      | O(n*log2n) | 不稳定  | O(log2n)~O(n) |
+| 选择排序  | O(n2)      | O(n2)      | 稳定   | O(1)          |
+| 二叉树排序 | O(n2)      | O(n*log2n) | 不一顶  | O(n)          |
+| 插入排序  | O(n2)      | O(n2)      | 稳定   | O(1)          |
+| 堆排序   | O(n*log2n) | O(n*log2n) | 不稳定  | O(1)          |
+| 希尔排序  | O          | O          | 不稳定  | O(1)          |
+
+
+
+##### 事件绑定
+
+addEventListener是w3c标准写法，共有三个参数，第一个为事件类型，但是不加on，第二个参数是一个函数，用于写逻辑代码进行事件操作，第三个参数为boolean型值，true或false,true表示事件捕获，false表示事件冒泡，默认为false
+
+```javascript
+function handler(e){
+    //操作
+    console.log(e)
+}
+ele.addEventListener('click', handler);//绑定
+ele.removeEventListener('click', handler);//解绑
+```
+
+
+
+##### object.create的实现原理 
+
+
+
+
+
+
+
+
+
 
 
 

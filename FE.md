@@ -2053,12 +2053,14 @@ img{
 
 ##### 清除浮动
 
+清除浮动 还是 闭合浮动
+
 外边距重合，父div撑不起来
 
 清除浮动指的是运用clear属性去解决浮动父容器高度塌陷的问题，clear属性规定元素的哪一侧不允许其他浮动元素。
 可选择的值有：left, right, both, none, inherit
 
-**清除浮动方法1**：在最后添加一个空div，对它进行清理，缺点是增加了一个无意义标签。
+**清除浮动方法1**：通过在浮动元素的末尾添加一个空元素，设置 clear：both属性，after伪元素其实也是通过 content 在元素的后面生成了内容为一个点的块级元素。
 
 **清除浮动方法2**：BFC（Block Format Content）清理浮动，BFC可以**阻止垂直外边距折叠**、**不会重叠浮动元素**、可以**包含浮动**。因此清理浮动在BFC的语境下就是“包含浮动”，也即让父容器形成BFC就可以。
 
@@ -2564,15 +2566,156 @@ bilibili也会出现弹幕太多覆盖屏幕，只能关了再看。会有遮盖
 
 使用的是transform translate
 
+##### chorme插件
+
+调试安卓手机
+
+所以也不用再在chrome上安装ADB插件了 但需要下载最新的chrome
+
+chrome://inspect
+
+手机上看到的内容pc端可以同步审查元素
+
+##### mock后端数据
+
+json-server
+
+##### react生命周期
+
+http://www.jianshu.com/p/4784216b8194
+
+##### git版本控制
+
+Master		正式发版用
+
+Develop		开发重大版本
+
+Feature		开发某种特定功能
+
+Release		发布正式版本之前（即合并到Master分支之前），我们可能需要有一个预发布的版本进行测试
+
+Fixbug		修补bug分支
+
+后三种为临时分支，用完就删
 
 
 
+Dev
+
+git checkout -b develop master		创建分枝
+
+git checkout master				切换到Master分支
+
+git merge --no-ff develop			对Develop分支进行合并
+
+这次合并是“快进模式”，也就是直接把`master`指向`dev`的当前提交，所以合并速度非常快。
 
 
 
-##### 抽奖页面
+Feature
+
+git checkout -b feature-x develop
+
+git checkout develop
+
+git merge --no-ff feature-x		
+
+git branch -d feature-x			删除分支
 
 
+
+Release
+
+git checkout -b release-1.2 develop
+
+git checkout master
+
+git merge --no-ff release-1.2
+
+git tag -a 1.2			 			对合并生成的新节点，做一个标签
+
+
+
+Fixbug
+
+git checkout -b fixbug-0.1 master
+
+git checkout master
+
+git merge --no-ff fixbug-0.1
+
+git tag -a 0.1.1
+
+git checkout develop
+
+git merge --no-ff fixbug-0.1
+
+git checkout develop
+
+git merge --no-ff fixbug-0.1
+
+
+
+##### 滚屏加载
+
+```javascript
+$(function(){ 
+    var winH = $(window).height(); //页面可视区域高度 
+    var i = 1; //设置当前页数 
+    $(window).scroll(function () { 
+        var pageH = $(document.body).height(); 
+        var scrollT = $(window).scrollTop(); //滚动条top 
+        var aa = (pageH-winH-scrollT)/winH; 
+        if(aa<0.02){ 
+            $.getJSON("result.php",{page:i},function(json){ 
+                if(json){ 
+                    var str = ""; 
+                    $.each(json,function(index,array){ 
+                        var str = "<div class=\"single_item\"><div class=\"element_head\">"; 
+                        var str += "<div class=\"date\">"+array['date']+"</div>"; 
+                        var str += "<div class=\"author\">"+array['author']+"</div>"; 
+                        var str += "</div><div class=\"content\">"+array['content']+"</div></div>"; 
+                        $("#container").append(str); 
+                    }); 
+                    i++; 
+                }else{ 
+                    $(".nodata").show().html("别滚动了，已经到底了。。。"); 
+                    return false; 
+                } 
+            }); 
+        } 
+    }); 
+}); 
+```
+
+Js：
+
+网页可见区域宽： document.body.clientWidth
+网页可见区域高： document.body.clientHeight
+网页可见区域宽： document.body.offsetWidth (包括边线的宽)
+网页可见区域高： document.body.offsetHeight (包括边线的高)
+网页正文全文宽： document.body.scrollWidth
+网页正文全文高： document.body.scrollHeight
+网页被卷去的高： document.body.scrollTop
+网页被卷去的左： document.body.scrollLeft
+网页正文部分上： window.screenTop
+网页正文部分左： window.screenLeft
+屏幕分辨率的高： window.screen.height
+屏幕分辨率的宽： window.screen.width
+屏幕可用工作区高度： window.screen.availHeight
+屏幕可用工作区宽度： window.screen.availWidth
+
+JQuery:
+
+$(document).ready(function(){
+alert($(window).height()); //浏览器当前窗口可视区域高度
+alert($(document).height()); //浏览器当前窗口文档的高度
+alert($(document.body).height());//浏览器当前窗口文档body的高度
+alert($(document.body).outerHeight(true));//浏览器当前窗口文档body的总高度 包括border padding margin
+alert($(window).width()); //浏览器当前窗口可视区域宽度
+alert($(document).width());//浏览器当前窗口文档对象宽度
+alert($(document.body).width());//浏览器当前窗口文档body的宽度
+alert($(document.body).outerWidth(true));//浏览器当前窗口文档body的总宽度
 
 
 
