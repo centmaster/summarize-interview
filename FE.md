@@ -555,11 +555,21 @@ eventHandle.on(oDiv,"eventType2",function(){console.log(4);});//准备执行方�
 eventHandle.fire(oDiv,"eventType1");//执行eventType1下的所有方法
 ```
 
+##### 原型链
 
+原型	构造函数		实例三者之间关系
 
+JavaScript万物都是对象，对象和对象之间也有关系，并不是孤立存在的。对象之间的继承关系，在JavaScript中是通过prototype对象指向父类对象，直到指向Object对象为止，这样就形成了一个原型指向的链条，专业术语称之为原型链。
 
+- 每个对象都有一个指向它的原型的的内部链接(此链接还没有规范的访问方式，一般用__proro__代替),这个原型也有自己的原型，直到每个对象的原型为`null`为止
+- 任意一个函数都可以作为构造器即`var someFun = new AnyFun()`
+- 每个函数都有一个`prototype`属性，其它对象没有，该属性也是一个对象，该对象有一个`constructor`属性指向该函数
+- 使用`new`去实例化一个函数后，得到的是一个对象。该函数的实例的原型指向构造函数的`prototype`属性
+- 每个对象都有自己的属性和方法，如果没有找到就会沿着自己的原型链一直往上去找
 
-##### 原型链，继承       http://www.jianshu.com/p/3255d9eb8ece
+##### js的继承和继承的方法和优缺点？ 
+
+http://www.zyy1217.com/2017/03/13/JavaScript%E5%AE%9E%E7%8E%B0%E7%BB%A7%E6%89%BF%E7%9A%84%E6%96%B9%E5%BC%8F/
 
 区别类的继承和实例化
 
@@ -569,100 +579,175 @@ eventHandle.fire(oDiv,"eventType1");//执行eventType1下的所有方法
 这时候特别容易和实例化给混淆了(反正我混了*—*)：
 `b = new A()`
 
-js的继承方式
+##### js的继承方式
 
-1.原型链继承：
+下面的这些怎么判断，直接看是不是在prototype上，在的话就会共用，不在的话就没有复用。
 
-```javascript
-//父类
-var Animal = function(){
-  //可以在构造函数里面直接设置属性~
-  this.name = 'animal';
-}
-//也可以通过prototype
-Animal.prototype.say = function(){
-  console.log('Animal here');
-}
+那为什么放在原型上就可以复用呢？
 
-//子类
-var Dog = function(){
-}
-Dog.prototype = new Animal();
-//改写父类prototype
-Dog.prototype.name = 'dog';
-```
+因为每个实例都可以顺着原型链找到student.prototype，所以放在上游大家就能复用了。不放在上游等于没次构造函数就实例化一次，浪费了。
 
-2.构造继承
+1.原型链继承
 
 ```javascript
-//父类还是一样样的
-var Dog = function(){
-    Animal.call(this);
-    this.name = 'dog';
-}
-
-var doge = new Dog();
-console.log(doge.name) //'dog';
-doge.say() //error;
-```
-
-3.实例继承
-
-```javascript
-var Dog = function(){ 
-    var dog = new Animal();
-    dog.name = 'dog';
-    return dog;
-}
-
-var doge = new Dog();
-console.log(doge.name)  //'dog';
-doge.say()  //'Animal here';
-console.log(doge instanceof Animal)  // true
-console.log(doge instanceof Dog)  // false
-```
-
-4.拷贝继承
-
-```javascript
-var Dog = function(){ 
-    var animal = new Animal();
-    for(var attr in animal){
-        this[attr] = animal[attr];
+let Super = functioin(name) {
+    this.name = name;
+    this.setName = (newName) => {
+        this.name = name;
+    };
+    this.getName = () => {
+        return this.name;
     }
-    this.name = 'dog';
 }
 
-//创建实例
-var doge = new Dog();
-console.log(doge.name) //'dog';
-doge.say() //'Animal here';
-console.log(doge instanceof Animal) // false
-console.log(doge instanceof Dog) // true
+let Sub = function(sex) {
+    this.sex = sex;
+}
+Sub.prototype = new Super('eric');  //通过改变原型对象实现继承
+let sub1 = new Sub('male')
+     sub2 = new Sub('female');
+
+sub1.setName('ada');
+// 这里必须通过setName方法来修改继承来的name属性。
+// 如果通过sub1.name== 'ada',就打不到目的，因为此时sub1对象上没有name属性，
+// 这样等于为该对象添加了新的属性，而不是修改继承而来的name属性。
+console.log(sub2.name); // ada,可见此sub2的name也会被修改掉
+console.log(sub1.getName === sub2.getName) // true,复用了方法
 ```
 
-5.组合继承
+**优点：**父类的方法得到了复用。
+
+**缺点：**同理父类的属性也是复用，即子类实例没有自己的属性。
+
+new多个实例，改变其中一个，其他的属性也会被更改
+
+2.借用构造函数
 
 ```javascript
-var Dog = function(){ 
-  Animal.call(this, arguments);
-  this.name = 'dog';
+let Super = function(name) {
+    this.name = name;
+    this.getName = () => {
+        return this.name;
+    }
 }
-Dog.prototype = new Animal();
+let Sub = function(sex,name) {
+    Super.call(this,name); // 调用父类方法为子类实例添加属性
+    this.sex = sex;
+}
 
-//创建实例
-var doge = new Dog();
-console.log(doge.name) //'dog';
-doge.say() //'Animal here';
-console.log(doge instanceof Dog) // true
-console.log(doge instanceof Animal) // true
+let sub1 = new Sub('male','eric'),
+     sub2 = new Sub('female','eric');
+sub1.name = 'ada';
+console.log(sub2.name); // eric,实例的属性没有相互影响
+
+console.log(sub1.getName === sub2.getName); // false,可见方法没有复用
 ```
 
-6.Object.create
+**优点：**子类的每个实例都有自己的属性（name），不会相互影响。
 
+**缺点：**但是继承父类方法的时候就不需要这种特性，没有实现父类方法的复用。
 
+3.组合继承    
 
+```javascript
+let Super = function(name) {
+    this.name = name;
+}
+Super.prototype = {
+    constructor: Super, // 保持构造函数和原型对象的完整性
+    getName() {
+        return this.name;
+    }
+}
+let Sub = function(sex) {
+    Super.call(this,'eric'); //继承父类属性
+    this.sex = sex;
+}
+Sub.prototype = new Super('eric'); //继承父类方法
+Sub.prototype.constructor = Sub;
+let sub1 = new Sub('male'),
+    sub2 = new Sub('female');
+// 可以按上述两种方法验证，复用了父类的方法，实例没有复用，达到目的
+```
 
+**优点：**继承了上述两种方式的优点，摒弃了缺点，复用了方法，子类又有各自的属性。
+
+**缺点：**因为父类构造函数被执行了两次，子类的原型对象(Sub.prototype)中也有一份父类的实例属性，而且这些属性会被子类实例(sub1,sub2)的属性覆盖掉，也存在内存浪费。
+
+4.原型式继承
+
+```javascript
+function object(o) {
+	function F(){}
+	F.prototype = o;
+	return new F();
+}
+```
+
+5.寄生组合继承
+
+```javascript
+let Super = function(name) {
+    this.name = name;
+}
+Super.prototype = {
+    constructor: Super,
+    getName() {
+        return this.name;
+    }
+}
+let Sub = function(sex,name) {
+    Super.call(this,name);
+    this.sex = sex;
+}
+// 组合继承的缺点就是在继承父类方法的时候调用了父类构造函数，从而造成内存浪费，
+// 现在只要解决了这个问题就完美了。那在复用父类方法的时候，
+// 使用Object.create方法也可以达到目的，没有调用父类构造函数，问题解决。
+Sub.prototype = Object.create(Super.prototype);
+Sub.prototype.constructor = Sub;
+```
+
+这特么不就是，你原型用人家的原型没动构造函数，你直接又把人家构造函数拿过来。齐活！
+
+通过在父类原型和子类原型之间加入一个临时的构造函数F，切断了子类原型和父类原型之间的联系，这样当子类原型做修改时就不会影响到父类原型。
+
+6.es6中的class
+
+```javascript
+class Super() {
+    constructor(props) {
+        this.name = props.name || 'eric';
+    }
+    setName(name) {
+        this.name = name;
+    }
+    getName() {
+        return this.name;
+    }
+}
+class Sub extends Super {
+    constructor(props) {
+        super(props); // 创建实例，继承父类属性和方法
+        this.sex = props.sex || 'male';
+    }
+}
+let sub1 = new Sub({
+    name: 'eric',
+    sex: 'male'
+})
+let sub2 = new Sub({
+    name: 'eric',
+    sex: 'female'
+})
+
+sub1.setName('ada');
+console.log(sub1.getName(),sub2.getName()) // ada,eric,属性没复用，各自实例都有自己的属性。
+console.log(sub1.getName === sub2.getName) // true; 复用了父类的方法
+console.log(Sub.prototype.sex) // undefined
+// 子类原型对象上没有父类构造函数中赋值的属性，不是组合式继承
+```
+
+**由以上结果可以看到es6中的class只不过是一种语法糖，通过上面的验证得知符合寄生组合继承的特点**
 
 
 
@@ -1429,6 +1514,12 @@ https://juejin.im/entry/58a11c648d6d81006c9d739d
 ##### 父子组件间通信
 
 ```javascript
+<div id="counter-event-example">
+  <p>{{ total }}</p>
+  <button-counter v-on:increment="incrementTotal"></button-counter>
+  <button-counter v-on:increment="incrementTotal"></button-counter>
+</div>
+  
 Vue.component('button-counter', {
   template: '<button v-on:click="incrementCounter">{{ counter }}</button>',
   data: function () {

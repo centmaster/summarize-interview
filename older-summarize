@@ -242,6 +242,15 @@ alert('博主的名字是：myvin 。');
 (33)同源策略与跨域(https://earthsplitter.github.io/2017/03/21/%E5%90%8C%E6%BA%90%E6%94%BF%E7%AD%96%E4%B8%8E%E8%B7%A8%E5%9F%9F%E8%AF%A6%E8%A7%A3/)
 
 协议，端口，域名 完全相同
+以下行为受到限制(通常是跨域读操作):
+
+Cookie、LocalStorage、IndexDB 等存储性内容
+DOM 节点
+AJAX 请求不能发送
+
+为什么需要同源政策
+保护用户隐私信息，防止身份伪造等(读取Cookie)
+跨域写操作与跨域嵌入操作一般不受到约束。具体参考MDN
 
 非ajax请求:
 1.document.domain
@@ -268,6 +277,14 @@ window.opener.postMessage('Nice to see you', 'http://aaa.com');
 window.addEventListener('message', function(e) {
   console.log(e.data);
 },false);
+
+通过对window对象的message事件进行监听，可以接收消息。
+通过访问message事件的origin属性，可以获取消息的发送源。
+通过访问message事件的data属性，可以取得消息内容。
+使用postMessage方法发送消息。
+通过访问message事件的source属性，可以获取消息发送源的窗口对象(准确的说，应该是窗口的代理对象)。
+win.postMessage(document.getElementById("message").value,"http://longen.example.com"); 
+window.addEventListener("message",function(e){
 
 
 ajax请求
