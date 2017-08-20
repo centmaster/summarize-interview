@@ -66,6 +66,18 @@
 | 安全性     | url中暴露数据   | 相对安全   |
 | 可见性     | url中可见     | 不可见    |
 
+你要给GET加上request body，给POST带上url参数，技术上是完全行的通的。
+
+业界不成文的规定是，(大多数)浏览器通常都会限制url长度在2K个字节，而(大多数)服务器最多处理64K大小的url。超过的部分，恕不处理。如果你用GET服务，在request body偷偷藏了数据，不同服务器的处理方式也是不同的，有些服务器会帮你卸货，读出数据，有些服务器直接忽略，所以，虽然GET可以带request body，也不能保证一定能被接收到
+
+GET和POST还有一个重大区别，简单的说：
+
+**GET产生一个TCP数据包;POST产生两个TCP数据包。**
+
+对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200(返回数据);
+
+而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok(返回数据)。
+
 ##### What's the difference between HTML and XHTML?
 
 XHTML is not so much different from HTML 4.01 standard. The major differences are:
@@ -2228,6 +2240,20 @@ Expires：一个时间节点，表示在这个时间节点之前都是有效的
 
 Last-Modified（或 Etag）：最后一次更新时间节点
 
+Etag：相当于一个tagid，上传到server端检查id是否一致
+
+###### 200 for cache   vs  304 not Modify
+
+ 200 OK (from cache)  是浏览器没有跟服务器确认，直接用了浏览器缓存；而 304 Not Modified 是浏览器和服务器多确认了一次缓存有效性，再用的缓存
+
+304<——>由last-modify&&etag控制。
+
+200 for cache<——>由Cache-Control && Expires控制。前者优先级更高
+
+
+
+
+
 ##### http报文格式
 ###### 请求报文           
 
@@ -2352,263 +2378,11 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 
 
 
-## 第三部分 数据结构和算法
+## 第三部分 简历和面试技巧总结
 
-### 数据结构
+##### 回答职业规划类型问题
 
-##### 栈的实现
-
-```javascript
-	function stack(){
-      this.dataStore=[];
-      this.top=0;
-      this.push=push;
-      this.pop=pop;
-      this.peek=peek;
-	}
-
-	function push(element){
-      this.dataStore[top++]=element;
-	}
-	function pop(element){
-      return this.dataStore[--this.top];
-	}
-	function peek(){
-      return this.dataStore[this.top-1];
-	}
-	function length(){
-      return this.top;
-	}
-	function clear(){
-      this.top=0;
-	}
-```
-
-##### 队列的实现
-
-```javascript
-	function Queue(){
-      this.dataStore=[];
-      this.enqueue=enqueue;
-      this.dequeue=dequeue;
-      this.front=front;
-      this.back=back;
-      this.toString=toString;
-      this.empty=empty;
-    }
-	function enqueue(element){
-      this.dataStore.push(element);
-	}
-	function dequeue(element){
-      this.dataStore.shift();
-	}
-	function front(){
-      return this.dataStore[0];
-	}
-	function back(){
-      return this.dataStore[this.dataStore.length-1];
-	}
-	function toString(){
-      var resstr='';
-      for(var i=0;i<this.dataStore.length;i++){
-        resstr+=this.dataStore[i]+'/n';
-      }
-      return resstr;
-	}
-	function empty(){
-      return this.dataStore.length==0?true:false;
-	}
-	
-```
-
-##### 链表的实现
-
-```javascript
-	function Node(element){
-      this.element=element;
-      this.next=null;
-	}
-	function llist(){
-      this.head=new Node('head');
-      this.find=find;
-      this.insert=insert;
-      this.remove=remove;
-      this.display=display;
-	}
-	function find(item){
-      var curNode=this.head;
-      while(curNode!=item){
-        curNode=curNode.next;
-      }
-      return curNode;
-	}
-	function insert(newELement,item){
-      var newNode=new Node(newElment);
-      var current=this.find(item);
-      newNode.next=current.next;
-      current.next=newNode;
-	}
-	function display(){
-      var curNode=this.head;
-      while(!(curNode.next==null)){
-        print(curNode.next.element);
-        curNode=curNode.next;
-      }
-	}
-	function findprevious(item){
-		var curNode=this.head;
-      	while(!(curNode.next==null)&&(curNode.next.element!=item)){
-          curNode=curNode.next;
-      	}
-      	return curNode;
-    }
-	function remove(item){
-      var previous=findprevious(item);
-      if(!(previous.next.next==null)){
-        previous.next=previous.next.next;
-      }
-	}
-
-	//双向链表
-	function Node(element){
-      this.element=element;
-      this.next=null;
-      this.previous=null;
-	}
-	function LList(){
-      this.head=new Node('head');
-      this.find=find;
-      this.insert=insert;
-      this.display=display;
-      this.remove=remove;
-      this.findlast=findlast;
-      this.dispReverse=dispReverse;
-	}
-	funciton dispReverse(){
-      var curNode=this.head;
-      curNode=this.findLast();
-      while(!(curNode==null)){
-        print(curNode.element);
-        curNode=curNode.previous;
-      }
-	}
-	function findLast(){
-      var curNode=this.head;
-      while(!(curNode.next==null)){
-        curNode=curNode.next;
-      }
-      return curNode;
-	}
-	
-
-	
-```
-
-##### 深度优先和广度优先的遍历
-
-```javascript
-function wideTraversal(selectNode) {  
-    var nodes = [];  
-    if (selectNode != null) {  
-        var queue = [];  
-        queue.unshift(selectNode);  
-        while (queue.length != 0) {  
-            var item = queue.shift();  
-            nodes.push(item);  
-            var children = item.children;  
-            for (var i = 0; i < children.length; i++)  
-                queue.push(children[i]);  
-        }  
-    }  
-    return nodes;   
-}
-
-
-
-
-var preOrder = function (node) {
-  if (node) {
-    console.log(node.value);
-    preOrder(node.left);
-    preOrder(node.right);
-  }
-}
-
-var inOrder = function (node) {
-  if(node){
-    inOrder(node.left);
-    console.log(node.value);
-    inOrder(node.right);
-  }
-}
-
-var postOrder = function (node) {
-  if (node) {
-    postOrder(node.left);
-    postOrder(node.right);
-    console.log(node.value);
-  }
-}
-```
-
-
-
-### 算法
-
-##### 数组去重
-
-```javascript
-		var array = [1,3,4,4,5,6];
-        function filt(array){
-          var result=[];
-          var hash = {};
-          array.forEach(function(item){
-            if(!hash[item]){
-              result.push(item);
-              hash[item]=true;
-            }
-          })
-          console.log(result);
-        }
-		filt();
-```
-
-##### 判断两个json是否相同
-
-```javascript
-const x={a:1,b:2},y={b:2,a:1},z={a:2,b:3};
-//我能想到的方法就是便利每个变量，然后对比
-deter(x,y)  //true
-deter(x,z)  //false
-```
-
-##### 快速排序时间复杂度 o(nlogn)
-
-数组有n个元素，因为要递归运算，算出支点pivot的位置，然后递归调用左半部分和有半部分，这个时候理解上是若第一层的话就是n/2，n/2，若是第二层就是n/4,n/4,n/4,n/4这四部分，即n个元素理解上是一共有几层2^x=n，x=logn，然后每层都是n的复杂度，那么平均就是O(nlogn)的时间复杂度。但这种肯定是平均情况，如果你是标准排序的情况下，如果已经是ascending的顺序，那么递归只存在右半部分了，左半部分都被淘汰了。(n-1)*(n-2)*....*1，这个复杂度肯定就是O(n^2)，这种情况还不如用插入排序作者：
-
-主定理严格推倒
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 第四部分 简历和面试技巧总结
-
-
+体现扎根动机，公司优秀多向公司学习
 
 ##### 反问面试官的最后一个问题
 

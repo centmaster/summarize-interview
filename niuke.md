@@ -139,9 +139,28 @@ DNS（Domain Name System，域名系统），因特网上作为域名和[IP地�
 
 都是相对font-size大小，但是rem是根据root的em，em是根据父级
 
+##### 发现一个神奇的东西
 
+按说substr——》对应splice     substring———》slice
 
+但只有splice会真实的改变原来的数据，其他三个都不能
 
+##### css百分比相对于谁
+
+相对于父元素宽度的：
+[max/min-]width、left、right、padding、margin 等；
+
+相对于父元素高度的：
+[max/min-]height、top、bottom 等；
+
+相对于继承字号的：
+font-size 等；
+
+相对于自身字号的：
+line-height 等；
+
+相对于自身宽高的：
+border-radius、background-size、transform: translate()、transform-origin、zoom、clip-path 等；
 
 
 

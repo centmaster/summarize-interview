@@ -29,7 +29,7 @@ for (let key in object) {
         console.log(key);
     });
 }
-
+//因为再执行的时候key都已经变成c了
 funcs.forEach(function(func) {
     func();     // outputs "a", then "b", then "c"
 });				//if change to var then outputs c c c
