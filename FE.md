@@ -87,6 +87,26 @@ XHTML is not so much different from HTML 4.01 standard. The major differences ar
 - XHTML elements must be in **lowercase**.
 - XHTML documents must have **one root element**.
 
+##### XML到底是啥，和html有啥区别
+
+一种语言的标准，比html更底层吧。XML是爹，主要是为了数据格式化，和json很像
+
+##### XPath又是啥，干了什么
+
+XPath stands for XML Path Language.It uses a non-XML syntax to provide a flexible way of addressing (pointing to) different parts of an [XML](https://developer.mozilla.org/en-US/docs/XML) document.
+
+XPath is mainly used in一种xml语言-- [XSLT](https://developer.mozilla.org/en-US/docs/XSLT), but can also be used as a much more powerful way of navigating through the [DOM](https://developer.mozilla.org/en-US/docs/DOM) of any XML-like language document, such as HTML and [XUL](https://developer.mozilla.org/en-US/docs/XUL), instead of relying on the [`document.getElementById`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById) method, the [`element.childNodes`](https://developer.mozilla.org/en-US/docs/Web/API/Element/childNodes) properties, and other DOM Core features.
+
+document.evaluate
+
+##### 怪异模式和标准模式最大的区别是什么
+
+盒模型，怪异模式按IE那种border里边都算宽高。
+
+##### 如何判断 一个对象是dom对象
+
+Obj instanceof HTMLElement 
+
 ##### h5标签了解多少
 
 ```html
@@ -1065,7 +1085,9 @@ $("#tab").bind("click",function(ev)){
 
 
 
+##### event对象属性方法
 
+onblur onload onkeyup onmouseup
 
 ##### for in 和for of的区别是什么
 
@@ -1075,7 +1097,9 @@ for of遍历的是对应的元素值
 
 遍历对象新出的 Object.keys() Object.values. Object.entires()
 
+##### 遍历对象
 
+Object.keys.    for..in
 
 ##### 闭包 ！
 

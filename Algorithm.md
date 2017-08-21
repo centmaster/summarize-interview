@@ -57,7 +57,17 @@ var preOrderUnRecur = function(node) {
 }				//深度利用栈
 ```
 
+##### 后序遍历
 
+```javascript
+var postOrder = function (node) {  
+if(node){  
+postOrder(node.left);  
+postOrder(node.right);  
+console.log(node.value);  
+}  
+}  
+```
 
 
 
