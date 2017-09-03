@@ -401,6 +401,7 @@ session存于服务器端。
 不过现有语言和框架基本都可以让你简单地使用session，而无需考虑session和cookie的关系。
 
 (42).localstorage，sessionstorage（合起来叫webstorage）
+localstorage存的key-value，value是字符串！
 HTML5 提供了两种在客户端存储数据的新方法：
 localStorage - 没有时间限制的数据存储
 sessionStorage - 针对一个 session 的数据存储

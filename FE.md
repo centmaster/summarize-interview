@@ -105,7 +105,7 @@ document.evaluate
 
 ##### 如何判断 一个对象是dom对象
 
-Obj instanceof HTMLElement 
+Obj instanceof HTMLElement   //HTMLCollection    HTMLDivElement.    nodeType
 
 ##### h5标签了解多少
 
@@ -1101,15 +1101,65 @@ for of遍历的是对应的元素值
 
 Object.keys.    for..in
 
+##### 深复制与浅复制
+
+1.直接用等号赋值 浅复制
+
+2.Object.assign() 居然也是浅复制.   因为copy对象的时候是复制指针
+
+```javascript
+ let obj1 = { a: 0 , b: { c: 0}};
+  let obj2 = Object.assign({}, obj1);
+  console.log(JSON.stringify(obj2)); // { a: 0, b: { c: 0}}
+  
+  obj1.a = 1;
+  console.log(JSON.stringify(obj1)); // { a: 1, b: { c: 0}}
+  console.log(JSON.stringify(obj2)); // { a: 0, b: { c: 0}}
+  
+  obj2.a = 2;
+  console.log(JSON.stringify(obj1)); // { a: 1, b: { c: 0}}
+  console.log(JSON.stringify(obj2)); // { a: 2, b: { c: 0}}
+  
+  obj2.b.c = 3;
+  console.log(JSON.stringify(obj1)); // { a: 1, b: { c: 3}}
+  console.log(JSON.stringify(obj2)); // { a: 2, b: { c: 3}}
+  
+  // Deep Clone
+  obj1 = { a: 0 , b: { c: 0}};
+  let obj3 = JSON.parse(JSON.stringify(obj1));
+  obj1.a = 4;
+  obj1.b.c = 4;
+  console.log(JSON.stringify(obj3)); // { a: 0, b: { c: 0}}
+```
+
+3.jQuery.extend     vue的touch函数？
+
+4.Json.parse. Json.stringify
+
 ##### 闭包 ！
 
 ###### 什么是闭包？
 
-利用块状作用域把外部的变量hold住
+定义：当函数可以记住并访问所在的词法作用域，即使函数是在当前词法作用域之外执行，这时就产生了闭包。
 
-js分全局作用域和函数作用域。函数作用域里可以访问到全局，通过一个叫作用域链的东西。但全局怎么访问函数呢？就有人想了在函数里面再写一个函数(闭包)，这样把作用域链加长了。就可以在全局访问到函数里的数据了。闭包能访问到父级函数里面的数据说明父级里的数据一直存在内存中(闭包存在的情况下)，这就会导致内存一直被占着。
+辨认：就两点，1内部有一个函数保存了作用域内的变量   2这个变量暴露暴露出来
 
-一句话总结闭包：对函数外层的变量持有访问权。
+例子：
+
+```javascript
+function wait(message){
+  setTimeout(function timer(){
+    console.log(message)
+  },1000);
+}   //不是非得return出去才叫暴露
+
+
+function setup(name,selector){
+  $(selector).click(function activator(){
+    console.log(name)
+  });
+}  //在任务中，只要使用了回调函数，实际上就是在使用闭包
+```
 
 ```javascript
 function Counter(start) {
@@ -1127,7 +1177,7 @@ function Counter(start) {
 
 var foo = Counter(4);
 foo.increment();
-foo.get(); // 5
+foo.get(); // 5    其实这就是模块的写法
 ```
 
 ###### 闭包与setTimeout
@@ -1267,10 +1317,8 @@ JavaScript引擎首先从macrotask queue中取出第一个任务，
 然后，遇到了promise.then，放入到了另一个队列microtask queue。
 等整个execution context stack执行完后，
 下一步该取的是microtask queue中的任务了。
-因此promise.then的回调比setTimeout先执行。
+因此promise.then的回调比setTimeout先执行 
 ```
-
-
 
 
 
@@ -1338,9 +1386,53 @@ class PrimaryStudent extends Student {
 }
 ```
 
+##### 上下文和作用域
+
+在当前作用域中无法找到某个变量时，引擎就会在外层嵌套的作用域中继续寻找。直到找到该变量，或抵达最外层的作用域为止。
+
+```javascript
+function foo(){
+  console.log(a);  //2
+}
+
+function bar(){
+  var a=3;
+  foo();
+}
+
+var a=2;
+
+bar();
+```
+
+作用域分为两种，词法作用域和动态作用域。js是词法作用域。
+
+词法作用域最重要的特征是它的定义过程发生在代码书写阶段。
+
 ##### this的误区
 
 指向自身，this指向函数的作用域。 //this取决于调用位置
+
+##### this和上下文作用域
+
+分成声明和赋值两个步骤。一开始先声明，然后赋值的时候如果没声明再声明（全局作用域），最后赋值。
+
+this不是author-time binding，而是 runtime binding。
+
+当函数作为对象方法调用时，`this`指向该对象。
+
+```javascript
+var o = {
+  prop: 37,
+  f: function() {
+    return this.prop;
+  }
+};
+
+console.log(o.f()); // logs 37
+```
+
+
 
 ##### this对象绑定规则（箭头函数不满足）
 
@@ -1649,69 +1741,6 @@ beforedestory	destroyed
 
 
 
-#### vue和react的区别
-
-##### 共同点
-
-都是组件化
-
-提供合理的钩子函数
-
-ajax，route等功能都不在核心包里，而是以插件的方式加载
-
-使用 Virtual DOM 
-
-##### 区别
-
-React依赖Virtual DOM,而Vue.js使用的是DOM模板
-
-当组件状态发生变化的时候，react树会自上而下发生变化。需要通过shouldComponentUpdate方法避免某些组件渲染，然而这个时候也要保证props是这个子组件根。vue的渲染是自动追踪的。
-
-vue有scope 自己的css作用域，相互之间不影响
-
-ReactNative  vs  Vue+Veex 阿里，跨平台框架
-
-状态变化跟踪，界面同步
-
-- react 可以随时添加新的 state 成员；vue 不行，必须定义时准备好顶级成员，而且非顶级成员也必须通过api设置才能是响应式的；这点，react 比较方便 
-- vue 可以跟踪任何 scope 的状态，包括各级父甚至不相关的，因为vue采用 getter/setter机制；react 默认只能检测本组件的状态变化，比较受限制 
-
-
-以 javascript 为核心，和以 html 为核心
-
-* react 是状态到 html 的映射 
-* vue 是现有 HTML 模板，然后绑定到对应的 Vue javascript 对象上 
-
-
-组件化比较
-
-* react 倾向于细粒度的组件划分，确实也容易做到 
-* vue 相对不太，但是如果 Vue 也采用 jsx 语法，那么还是比较容易做到的 
-
-
-directive
-
-vue 由于提供的 direct 特别是预置的 directive 因为场景场景开发更容易；react 没有 directive 
-- v-if, v-show, v-else 
-- v-text, v-html, 
-- v-model 对于表单处理 vue 明显更方便 
-- @event.prevent @keyxxx.enter 
-
-
-watch
-
-- vue 可以 watch 一个数据项；而 react 不行 
-
-
-计算属性
-
-- vue 有，提供方便；而 react 不行 
-
-
-
-
-
-
 react的写法
 
 ```javascript
@@ -1762,213 +1791,12 @@ class Parent extends React.Component{
 
 
 
-
-
-
-
-##### vue中socpe css怎么实现的
-
-(源码https://github.com/AlloyTeam/AlloyTouch/blob/2b9f8ca35ab954c3a9a3ebb747e88c09503a16fa/example/scoped_css/index.html)
-
-每个域中的dom都会自己添加自定义的data-id的属性，然后css中添加[data-id]，会匹配这些dom
-
-动态的把css变成.example[_v-f3f3eg9].  
-
-1. 在同一组件内，你能同时用有作用域和无作用域的样式：
-2. 父组件的有作用域的CSS和子组件的有作用域的CSS将同时影响子组件。
-3. 有作用域的样式对其他部分没有影响。
-4. **有作用域限定的样式不排除类的需要**. 由于浏览器渲染方式支持多种不同的CSS选择器，加了作用域的 `p { color: red }` 会慢好多倍 （即，和属性选择器组合时候的时候）。如果你用类或者id选择器，比如 `.example { color: red }` ，你就能消除性能损失。[这里有个练习场](http://stevesouders.com/efws/css-selectors/csscreate.php) ，你可以比较测试下其中的差异。
-5. **在递归组件中小心后代选择器！** 对于 CSS 规则的选择器 `.a .b`，如果匹配 `.a` 的元素内包含一个递归子组件，那么子组件中所有包含 `.b` 的元素都会被匹配到。
-
-
-
-
-
-```javascript
-        ;(function () {
-            function scoper(css) {
-                var id = generateID();
-                var prefix = "#" + id;
-                css = css.replace(/\/\*[\s\S]*?\*\//g, '');  //把样式放到一行
-                var re = new RegExp("([^\r\n,{}]+)(,(?=[^}]*{)|\s*{)", "g"); //
-                css = css.replace(re, function(g0, g1, g2) {
-                    if (g1.match(/^\s*(@media|@keyframes|to|from|@font-face)/)) {
-                        return g1 + g2;
-                    }
-                    if (g1.match(/:scope/)) {
-                        g1 = g1.replace(/([^\s]*):scope/, function(h0, h1) {
-                            if (h1 === "") {
-                                return "> *";
-                            } else {
-                                return "> " + h1;
-                            }
-                        });
-                    }
-                    g1 = g1.replace(/^(\s*)/, "$1" + prefix + " ");
-                    return g1 + g2;
-                });
-                addStyle(css,id+"-style");
-                return id;
-            }
-            function generateID() {
-                var id =  ("scoped"+ Math.random()).replace("0.","");
-                if(document.getElementById(id)){
-                    return generateID();
-                }else {
-                    return id;
-                }
-            }
-            var isIE = (function () {
-                var undef,
-                    v = 3,
-                    div = document.createElement('div'),
-                    all = div.getElementsByTagName('i');
-                while (
-                    div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->',
-                        all[0]
-                    );
-                return v > 4 ? v : undef;
-            }());
-            function addStyle(cssText, id) {
-                var d = document,
-                    someThingStyles = d.createElement('style');
-                d.getElementsByTagName('head')[0].appendChild(someThingStyles);
-                someThingStyles.setAttribute('type', 'text/css');
-                someThingStyles.setAttribute('id', id);
-                if (isIE) {
-                    someThingStyles.styleSheet.cssText = cssText;
-                } else {
-                    someThingStyles.textContent = cssText;
-                }
-            }
-            window.scoper = scoper;
-        })();
-        
-        var id = scoper("h1 {\
-                           color:red;\
-                        /*color: #0079ff;*/\
-                            }\
-                    \
-                            /*  h2 {\
-                            color:green\
-                            }*/");
-        document.body.getElementsByTagName("div")[0].setAttribute("id",id);
-```
-
-
-
-##### Vuex-router 预备知识
-
-###### 利用H5History API 无刷新更改地址栏
-
-浏览器历史记录可以看作一个「栈」。
-
-###### pushState(state, "My Profile", "/profile/") 方法
-
-当调用他们修改浏览器历史记录栈后，虽然当前URL改变了，但浏览器不会立即发送请求该URL
-
-执行`pushState`函数之后，会往浏览器的历史记录中添加一条新记录，同时改变地址栏的地址内容。它可以接收三个参数，按顺序分别为：
-
-1. 一个对象或者字符串，用于描述新记录的一些特性。这个参数会被一并添加到历史记录中，以供以后使用。这个参数是开发者根据自己的需要自由给出的。
-2. 一个字符串，代表新页面的标题。当前基本上所有浏览器都会忽略这个参数。
-3. 一个字符串，代表新页面的相对地址。
-
-###### popstate 事件
-
-当用户点击浏览器的「前进」、「后退」按钮时，就会触发`popstate`事件。你可以监听这一事件，从而作出反应。
-
-###### replaceState 方法
-
-有时，你希望不添加一个新记录，而是替换当前的记录（比如对网站的 landing page），则可以使用`replaceState`方法。这个方法和`pushState`的参数完全一样。
-
-
-
-###### 利用浏览器的hash特点
-
-\#符号本身以及它后面的字符称之为hash，可通过window.location.hash属性读取。它具有如下特点：
-
-- hash虽然出现在URL中，但不会被包括在HTTP请求中。它是用来指导浏览器动作的，对服务器端完全无用，因此，改变hash不会重新加载页面
-
-- 可以为hash的改变添加监听事件：
-
-  ```
-  window.addEventListener("hashchange", funcRef, false)
-
-  ```
-
-- 每一次改变hash（window.location.hash），都会在浏览器的访问历史中增加一个记录
-
-###### HashHistory.push()
-
-```javascript
-window.location.hash = route.fullPath
-```
-
-
-
-##### vue-router的具体实现的比较（https://zhuanlan.zhihu.com/p/27588422）
-
-“更新视图但不重新请求页面”是前端路由原理的核心之一，目前在浏览器环境中这一功能的实现主要有两种方式：
-
-- 利用URL中的hash（“#”）
-- 利用History interface在 HTML5中新增的方法
-
-###### 利用hash
-
-从设置路由改变到视图更新的流程如下：
-
-```javascript
-$router.push() --> HashHistory.push() --> History.transitionTo() --> History.updateRoute() -！！！-> {app._route = route} --> vm.render()
-```
-
-在感叹号这一步过程中，updateRoute的回调函数触发了mixin（应该就是vue和router的mix）
-
-```javascript
-export function install (Vue) {
-  Vue.mixin({
-    beforeCreate () {
-      if (isDef(this.$options.router)) {
-        this._router = this.$options.router
-        this._router.init(this)
-        Vue.util.defineReactive(this, '_route', this._router.history.current)
-      }
-      registerInstance(this, this)
-    },
-  })
-}
-```
-
-通过Vue.mixin()方法，全局注册一个混合，影响注册之后所有创建的每个 Vue 实例，该混合在beforeCreate钩子中通过Vue.util.defineReactive()定义了响应式的_route属性。所谓响应式属性，即当_route值改变时，会自动调用Vue实例的render()方法，更新视图。
-
-repalce和push  同理，区别在于替换。另外：
-
-```javascript
-setupListeners ()  //用来监听手动替换的hash
-```
-
-###### 利用History
-
-原理基本一样。不再赘述，方法替换就好。
-
-###### 调用history.pushState()相比于直接修改hash主要有以下优势：
-
-- pushState设置的新URL可以是与当前URL同源的任意URL；而hash只可修改#后面的部分，故只可设置与当前同文档的URL
-- pushState设置的新URL可以与当前URL一模一样，这样也会把记录添加到栈中；而hash设置的新值必须与原来不一样才会触发记录添加到栈中
-- pushState通过stateObject可以添加任意类型的数据到记录中；而hash只可添加短字符串
-- pushState可额外设置title属性供后续使用
-
-
-
 ##### vuex是为什么出现的
 
 - 管理多个组件共享状态。
 - 全局状态管理。
 - 状态变更跟踪。
 - 让状态管理形成一种规范，使代码结构更清晰。
-
-##### vue还是要更深层的了解，读源码
-
-##### 双向绑定的的原理—源码   
 
 ##### 源码中的遍历对象
 
@@ -2605,6 +2433,8 @@ alert($(window).width()); //浏览器当前窗口可视区域宽度
 alert($(document).width());//浏览器当前窗口文档对象宽度
 alert($(document.body).width());//浏览器当前窗口文档body的宽度
 alert($(document.body).outerWidth(true));//浏览器当前窗口文档body的总宽度
+
+###### 当数据量很大的时候，更细致的分析
 
 
 

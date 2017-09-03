@@ -162,21 +162,136 @@ line-height 等；
 相对于自身宽高的：
 border-radius、background-size、transform: translate()、transform-origin、zoom、clip-path 等；
 
+##### js严格模式
+
+如果两个js用了不同模式，怎么放在一起？用IIFE将两者隔离开来
+
+###### 语法限制
+
+1.不允许使用未声明变量，当然也不许删除变量
+
+2.对象。对象属性改动限制
+
+3.函数。不允许名字相同的参数，arguments与参数独立。
+
+4.eval方法只在其操作的eval内部
+
+5.this在严格模式下始终指向指定的值，包括null和undefined。
+
+6.不允许使用with
+
+```javascript
+'use strict'
+window.color="red"; //node环境中为global.color = "red"; 
+function displayColor(){
+    console.log(this.color);//严格模式下报错
+}
+```
+
+##### 遍历方法的区别
+
+map():返回一个新的Array，每个元素为调用func的结果
+
+filter():返回一个符合func条件的元素数组
+
+some():返回一个boolean，判断是否有元素是否符合func条件
+
+every():返回一个boolean，判断每个元素是否符合func条件
+
+forEach():没有返回值，只是针对每个元素调用func
+
+##### 原生css实现三角形
+
+```css
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid red;
+```
+
+##### https和http以及http2
+
+http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/
+
+http1.0——>http1.1——>https——>SPDY——>http2.0
+
+###### 影响http的主要因素
+
+带宽和延时。带宽现在不是大问题了，主要是延时。产生延时的3个因素
+
+1.浏览器阻塞。  因为浏览器限制最大连接数
+
+2.DNS查询
+
+3.建立连接。三次握手。慢启动—拥塞避免。   一开始从很小开始试网络情况，然后动态调整
+
+###### 1.0和1.1的区别
+
+1.缓存处理。引入了更多的缓存控制策略例如Entity tag，If-Unmodified-Since, If-Match, If-None-Match等更多可供选择的缓存头来控制缓存策略。
+
+2.带宽优化。在请求头引入了range头域，它允许只请求资源的某个部分
+
+3.增加了更多的错误状态码。410（Gone）表示服务器上的某个资源被永久性的删除。
+
+4.Host头处理。在一台物理服务器上可以存在多个虚拟主机（Multi-homed Web Servers），并且它们共享一个IP地址
+
+5.长连接
+
+###### 为了保证安全性，https应运而生
+
+在http和tcp中间多加了一个层，SSL／TLS
+
+改造成https过程：安装CA证书，大量的密钥计算增加cpu计算成本
+
+证书的作用：实现加密传输，认证服务器身份。
+
+###### 使用SPDY—在http和ssl中间层
+
+1.多路复用
+
+2.请求优先级
+
+3.header压缩
+
+4.基于https
+
+###### HTTP2.0新特性
+
+1.新的二进制格式
+
+2.多路复用
 
 
 
+按层从高到低。HTTP—SPDY----SSL----TCP
+
+##### 线程与进程
+
+进程是cpu资源分配的最小单位，线程是cpu调度的最小单位。
+
+##### async await和generator的区别
+
+实验证明，前者其实就是地狱回调的样子，等callback之后再往后走。就是同步的。
+
+async 是多个异步操作的promise对象，await相当于then
+
+使用await Promise.all([func1(),func2()])。就可以把同步变成异步了。
+
+区别：
+
+前者 await后边是跟promise不是自己会转   后者跟的还是generator
 
 
 
+##### json和对象的区别
 
+JSON是一种数据格式，可以用来交换、存储数据。从JSON可以方便的生成JS对象。
 
+其语法可以认为是JS Object的子集，主要区别在：
 
-
-
-
-
-
-
+1. JSON的键必须带引号，JS可以不带（解释器自动加）
+2. JSON没有函数、undefined、NaN等数据类型
 
 
 
@@ -186,7 +301,7 @@ border-radius、background-size、transform: translate()、transform-origin、zo
 
 我觉得，prototype引原来的，再用assign把属性方法都引过来，是不是就差不多？
 
-##### js函数的作用域
+
 
 ##### 前后端分离怎么做？意义？
 
@@ -194,5 +309,91 @@ border-radius、background-size、transform: translate()、transform-origin、zo
 
 
 
+##### cookie,LocalStorage被重复覆盖
 
+cookie.setMaxAge(Integer.MAX_VALUE); 
+
+如果要删除某个Cookie，只需要新建一个同名的Cookie，并将maxAge设置为0，并添加到response中覆盖原来的Cookie。
+
+cookie配合sessionid，共同验证登录
+
+后者存的是字符串。都会被覆盖。
+
+##### js 如何添加class 不覆盖原来的
+
+```
+element.className = "redColor";//设置class
+element.className += " yellowBack";//增加class
+```
+
+##### 一个何时会报undefined，何时会报referenceerror
+
+当你var a，或者找一个对象里的某个属性，a=Object.create({});a.name的时候会报undefined。如果一个变量从未声明，则referenceerror。如果求一个简单变量查找属性，则typeerror
+
+##### 判断js对象是否存在的方法
+
+```javascript
+1	if (!myObj) {
+　　　　var myObj = { };
+　　}//一定要有var，变量提升之后才不会报错，否则ReferenceError
+
+
+2　　if (!window.myObj) {
+　　　　var myObj = { };
+　　}
+
+3	if (!this.myObj) {
+　　　　this.myObj = { };
+　　}
+
+
+
+4	var global = this;
+　　if (!global.myObj) {
+　　　　global.myObj = { };
+　　}
+
+
+
+5	　if (typeof myObj == "undefined") {
+　　　　var myObj = { };
+　　}
+
+6	if (myObj == undefined) {
+　　　　var myObj = { };
+　　}
+
+7	if (!this.hasOwnProperty('myObj')) {
+　　　　this.myObj = { };
+　　}
+
+8	if (!('myObj' in window)) {
+　　　　window.myObj = { };
+　　}
+
+9	　if (myObj === undefined) {
+　　　　var myObj = { };
+　　}
+```
+
+##### 函数优先
+
+```javascript
+  foo()   //1
+
+  var foo;
+
+  function foo(){
+   console.log(1);
+  }
+  var foo= function(){
+      console.log(2);
+  }
+```
+
+同时出现hoist的话，函数优先。
+
+##### window.onload和$(document).ready()的区别，浏览器加载转圈结束时哪个时间点？
+
+感觉是完全加载完才停止转圈圈
 
