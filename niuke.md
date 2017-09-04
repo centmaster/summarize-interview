@@ -81,6 +81,13 @@ path domain Expire size
 | Function object (implements [[Call]] in ECMA-262 terms) | `"function"`               |
 | Any other object                         | `"object"`                 |
 
+```javascript
+function g(){
+return 23;
+} 
+typeof g()//number
+```
+
 ##### 常用算法排序
 
 | 排序法   | 最差时间分析     | 平均时间复杂度    | 稳定度  | 空间复杂度         |
@@ -396,4 +403,73 @@ element.className += " yellowBack";//增加class
 ##### window.onload和$(document).ready()的区别，浏览器加载转圈结束时哪个时间点？
 
 感觉是完全加载完才停止转圈圈
+
+
+
+##### babel的使用规则
+
+**配置**：.babelrc 根据官方给的规则集配置文件
+
+```javascript
+  {
+    "presets": [
+      "es2015",
+      "react",
+      "stage-2"
+    ],
+    "plugins": []
+  }
+```
+
+**工具**:
+
+Babel-cli 	用于命令行转码。
+
+Babel-node	它支持Node的REPL环境的所有功能，而且可以直接运行ES6代码。
+
+Babel-register	每当使用`require`加载`.js`、`.jsx`、`.es`和`.es6`后缀名的文件，就会先用Babel进行转码。
+
+Babel-core	如果某些代码需要调用Babel的API进行转码，就要使用`babel-core`模块
+
+Babel-polyfill		Babel默认只转换新的JavaScript句法（syntax），而不转换新的API，比如Iterator、Generator、Set、Maps、Proxy、Reflect、Symbol、Promise等全局对象，以及一些定义在全局对象上的方法（比如`Object.assign`）都不会转码。
+
+
+
+##### js的内存泄露问题
+
+垃圾回收机制：最常用的就是引用计数
+
+> ```javascript
+> const arr = [1, 2, 3, 4];
+> console.log('hello world');
+> ```
+
+上面代码中，数组`[1, 2, 3, 4]`是一个值，会占用内存。变量`arr`是仅有的对这个值的引用，因此引用次数为`1`。尽管后面的代码没有用到`arr`，它还是会持续占用内存。
+
+**ES6新出的Weakset和WeakMap**：
+
+```javascript
+const wm = new WeakMap();
+
+const element = document.getElementById('example');
+
+wm.set(element, 'some information');
+wm.get(element) // "some information"
+```
+
+这样，DOM 节点对象的引用计数是`1`，而不是`2`。这时，一旦消除对该节点的引用，它占用的内存就会被垃圾回收机制释放。Weakmap 保存的这个键值对，也会自动消失。
+
+**常见的js内存泄露**：
+
+1.意外的全局变量。当你没用var声明的时候，默认帮到window全局，就有了引用，会一直占用内存。还有this误指到全局的。可以用use strict 检测这种情况。
+
+2.并没有清除事件
+
+setInterval(clearInterval)，addEventListener(removeEventListener)
+
+3.IE6中dom对象引用了js对象，而dom对象在某个时刻被移除掉了，但js引擎不知道它被移除掉，还傻傻的保留着引用呢，就不会把js对象释放。
+
+
+
+
 

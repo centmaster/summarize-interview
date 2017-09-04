@@ -331,6 +331,27 @@ getJSON("/posts.json").then(function(json) {
 });
 ```
 
+可以看出，promise是个异步操作。但是还不是并发嘛，所以继续往下。
+
+```javascript
+new Promise(function executor(resolve) {
+  console.log(2);
+ 	setTimeout(()=>{
+  resolve();
+  },100)
+}).then(function() {		
+  console.log(4);					
+});
+new Promise(function executor(resolve) {
+  console.log(1);
+ 	setTimeout(()=>{
+  resolve();
+  },10)
+}).then(function() {		//2 1 3 4
+  console.log(3);					
+});
+```
+
 ##### 其他一些方法
 
 ##### Promise.all()
@@ -339,7 +360,7 @@ getJSON("/posts.json").then(function(json) {
 var p = Promise.all([p1, p2, p3]);
 ```
 
-当三个都resolve的时候才会继续往下走，有一个reject了就直接reject了。返回的是一个数组，方法参数可以不是数组
+当三个都resolve的时候才会继续往下走，有一个reject了就直接reject了。返回的是一个数组，方法参数可以不是数组。所有promise都会跑，然后出来也是按顺序的。
 
 ##### Promise.race()
 
@@ -1122,6 +1143,21 @@ getStockPriceByName('goog').then(function (result) {
 `async`函数返回的 Promise 对象，必须等到内部所有`await`命令后面的 Promise 对象执行完，才会发生状态改变，除非遇到`return`语句或者抛出错误。
 
 正常情况下，`await`命令后面是一个 Promise 对象。如果不是，会被转成一个立即`resolve`的 Promise 对象。
+
+```javascript
+function timeout(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function asyncPrint(value, ms) {
+  await timeout(ms);
+  console.log(value);
+}
+
+asyncPrint('hello world', 50);
+```
 
 多个`await`命令后面的异步操作，如果不存在继发关系，最好让它们同时触发。
 

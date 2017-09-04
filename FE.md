@@ -840,6 +840,12 @@ var s2 = s1.substr(4);
 
 正因为有第三步这个销毁的动作，所以你应该能够明白为什么基本数据类型不可以添加属性和方法，这也正是基本装包类型和引用类型主要区别：对象的生存期.使用new操作符创建的引用类型的实例，在执行流离开当前作用域之前都是一直保存在内存中.而自动创建的基本包装类型的对象，则只存在于一行代码的执行瞬间，然后立即被销毁
 
+```javascript
+var a=new String('A');
+var b=new String('A');
+a==b	//false
+```
+
 ###### Null 和 Undefined 的区别
 
 ```javascript
@@ -1196,11 +1202,13 @@ answer
 
 ```javascript
 for (var i=1; i<=5; i++) { 
-	(setTimeout(function timer(){
+	(function(i){
+  setTimeout(()=>{
       console.log(i);
 	},i*1000)
      })(i)
 }
+
 for(var i=1;i<5;i++){
   setTimeout((function timer(){
     return function(i){
@@ -2084,6 +2092,46 @@ dns缓存（地址），cdn缓存（文件），浏览器缓存，服务器缓�
 
 
 
+##### 关于cookie的一切
+
+**cookie的属性**：
+
+Domain：域，表示当前cookie所属于哪个域或子域下面。（www.jianshu.com）
+
+Path：表示cookie的所属路径。（／）
+
+Expire time/Max-age：表示了cookie的有效期。expire的值，是一个时间，过了这个时间，该cookie就失效了。或者是用max-age指定当前cookie是在多长时间之后而失效。如果服务器返回的一个cookie，没有指定其expire time，那么表明此cookie有效期只是当前的session，即是session cookie，当前session会话结束后，就过期了。对应的，当关闭（浏览器中）该页面的时候，此cookie就应该被浏览器所删除了（2017-10-20T02:16:19.000Z）
+
+secure：表示该cookie只能用https传输。一般用于包含认证信息的cookie，要求传输此cookie的时候，必须用https传输。
+
+httponly：表示此cookie必须用于http或https传输。这意味着，浏览器脚本，比如javascript中，是不允许访问操作此cookie的。
+
+**服务器发送cookie给客户端**：
+
+从服务器端，发送cookie给客户端，是对应的Set-Cookie。包括了对应的cookie的名称，值，以及各个属性。
+
+Set-Cookie: lu=Rg3vHJZnehYLjVg7qi3bZjzg; Expires=Tue, 15 Jan 2013 21:47:38 GMT; Path=/; Domain=.169it.com; HttpOnly
+
+**从客户端把cookie发送到服务器**：
+
+从客户端发送cookie给服务器的时候，是不发送cookie的各个属性的，而只是发送对应的名称和值。
+
+**关于修改，设置cookie**：
+
+除了服务器发送给客户端（浏览器）的时候，通过Set-Cookie，创建或更新对应的cookie之外，还可以通过浏览器内置的一些脚本，比如javascript，去设置对应的cookie，对应实现是操作js中的document.cookie。
+
+**Cookie的缺陷：**
+
+(1)cookie会被附加在每个HTTP请求中，所以无形中增加了流量。
+
+(2)由于在HTTP请求中的cookie是明文传递的，所以安全性成问题。（除非用HTTPS)
+
+(3)Cookie的大小限制在4KB左右。对于复杂的存储需求来说是不够用的。
+
+
+
+
+
 ##### 浏览器缓存机制
 
 Cache-Control：max-age=600。设置有效时长
@@ -2434,9 +2482,66 @@ alert($(document).width());//浏览器当前窗口文档对象宽度
 alert($(document.body).width());//浏览器当前窗口文档body的宽度
 alert($(document.body).outerWidth(true));//浏览器当前窗口文档body的总宽度
 
-###### 当数据量很大的时候，更细致的分析
+###### 当数据量很大的时候，更细致的分析(https://juejin.im/post/58b545f0b123db005734634e)
+
+问题：
+
+1.设置阀值，不要等到最后再拉动加载，比如可以提前一页
+
+2.top，temp，bottom三块，滚动过程中不断改变数组中数据，保证数据长度一定。
+
+3.dom操作是阻塞的
+
+衡量标准：
+
+1.使用window.performance
+
+HTML5带来的performance API功能强大。我们可以使用其performance.now()精确计算程序执行时间。performance.now()与Date.now()不同的是，返回了以微秒（百万分之一秒）为单位的时间，更加精准。并且与 Date.now() 会受系统程序执行阻塞的影响不同，performance.now() 的时间是以恒定速率递增的，不受系统时间的影响（系统时间可被人为或软件调整）。
+
+2.使用console.time方法与console.timeEnd方法
+
+其中console.time方法用于标记开始时间，console.timeEnd方法用于标记结束时间，并且将结束时间与开始时间之间经过的毫秒数在控制台中输出。
 
 
+
+解决思路：
+
+但是我这里想从移动端主要浏览器处理滚动的方式入手，来思考这个问题：
+
+1）在Android机器上，用户滚动屏幕时，滚动事件高频率发生——在Galaxy－SIII手机上，大约频率是一秒一百次。这意味着，滚动处理函数也被调用了数百次，而这些又都是成本较大的函数。
+
+2）在Safari浏览器上，我们遇到的问题恰恰是相反的：用户每次滚动屏幕时，滚动事件只在滚动动画停止时才触发。当用户在iPhone上滚动屏幕时，不会运行更新界面的代码（滚动停止时才会运行一次）。
+
+
+
+“截流和防抖动函数”（Throttle和Debounce）。
+简单总结一下：
+
+1）Throttle允许我们限制激活响应的数量。我们可以限制每秒回调的数量。反过来，也就是说在激活下一个回调之前要等待多少时间;
+
+2）Debounce意味着当事件发生时，我们不会立即激活回调。相反，我们等待一定的时间并检查相同的事件是否再次触发。如果是，我们重置定时器，并再次等待。如果在等待期间没有发生相同的事件，我们就立即激活回调。
 
 ##### 
+
+基于以上，我的解决方案是既不同于Throttle，也不同于Debounce，但是和这两个思想，尤其是Throttle又比较类似：把滚动事件替换为一个带有计时器的滚动处理程序，每100毫秒进行简单检查，看这段时间内用户是否滚动过。如果没有，则什么都不做；如果有，就进行处理。
+
+其中，是否发生滚动由lastScrollY === window.scrollY来判断。 document.body.scrollTop
+
+
+
+DOM回收
+
+每加载一次数据，就生成“.page-container .J-PageContainer_页数”的div，在滚动多屏之后，早已移除视窗的div的子节点进行了remove()，并且为了保证滚动条的正确比例和防止高度塌陷，显示声明了2956px的高度。
+
+###### 总结—一共就四点优化    
+
+dom回收，维持dom数量。     
+
+对于滚动事件的监听
+
+不要等到拉到最后再加载。
+
+墓碑（Tombstones）—先占位
+
+
 

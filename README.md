@@ -25,3 +25,5 @@
 [webpack优化](https://github.com/gwuhaolin/blog/issues/2)
 
 [算法积累](https://github.com/centmaster/summarize-interview/blob/master/Algorithm.md)
+
+[读书笔记](https://github.com/centmaster/summarize-interview/blob/master/readbook.md)
