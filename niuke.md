@@ -1,4 +1,4 @@
-## 网上看到别人的面经
+## 不成体系的各种知识点看到不会的就记录下来
 
 低版本浏览器不支持HTML5标签怎么解决
 
@@ -468,6 +468,60 @@ wm.get(element) // "some information"
 setInterval(clearInterval)，addEventListener(removeEventListener)
 
 3.IE6中dom对象引用了js对象，而dom对象在某个时刻被移除掉了，但js引擎不知道它被移除掉，还傻傻的保留着引用呢，就不会把js对象释放。
+
+##### url和uli的区别
+
+总的来说，**locators are also identifiers**, so every URL is also a URI, but there are URIs which are not URLs.
+
+##### Dom渲染树渲染过程。 其实不同的浏览器引擎渲染过程稍有不同
+
+![browser-3](/Users/centmaster/Documents/code/interview/FE-Learning/01-html知识点/images/browser-3.png)
+
+
+
+##### HTML和XHTML的区别
+
+1.所有的标记都必须要有一个相应的结束标记
+2.所有标签的元素和属性的名字都必须使用小写
+3.所有的XML标记都必须合理嵌套
+4.所有的属性必须用引号""括起来
+5.把所有<和&特殊符号用编码表示
+6.给所有属性赋一个值
+7.不要在注释内容中使“--”
+8.图片必须有说明文字
+
+##### 怪异模式和标准模式的区别在哪（判断alert(window.top.document.compatMode) ）
+
+1. 在严格模式中 ：width是内容宽度 ，元素真正的宽度 = marginLeft + borderLeftWidth + paddingLeft +
+   width + paddinRight + borderRightWidth +  marginRight;
+   在怪癖模式中 ：width则是元素的实际宽度 ，内容宽度 = width - ( paddingLeft + paddingRight + 
+   borderLeftWidth + borderRightWidth)
+
+2. 可以设置行内元素的高宽
+    在Standards模式下，给span等行内元素设置width和height都不会生效，而在quirks模式下，则会生效。
+
+3. 可设置百分比的高度
+    在standards模式下，一个元素的高度是由其包含的内容来决定的，如果父元素没有设置高度，
+    子元素设置一个百分比的高度是无效的。
+
+4. 用margin:0 auto设置水平居中在IE下会失效
+   使用margin:0 auto在standards模式下可以使元素水平居中，但在quirks模式下却会失效,
+   quirk模式下的解决办法，用text-align属性:
+   body{text-align:center};
+
+   content{text-align:left}
+
+5. quirk模式下设置图片的padding会失效
+
+6. quirk模式下Table中的字体属性不能继承上层的设置
+
+7. quirk模式下white-space:pre会失效
+
+
+
+
+
+
 
 
 
