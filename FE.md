@@ -1188,6 +1188,16 @@ foo.get(); // 5    其实这就是模块的写法
 
 ###### 闭包与setTimeout
 
+因为for循环他们共享同一个
+
+```javascript
+var result = [];
+for (var i=0; i < 5; i++) {
+    result.push(function () { return i });  // (*)
+}
+console.log(result[3]()); // 5 (not 3)
+```
+
 改变函数使得输出12345
 
 ```javascript
@@ -1215,6 +1225,14 @@ for(var i=1;i<5;i++){
       console.log(i)
     })(i)
   },i*1000)
+}
+             
+for(var i = 0; i < 10; i++) {
+    setTimeout((function(e) {
+        return function() {
+            console.log(e);
+        }
+    })(i), 1000)
 }
 ```
 
@@ -2302,7 +2320,7 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 
 ##### 看过的前端书籍
 
-权威指南，你不知道的js，understunding es6，阮es6，DOM编程艺术，bad things about JavaScript，图解http，css secrets ,css 权威指南，算法导论，jquery实战，黑客与画家,编写高质量JavaScript代码的68个有效方法,Head First HTML5 Programming,数据结构与算法JavaScript描述，编写高质量代码--Web前端开发修炼之道
+权威指南，你不知道的js，understunding es6，阮es6，DOM编程艺术，bad things about JavaScript，图解http，css secrets ,css 权威指南，算法导论，jquery实战，黑客与画家,编写高质量JavaScript代码的68个有效方法,Head First HTML5 Programming,数据结构与算法JavaScript描述，编写高质量代码--Web前端开发修炼之道，javascript秘密花园，javascript的怪癖
 
 #### 简历内容具体分析
 
