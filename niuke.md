@@ -518,11 +518,37 @@ setInterval(clearInterval)，addEventListener(removeEventListener)
 7. quirk模式下white-space:pre会失效
 
 
+##### 除了ajax之外，你知道fetch嘛
 
+```javascript
+fetch(url).then(function(response) {
+  return response.json();
+}).then(function(data) {
+  console.log(data);
+}).catch(function(e) {
+  console.log("Oops, error");
+});
+```
 
+##### http相应头和请求头
 
+| 相应头                        | 请求头                             |
+| -------------------------- | ------------------------------- |
+| Accept  用户代理可处理的媒体类型       | Accept-Ranges    是否接受字节范围请求     |
+| Authorization   web认证信息    | Age    推算资源创建经过时间               |
+| Host    请求资源所在的服务器         | Location    令客户端重定向至指定URI       |
+| If-match    比较ETag         | WWW-Authenticate   服务器对客户端的认证信息 |
+| User-Agent     Http客户端程序信息 | Server   http服务器的安装信息           |
+| Max-Forwards     最大传输跳转数   | Allow    资源可支持的HTTP方法           |
+| Range      实体的字节范围请求       | Content-Type   实体主体的媒体类型        |
+| Referer     对请求中URI的原始获取方  | Expires     过期时间                |
+|                            | Last-Modified    资源最后的修改日期      |
+|                            | Content-Length     资源主体大小       |
+|                            |                                 |
 
+##### Http2 优势(https://segmentfault.com/a/1190000005085636)
 
+多路复用		压缩头部    请求优先级		二进制			服务器推送
 
 
 

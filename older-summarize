@@ -103,9 +103,9 @@ box{ float:left; width:10px; margin:0 0 0 10px;}
 2. 与浮动元素同级的非浮动元素会跟随其后
 3. 若非第一个元素浮动，则该元素之前的元素也需要浮动，否则会影响页面显示的结构
 
-额外标签法，<div style="clear:both;"></div>
-
-parent:after{
+解决方法三种：
+1.额外标签法，<div style="clear:both;"></div>
+2.伪元素parent:after{
 
     content:".";
     height:0;
@@ -113,7 +113,16 @@ parent:after{
     display:block;
     clear:both;
 }
-设置 overflow 为 hidden 或者 auto
+3.将父元素设置BFC
+
+
+伪类：active link visited hover focus first-child
+伪元素 after before first-letter first-line
+伪类的效果可以通过添加一个实际的类来达到，而伪元素的效果则需要通过添加一个实际的元素才能达到，这也是为什么他们一个称为伪类，一个称为伪元素的原因。
+已经明确规定了伪类用一个冒号来表示，而伪元素则用两个冒号来表示。
+https://segmentfault.com/a/1190000000484493
+
+
 
 (14)http状态码有那些？分别代表是什么意思？
 1xx: 信息性状态码，表示服务器接收到请求正在处理。
@@ -170,9 +179,10 @@ Bd 不可继承的：display、margin、border、padding、background、height�
 所有元素可继承：visibility和cursor。 内联元素可继承：letter-spacing、word-spacing、white-space、line-height、color、font、font-family、font-size、font-style、font-variant、font-weight、text-decoration、text-transform、direction。 终端块状元素可继承：text-indent和text-align。 列表元素可继承：list-style、list-style-type、list-style-position、list-style-image。
 
 (22)动画实现方案，并对比说明各自特点。
-css3旋转，transform, transition, animate
+css3旋转，(transform-transition,scale,rotate,skew), animate
 
 (23)rem是CSS3新增的一个相对单位（root em，根em），这个单位引起了广泛关注。这个单位与em有什么区别呢？区别在于使用rem为元素设定字体大小时，仍然是相对大小，但相对的只是HTML根元素。这个单位可谓集相对大小和绝对大小的优点于一身，通过它既可以做到只修改根元素就成比例地调整所有字体大小，又可以避免字体大小逐层复合的连锁反应。目前，除了IE8及更早版本外，所有浏览器均已支持rem。对于不支持它的浏览器，应对方法也很简单，就是多写一个绝对单位的声明。
+em:元素父元素的font-size
 
 (24)要使页面的 <a> 标签中，文字超出 80 像素的部分显示为 .....
 display:block；
