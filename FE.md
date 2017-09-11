@@ -2320,7 +2320,19 @@ UDP does error checking but simply discards erroneous packets. Error recovery is
 
 ##### 看过的前端书籍
 
-权威指南，你不知道的js，understunding es6，阮es6，DOM编程艺术，bad things about JavaScript，图解http，css secrets ,css 权威指南，算法导论，jquery实战，黑客与画家,编写高质量JavaScript代码的68个有效方法,Head First HTML5 Programming,数据结构与算法JavaScript描述，编写高质量代码--Web前端开发修炼之道，javascript秘密花园，javascript的怪癖
+权威指南，你不知道的js，understunding es6，阮es6，DOM编程艺术，bad things about JavaScript，图解http，css secrets ,css 权威指南，算法导论，jquery实战，黑客与画家,编写高质量JavaScript代码的68个有效方法,Head First HTML5 Programming,数据结构与算法JavaScript描述，编写高质量代码--Web前端开发修炼之道，javascript秘密花园，javascript的怪癖，Git教程，css编写规范，深入理解javascript，typescript，
+
+廖雪峰 阮一峰
+
+##### 公众号
+
+前端大全
+
+算法与数学之美
+
+36氪
+
+IFE
 
 #### 简历内容具体分析
 
