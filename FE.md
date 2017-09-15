@@ -287,6 +287,8 @@ A：会形成。
 - position的值不为relative 和static。
 
 
+元素们处于同一个块级格式化上下文时，会遵守相同的规则/格式(例如父子元素的margin会重叠)，但是处于不同的块级格式化上下文时，元素的排列展示遵守的规则/格式是不同的(处于不同的BFC的父子元素的margin不会重叠--->父级元素处于一个BFC中，父级元素内部新建一个[BFC](https://segmentfault.com/a/1190000009624181))
+
 
 ####flex的使用
 
@@ -2274,6 +2276,17 @@ TCP does error checking and error recovery. Erroneous packets are retransmitted 
 UDP：										DNS,VOIP.   	        8bit	
 
 UDP does error checking but simply discards erroneous packets. Error recovery is not attempted.
+
+1）TCP（Transmission Control Protocol，传输控制协议）是基于连接的协议，在正式收发数据前，必须和对方建立可靠的连接。一个TCP连接必须要经过三次握手才能建立起来。
+2）TCP提供可靠的数据传输服务，通信进程能够依靠TCP无差错、有序交付所有数据。
+3）TCP具有拥塞控制机制，该服务在发送方和接收方之间的网络出现拥塞时，抑制发送进程。这可能导致进程通信变慢，但是对网络整体通信有好处。
+
+UDP（User Data Protocol，用户数据报协议）是与TCP相对应的协议。
+1）它是面向非连接的协议，它不与对方建立连接，而是直接就把数据包发送过去！（延时小）
+2）UDP提供不可靠数据传输服务，不保证报文到达，也不保证有序到达。这种不可靠数据传输服务包括进程间的数据交付和差错检查两种服务，是运输层协议实现的最低限度服务。
+3）UDP没有拥塞控制机制，所以UDP可以用他选定的任何速率向下层（网络层）传输数据（速度有保证）。
+
+
 
 ##### 网络层
 

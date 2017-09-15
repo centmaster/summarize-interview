@@ -62,6 +62,78 @@ publish（‘done’） subscribe（‘done’，）
 
 750px 就把它切成100片 1em=7.5px
 
+[讲的特别好](http://blog.csdn.net/luominting/article/details/46808105)
+
+###### css像素与物理像素
+
+在不同的屏幕上(普通屏幕 vs retina屏幕)，css像素所呈现的大小(物理尺寸)是一致的，不同的是1个css像素所对应的物理像素个数是不一致的。
+
+在普通屏幕下，1个css像素 对应 1个物理像素(`1:1`)。 在retina 屏幕下，1个css像素对应 4个物理像素(`1:4`)。
+
+###### 位图像素
+
+在普通屏幕下是没有问题的，但是在retina屏幕下就会出现位图像素点不够，从而导致图片模糊的情况。
+
+对于dpr=2的retina屏幕而言，1个位图像素对应于4个物理像素，由于单个位图像素不可以再进一步分割，所以只能就近取色，从而导致图片模糊(注意上述的几个颜色值)。
+
+##### 移动端配适问题
+
+###### retina下，图片高清问题
+
+所以，对于图片高清问题，比较好的方案就是`两倍图片`(@2x)。
+
+这里就还有另一个问题，如果普通屏幕下，也用了`两倍图片`，会怎样呢？
+
+很明显，在普通屏幕下，200×300(css pixel)img标签，所对应的物理像素个数就是`200×300`个，而`两倍图片`的位图像素个数则是`200×300*4`，所以就出现一个物理像素点对应4个位图像素点，所以它的取色也只能通过一定的算法(显示结果就是一张只有原图像素总数四分之一，我们称这个过程叫做`downsampling`)，肉眼看上去虽然图片不会模糊，但是会觉得图片缺少一些锐利度，或者是有点色差(但还是可以接受的)。
+
+解决办法：媒体查询，根据不同的尺寸上不同的图片
+
+###### retina下，border: 1px问题
+
+因为retina屏最小可以到0.5px。但是你写0.5px，很多浏览器就当0px来处理。
+
+解决方法：对于dpr=2的屏幕，使用scale(.5)
+
+###### 多屏适配布局问题
+
+```
+<meta name="viewport" content="width=640,initial-scale=0.5,maximum-scale=0.5, minimum-scale=0.5,user-scalable=no">
+rem = document.documentElement.clientWidth * dpr / 10
+rem = px / 基准值;
+```
+
+解决方法：使用rem处理。根据上述公式，计算基准值。还可以解决上述两个问题
+
+###### 针对字体，要求尺寸一样
+
+我们也会用less写一个mixin：
+
+```
+.px2px(@name, @px){
+    @{name}: round(@px / 2) * 1px;
+    [data-dpr="2"] & {
+        @{name}: @px * 1px;
+    }
+    // for mx3
+    [data-dpr="2.5"] & {
+        @{name}: round(@px * 2.5 / 2) * 1px;
+    }
+    // for 小米note
+    [data-dpr="2.75"] & {
+        @{name}: round(@px * 2.75 / 2) * 1px;
+    }
+    [data-dpr="3"] & {
+        @{name}: round(@px / 2 * 3) * 1px
+    }
+    // for 三星note4
+    [data-dpr="4"] & {
+        @{name}: @px * 2px;
+    }
+}
+```
+
+
+
 ##### 懒加载的性能优化
 
 全部一次性插入进去设置隐藏的效率远比动态插入删除效率高的多
@@ -272,6 +344,8 @@ http1.0——>http1.1——>https——>SPDY——>http2.0
 1.新的二进制格式
 
 2.多路复用
+
+多路复用通过多个请求stream共享一个tcp连接的方式
 
 
 
@@ -682,6 +756,32 @@ React可以算作单向数据中的一种。
 动画属性的差异: 1、display:none：完全不受transition属性的影响，元素立即消失
 2、visibility：hidden：元素消失的时间跟transition属性设置的时间一样，但是没有动画效果.
 3、opacity:0,动画属性生效,能够进行正常的动画效果.
+
+##### Call apply bind 的区别
+
+call和apply都是改变上下文中的this并立即执行这个函数，bind方法可以让对应的函数想什么时候调就什么时候调用，并且可以将参数在执行的时候添加
+
+##### 如何显式的把类数组转变成a数组：
+
+arr =  Array.prototype.slice.call(arrLike)   或者
+
+arr = Array.from(arrLike)   或者
+
+arr = [...arrLike]
+
+##### TCP避免拥塞方案
+
+1.慢启动
+
+新建立的tcp不能一开始就发送大量数据，从一个segment开始，一个一个慢慢往上增加数据量
+
+2.拥塞避免
+
+如果server超时未响应，认为网络能力下降，重设慢启动阀值
+
+
+
+
 
 
 
