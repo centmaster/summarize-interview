@@ -60,6 +60,8 @@ publish（‘done’） subscribe（‘done’，）
 
 3.rem
 
+750px 就把它切成100片 1em=7.5px
+
 ##### 懒加载的性能优化
 
 全部一次性插入进去设置隐藏的效率远比动态插入删除效率高的多
@@ -151,6 +153,8 @@ DNS（Domain Name System，域名系统），因特网上作为域名和[IP地�
 按说substr——》对应splice     substring———》slice
 
 但只有splice会真实的改变原来的数据，其他三个都不能
+
+因为字符串是只读的，任何操作都不能改变字符串。
 
 ##### css百分比相对于谁
 
@@ -273,7 +277,7 @@ http1.0——>http1.1——>https——>SPDY——>http2.0
 
 按层从高到低。HTTP—SPDY----SSL----TCP
 
-##### 线程与进程
+##### [线程与进程](https://segmentfault.com/a/1190000005884656)
 
 进程是cpu资源分配的最小单位，线程是cpu调度的最小单位。
 
@@ -567,5 +571,117 @@ fetch(url).then(function(response) {
 ##### 为什么要使用这种框架而不用原生api操作dom，性能并没有优化
 
 但是对于coding的人来说，牺牲一点计算量可以大大的减轻coding人的工作量
+
+
+
+##### 严格模式
+
+严格模式的一些主要优点包括：
+
+- 使调试更加容易。那些被忽略或默默失败了的代码错误，会产生错误或抛出异常，因此尽早提醒你代码中的问题，你才能更快地指引到它们的源代码。
+- 防止意外的全局变量。如果没有严格模式，将值分配给一个未声明的变量会自动创建该名称的全局变量。这是JavaScript中最常见的错误之一。在严格模式下，这样做的话会抛出错误。
+- 消除 `this` 强制。如果没有严格模式，引用null或未定义的值到 `this` 值会自动强制到全局变量。这可能会导致许多令人头痛的问题和让人恨不得拔自己头发的bug。在严格模式下，引用 null或未定义的 `this` 值会抛出错误。
+- 不允许重复的属性名称或参数值。当检测到对象（例如，`var object = {foo: "bar", foo: "baz"};`）中重复命名的属性，或检测到函数中（例如，`function foo(val1, val2, val1){}`）重复命名的参数时，严格模式会抛出错误，因此捕捉几乎可以肯定是代码中的bug可以避免浪费大量的跟踪时间。
+- 使`eval()` 更安全。在严格模式和非严格模式下，`eval()` 的行为方式有所不同。最显而易见的是，在严格模式下，变量和声明在 `eval()` 语句内部的函数不会在包含范围内创建（它们会在非严格模式下的包含范围中被创建，这也是一个常见的问题源）。
+- 在 `delete`使用无效时抛出错误。`delete`操作符（用于从对象中删除属性）不能用在对象不可配置的属性上。当试图删除一个不可配置的属性时，非严格代码将默默地失败，而严格模式将在这样的情况下抛出异常。
+
+##### NaN
+
+```javascript
+console.log(typeof NaN === "number"); //true
+Object.is(NaN,NaN)
+Array.isNaN(NaN)
+```
+
+##### isInteger实现
+
+```javascript
+function isInteger(x) { return (x^0) === x; }
+function isInteger(x) { return Math.round(x) === x; }
+function isInteger(x) { return (typeof x === 'number') && (x % 1 === 0);
+```
+
+##### 实现函数， 实现功能
+
+写一个 `sum`方法，在使用下面任一语法调用时，都可以正常工作。
+
+```javascript
+console.log(sum(2,3));   // Outputs 5
+console.log(sum(2)(3));  // Outputs 5
+
+function sum(x) {
+  if (arguments.length == 2) {
+    return arguments[0] + arguments[1];
+  } else {
+    return function(y) { return x + y; };
+  }
+}
+
+function sum(x, y) {
+  if (y !== undefined) {
+    return x + y;
+  } else {
+    return function(y) { return x + y; };
+  }
+}
+
+```
+
+```
+在这种情况下，由于 b 和 c都是对象，因此它们都将被转换为"[object Object]"
+var a={},
+    b={key:'b'},
+    c={key:'c'};
+ 
+a[b]=123;
+a[c]=456;
+ 
+console.log(a[b]);
+```
+
+##### 单向绑定和双向绑定（http://www.jianshu.com/p/4ec74cb5b748）
+
+单向绑定非常简单，就是把Model绑定到View，当我们用JavaScript代码更新Model时，View就会自动更新
+
+单向数据绑定缺点：HTML代码一旦生成完以后，就没有办法再变了，如果有新的数据来了，那就必须把之前的HTML代码去掉，再重新把新的数据和模板一起整合后插入到文档流中。
+
+React可以算作单向数据中的一种。
+
+双向数据绑定最经常的应用场景是表单，这样当用户在前端页面完成输入后，不用任何操作，就可以拿到用户的数据存放到数据模型中了。
+
+数据模型（Module）和视图（View）之间的双向绑定。无论数据改变，或是用户操作，都能带来互相的变动，自动更新。适用于项目细节
+
+##### 实现双向数据绑定的做法
+
+1.发布／订阅
+
+2.**脏检查（angular.js）**
+
+原理是设置了一些条件，当你触发了这些条件之后，它就执行一个检测来遍历所有的数据，对比你更改了地方，然后执行变化
+
+**3.ES7的Object.observe()**
+
+最完美的方法，但是很多浏览器并不支持
+
+**4.封装属性访问器/数据劫持（vue.js）**
+
+结合发布者-订阅者模式的方式，通过ES5的`Object.defineProperty()`来劫持各个属性的`setter`，`getter`
+
+
+
+##### 三种隐藏方式差别:visibility:hidden,display:none,opacity:0
+
+渲染上的差异:
+1.将元素设置为display:none后，元素在页面上将彻底消失，元素本来占有的空间就会被其他元素占有，也就是说它会导致浏览器的回流和重绘。
+
+2.设置元素的visibility为hidden，和display:none的区别在于，元素在页面消失后，其占据的空间依旧会保留着，所以它只会导致浏览器重绘而不会回流。
+
+3.opacity:0,只是看不到元素,元素依然存在并且占有原有位置. 注: 事件绑定的差异: 1、display:none：元素彻底消失，不会触发绑定的事件.
+2、visibility:hidden：无法触发其点击事件，有一种说法是display:none是元素看不见摸不着，而visibility:hidden是看不见摸得着，这种说法是不准确的，设置元素的visibility后无法触发点击事件，说明这种方法元素也是消失了，只是依然占据着页面空间。
+3、opacity:0：可以触发点击事件，设置元素透明度为0后，元素只是相对于人眼不存在而已，对浏览器来说，它还是存在的，所以可以触发绑定事件
+动画属性的差异: 1、display:none：完全不受transition属性的影响，元素立即消失
+2、visibility：hidden：元素消失的时间跟transition属性设置的时间一样，但是没有动画效果.
+3、opacity:0,动画属性生效,能够进行正常的动画效果.
+
 
 

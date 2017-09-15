@@ -187,7 +187,7 @@ Number("08") // 8
 parseInt('08') //性能不行。因为不是简单的转化，如果你想输入例如“08 hello”，parseInt()将返回数字，而其它以 NaN 告终。
 ```
 
-##### 将生命变量和函数区分
+##### 将声明变量和函数区分
 
 对于构造函数，可以使用大驼峰式命名法(upper camel case)，如MyConstructor()。对于函数和方法名称，你可以使用小驼峰式命名法(lower camel case)，像是 myFunction()， calculateArea()和 getFirstName()。
 
