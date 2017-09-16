@@ -18,7 +18,7 @@ border-box表示width和height属性是`border + padding + content`的大小
 
 ##### Array对象自带的排序函数底层是怎么实现的？
 
-查阅资料发现，V8 引擎 sort 函数只给出了两种排序 InsertionSort 和 QuickSort，数组长度小于等于 22 的用插入排序 InsertionSort，比22大的数组则使用快速排序 QuickSort。
+查阅资料发现，V8 引擎 sort 函数只给出了两种排序 InsertionSort 和 QuickSort，数组长度小于等于 22 的用插入排序 InsertionSort，比22大的数组则使用快速排序 QuickSort,再往大因为快排用的递归，所以也不能刚太大，就用堆排。
 
 插入排序：遍历序列，每次i都从头开始比放到合适位置
 
@@ -215,6 +215,12 @@ DNS（Domain Name System，域名系统），因特网上作为域名和[IP地�
 2. 请求带宽：开启 GZip，精简 JavaScript，移除重复脚本，图像优化
 3. 利用缓存：使用 CDN，使用外部 JavaScript 和 CSS，减少 DNS 查找
 4. 页面结构：将样式表(影响样式的内容)放在顶部，将脚本放在底部，尽早刷新文档的输出
+
+*** gzip静态压缩处理主要方法为： \***
+
+1. 将web系统中的*.js、*.css文件预先通过gzip.exe压缩保存成*.jsgz 、*.cssgz 文件； 
+2. 将web系统中引用js、css文件的地方转换为引用jsgz 、cssgz文件 ； 
+3. 客户端请求jsgz、cssgz文件时，服务器通过过滤器设置header,将所有以jsgz、cssgz结尾的文件的请求增加设置“header Content-Encoding=gzip”的响应头。
 
 ##### rem和em的区别
 
