@@ -974,7 +974,7 @@ none block  inline(默认，内敛元素，不换行） inline-block
 table inherit list-item(元素作为列表显示)  run-in(根据上下文决定块级还是内敛)
 
 position 属性
-1.static:默认取值，没有定位，元素出现在正常的流中。2.relative:相对元素在普通流的位置定位，但元素还是会占据普通流的位置。3：absolute：绝对定位，元素相对于第一个已定位的(position为relative || absolute || fixed)父元素进行定位。4.fixed:固定定位，元素相对于浏览器窗口进行定位。
+1.static:默认取值，没有定位，元素出现在正常的流中。2.relative:相对元素在普通流的位置定位，但元素还是会占据普通流的位置,挪后的位置并没有占文档流。3：absolute：绝对定位，元素相对于第一个已定位的(position为relative || absolute || fixed)父元素进行定位。4.fixed:固定定位，元素相对于浏览器窗口进行定位。
 
 (90)TCP和UDP的区别(http://www.cnblogs.com/bizhu/archive/2012/05/12/2497493.html)
 三次握手和四次挥手！！

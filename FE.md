@@ -1107,7 +1107,9 @@ for of遍历的是对应的元素值
 
 Object.keys.    for..in
 
-##### 深复制与浅复制
+##### [深复制与浅复制](https://github.com/wengjq/Blog/issues/3)
+
+###### 浅拷贝
 
 1.直接用等号赋值 浅复制
 
@@ -1138,9 +1140,44 @@ Object.keys.    for..in
   console.log(JSON.stringify(obj3)); // { a: 0, b: { c: 0}}
 ```
 
-3.jQuery.extend     vue的touch函数？
+3.slice,concat
 
-4.Json.parse. Json.stringify
+###### 深拷贝
+
+1.jQuery.extend源码实现   (vue的touch)  
+
+```javascript
+function copy (obj,deep) { 
+    if (obj === null || (typeof obj !== "object" && !$.isFunction(obj))) { 
+        return obj; 
+    }   //如果是null或者简单变量直接return就好
+  		//继续往下走就说明type就是object
+    if ($.isFunction(obj)) {
+    	return new Function("return " + obj.toString())();
+    }	//如果是function 这样可以直接返回一个function
+    else {
+        var name, target = $.isArray(obj) ? [] : {}, value; 
+			//这里感觉touch函数写的更清晰，如果是数组或者对象就遍历然后再递归下去
+        for (name in obj) { 
+            value = obj[name]; 
+            if (value === obj) {
+            	continue;
+            }
+
+            if (deep && ($.isArray(value) || $.isObject(value))) {
+            	target[name] = copy(value,deep);
+            }
+            else {
+            	target[name] = value;
+            } 
+        } 
+        return target;
+    }　
+```
+
+2.Json.parse. Json.stringify
+
+这种方法使用较为简单，可以满足基本的深拷贝需求，而且能够处理JSON格式能表示的所有数据类型，但是对于正则表达式类型、函数类型等无法进行深拷贝(而且会直接丢失相应的值)。还有一点不好的地方是它会抛弃对象的constructor。也就是深拷贝之后，不管这个对象原来的构造函数是什么，在深拷贝之后都会变成Object。同时如果对象中存在循环引用的情况也无法正确处理。
 
 ##### 闭包 ！
 
