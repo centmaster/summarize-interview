@@ -16,43 +16,7 @@
 
 ### html基础
 
-##### SEO
-
-###### html
-
-避免空链接（因为还是会请）
-
-避免深层级嵌套
-
-显示设置宽高
-
-避免脚本阻塞加载
-
-###### css
-
-避免使用@import
-
-###### JS
-
-事件代理
-
-避免频繁的dom操作
-
-###### 网络
-
-减少http请求次数
-
-减少dns查找次数（缓存三十分钟，可以分块）
-
-减少重定向
-
-首屏加载，滚屏加载
-
-能使用GET就用GET
-
-使用外部js，css
-
-减少cookie
+##### [SEO](https://csspod.com/frontend-performance-best-practices/#content)
 
 ##### GET POST
 

