@@ -1,9 +1,5 @@
 ## 前端积累
 
-本文旨在积累前端知识。看到自己走过的每一步。当然，也可以作为面试宝典。哈哈哈
-
-
-
 [ES6](https://github.com/centmaster/summarize-interview/blob/master/ES6.md)
 
 [双飞燕布局](https://github.com/centmaster/summarize-interview/blob/master/test.html)
@@ -27,3 +23,6 @@
 [算法积累](https://github.com/centmaster/summarize-interview/blob/master/Algorithm.md)
 
 [读书笔记](https://github.com/centmaster/summarize-interview/blob/master/readbook.md)
+
+[js 设计模式]()
+
